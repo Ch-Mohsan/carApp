@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+
+:root{--header-height:64px}
+
+@media (min-width:768px){
+	:root{--header-height:65px}
+}
+
+/* utility: ensure the app fills viewport */
+html,body,#root{height:100%}
+
+/* animated header/main and mobile menu */
+header{transition:height 300ms ease}
+main{transition:padding-top 300ms ease}
+
+.mobile-menu{
+	max-height:0;
+	overflow:hidden;
+	transition:max-height 320ms ease;
+}
+.mobile-menu.open{
+	/* large enough to fit menu; we also set exact value via JS for smooth push */
+	max-height:1000px;
+}
+
+/* shift the background image down when menu opens */
+.bg-hero{transition:transform 300ms ease}
+body.menu-open .bg-hero{transform:translateY(var(--menu-shift,0px))}
+
+
+
