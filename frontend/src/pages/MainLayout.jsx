@@ -25,25 +25,7 @@ export default function Layout({ children }) {
   />
 
   {/* overlay */}
- <div
-  aria-hidden="true"
-  className="absolute inset-0 z-10"
-  style={{
-    background: `
-      linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0.15) 0%,   /* top lighter */
-        rgba(0, 0, 0, 0.25) 50%,  /* middle */
-        rgba(0, 0, 0, 0.35) 100%  /* bottom slightly darker */
-      ),
-      radial-gradient(
-        50% 60% at 20% 20%,
-        rgba(0, 0, 0, 0.10),
-        transparent 40%
-      )
-    `,
-  }}
-/>
+ <div aria-hidden="true" className="absolute inset-0 z-10 hero-overlay" />
 
 
   

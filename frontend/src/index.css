@@ -27,5 +27,85 @@ main{transition:padding-top 300ms ease}
 .bg-hero{transition:transform 300ms ease}
 body.menu-open .bg-hero{transform:translateY(var(--menu-shift,0px))}
 
+/* Custom styles to reproduce demo behavior */
+.navbar-custom{
+	transition:background-color 360ms cubic-bezier(.2,.9,.2,1), color 360ms cubic-bezier(.2,.9,.2,1), box-shadow 360ms cubic-bezier(.2,.9,.2,1), padding 360ms cubic-bezier(.2,.9,.2,1);
+	will-change: background-color, box-shadow, padding;
+}
+
+/* scrolled state: white background, black text and subtle shadow */
+body.nav-scrolled .navbar-custom{
+	background: #fff !important;
+	color: #000 !important;
+	box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+	/* small delay so background feels smoother */
+	transition-delay: 60ms;
+}
+body.nav-scrolled .navbar-custom a{color: #000 !important}
+body.nav-scrolled .navbar-custom a:hover{color: #1089ff !important}
+
+/* mobile menu follow scrolled color */
+body.nav-scrolled .mobile-menu{background:#fff;color:#000}
+body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), color 280ms cubic-bezier(.2,.9,.2,1)}
+
+/* featured overlap and request-form similar to demo */
+.featured-top{margin-top:-250px}
+.request-form{background:#1089ff;padding:30px;border-radius:8px;color:#fff;box-shadow:0 8px 30px rgba(16,24,40,0.12)}
+.request-form h2{color:#fff;margin-bottom:1rem}
+.services-wrap{background:#fff;border-radius:8px;padding:28px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
+
+/* ensure hero overlay matches demo darkness */
+.bg-hero{filter:brightness(0.85) saturate(0.9)}
+
+/* hero overlay (matches demo gradients + responsive heights) */
+.hero-overlay{
+	position: absolute;
+	inset: 0;
+	z-index: 10;
+	pointer-events: none;
+	background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 100%), radial-gradient(50% 60% at 20% 20%, rgba(0,0,0,0.10), transparent 40%);
+}
+
+/* ensure hero content floats below header so text isn't hidden */
+.hero-content-padding{
+	padding-top: var(--header-height);
+}
+
+/* featured/request-form responsive adjustments */
+.featured-top{margin-top:-250px}
+.request-form{background:#1089ff;padding:30px;border-radius:8px;color:#fff;box-shadow:0 8px 30px rgba(16,24,40,0.12)}
+.services-wrap{background:#fff;border-radius:8px;padding:28px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
+
+@media (max-width: 991.98px){
+	.featured-top{margin-top:-120px}
+	.request-form{width:100%;padding:22px;margin-bottom:16px}
+	.services-wrap{width:100%;padding:18px;margin-top:0}
+}
+
+@media (max-width: 575.98px){
+	.hero-overlay{background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 100%)}
+	.featured-top{margin-top:-80px}
+}
+
+/* Mobile-specific navbar tweaks: keep header transparent until scrolled,
+	 increase vertical padding so items sit lower/centered */
+@media (max-width: 767.98px) {
+	.navbar-custom { background: transparent !important; }
+	.navbar-custom .w-full { padding-top: 20px !important; padding-bottom: 20px !important; }
+	.navbar-custom .flex-shrink-0 { transform: translateY(2px); }
+}
+
+/* When mobile menu is open, keep it white if nav-scrolled, otherwise semi-transparent dark overlay */
+.mobile-menu.open { background: rgba(0,0,0,0.85); }
+body.nav-scrolled .mobile-menu.open { background: #fff; color: #000; }
+
+/* Link underline animation */
+.navbar-custom a{position:relative;display:inline-block}
+.navbar-custom a::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left center;transition:transform 260ms cubic-bezier(.2,.9,.2,1),opacity 260ms}
+.navbar-custom a:hover::after,.navbar-custom a:focus::after{transform:scaleX(1);opacity:1}
+/* active states use color applied by inline classes; ensure pseudo-element matches */
+body.nav-scrolled .navbar-custom a::after{background: #1089ff}
+.navbar-custom a::after{background: rgba(255,255,255,0.9)}
+
 
 
