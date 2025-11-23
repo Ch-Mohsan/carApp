@@ -50,9 +50,38 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 
 /* featured overlap and request-form similar to demo */
 .featured-top{margin-top:-250px}
-.request-form{background:#1089ff;padding:30px;border-radius:8px;color:#fff;box-shadow:0 8px 30px rgba(16,24,40,0.12)}
+
+/* Booking panel (request-form) and white card (services-wrap) - sizes and visual styles like carbook demo */
+.request-form{
+	background: rgb(16,137,255) !important;
+	padding: 30px;
+	border-radius: 5px;
+	color: #fff;
+	box-shadow: rgba(0, 0, 0, 0.06) 0px 5px 12px -1px;
+	width: 360px;
+	min-height: 320px;
+	box-sizing: border-box;
+	font-family: Poppins, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.8;
+	transform: translate3d(0,0,0);
+	z-index: 1;
+}
 .request-form h2{color:#fff;margin-bottom:1rem}
-.services-wrap{background:#fff;border-radius:8px;padding:28px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
+.services-wrap{
+	background:#fff;
+	padding: 4em 3em;
+	border-radius:8px;
+	border-top-right-radius: 0.25rem !important;
+	border-bottom-right-radius: 0.25rem !important;
+	box-shadow: rgba(0, 0, 0, 0.03) 0px 5px 12px -1px;
+	width: 720px;
+	box-sizing: border-box;
+	font-family: Poppins, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.8;
+	color: rgb(51,51,51);
+}
 
 /* ensure hero overlay matches demo darkness */
 .bg-hero{filter:brightness(0.85) saturate(0.9)}
@@ -71,15 +100,61 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 	padding-top: var(--header-height);
 }
 
+/* hero section sizing and stacking */
+.hero-section{
+	position: relative;
+	z-index: 20; /* above overlay (10) but under header (30) */
+	min-height: 850px;
+	display: flex;
+	align-items: center;
+}
+
+.bg-hero{z-index:1}
+
+/* precise placement for the overlapping booking + card panels (pixel-tuned to demo) */
+.hero-section .hero-panels{
+		position: absolute;
+		right: 6%;
+		bottom: -250px; /* panels overflow below the hero by ~250px on desktop */
+		display: flex;
+		align-items: flex-start;
+		gap: 1.5rem;
+		pointer-events: auto;
+		z-index: 20; /* keep below header (30) but above overlay (10) */
+}
+
+@media (min-width: 1280px){
+	.hero-section .hero-panels{ right: 8%; }
+}
+
+@media (max-width: 991.98px){
+	.hero-section .hero-panels{
+		right: 4%;
+		bottom: -120px; /* smaller overlap on tablet */
+	}
+}
+
+@media (max-width: 575.98px){
+	.hero-section .hero-panels{
+		position: relative;
+		right: 0;
+		bottom: 0;
+		margin-top: 2rem;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.request-form, .services-wrap{width:100%}
+}
+
 /* featured/request-form responsive adjustments */
 .featured-top{margin-top:-250px}
 .request-form{background:#1089ff;padding:30px;border-radius:8px;color:#fff;box-shadow:0 8px 30px rgba(16,24,40,0.12)}
 .services-wrap{background:#fff;border-radius:8px;padding:28px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
 
 @media (max-width: 991.98px){
-	.featured-top{margin-top:-120px}
-	.request-form{width:100%;padding:22px;margin-bottom:16px}
-	.services-wrap{width:100%;padding:18px;margin-top:0}
+  .featured-top{margin-top:-120px}
+  .request-form{width:320px;padding:22px}
+  .services-wrap{width:520px;padding:28px}
 }
 
 @media (max-width: 575.98px){
