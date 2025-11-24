@@ -53,34 +53,40 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 
 /* Booking panel (request-form) and white card (services-wrap) - sizes and visual styles like carbook demo */
 .request-form{
-	background: rgb(16,137,255) !important;
-	padding: 30px;
-	border-radius: 5px;
-	color: #fff;
-	box-shadow: rgba(0, 0, 0, 0.06) 0px 5px 12px -1px;
-	width: 360px;
-	min-height: 320px;
-	box-sizing: border-box;
-	font-family: Poppins, Arial, sans-serif;
-	font-size: 16px;
-	line-height: 1.8;
-	transform: translate3d(0,0,0);
-	z-index: 1;
+	background:#1089ff;
+	padding:32px 28px;
+	border-radius:8px;
+	color:#fff;
+	box-shadow:0 10px 35px rgba(16,24,40,0.16);
+	width:360px;
+	min-height:380px;
+	box-sizing:border-box;
+	display:flex;
+	flex-direction:column;
+	justify-content:flex-start;
+	gap:1rem;
+	font-family:Poppins, Arial, sans-serif;
+	font-size:16px;
+	line-height:1.8;
+	transform:translate3d(0,0,0);
+	z-index:1;
 }
 .request-form h2{color:#fff;margin-bottom:1rem}
 .services-wrap{
 	background:#fff;
-	padding: 4em 3em;
 	border-radius:8px;
-	border-top-right-radius: 0.25rem !important;
-	border-bottom-right-radius: 0.25rem !important;
-	box-shadow: rgba(0, 0, 0, 0.03) 0px 5px 12px -1px;
-	width: 720px;
-	box-sizing: border-box;
-	font-family: Poppins, Arial, sans-serif;
-	font-size: 16px;
-	line-height: 1.8;
-	color: rgb(51,51,51);
+	padding:40px 36px;
+	box-shadow:0 10px 35px rgba(16,24,40,0.10);
+	width:700px;
+	min-height:340px;
+	box-sizing:border-box;
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	font-family:Poppins, Arial, sans-serif;
+	font-size:16px;
+	line-height:1.8;
+	color:rgb(51,51,51);
 }
 
 /* ensure hero overlay matches demo darkness */
@@ -104,7 +110,7 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 .hero-section{
 	position: relative;
 	z-index: 20; /* above overlay (10) but under header (30) */
-	min-height: 850px;
+	min-height: 860px;
 	display: flex;
 	align-items: center;
 }
@@ -113,51 +119,42 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 
 /* precise placement for the overlapping booking + card panels (pixel-tuned to demo) */
 .hero-section .hero-panels{
-		position: absolute;
-		right: 6%;
-		bottom: -250px; /* panels overflow below the hero by ~250px on desktop */
-		display: flex;
-		align-items: flex-start;
-		gap: 1.5rem;
-		pointer-events: auto;
-		z-index: 20; /* keep below header (30) but above overlay (10) */
+	position:absolute;
+	right:6%;
+	bottom:-220px;
+	display:flex;
+	align-items:flex-start;
+	gap:1.5rem;
+	pointer-events:auto;
+	z-index:20;
 }
 
 @media (min-width: 1280px){
-	.hero-section .hero-panels{ right: 8%; }
+	.hero-section .hero-panels{ right:8%; bottom:-240px; }
 }
 
 @media (max-width: 991.98px){
 	.hero-section .hero-panels{
-		right: 4%;
-		bottom: -120px; /* smaller overlap on tablet */
+		right:4%;
+		bottom:-140px;
+		gap:1.25rem;
 	}
 }
 
 @media (max-width: 575.98px){
 	.hero-section .hero-panels{
-		position: relative;
-		right: 0;
-		bottom: 0;
-		margin-top: 2rem;
-		flex-direction: column;
-		gap: 1rem;
+		position:relative;
+		right:0;
+		bottom:0;
+		margin-top:1.75rem;
+		flex-direction:column;
+		gap:1rem;
 	}
-	.request-form, .services-wrap{width:100%}
-}
-
-/* featured/request-form responsive adjustments */
-.featured-top{margin-top:-250px}
-.request-form{background:#1089ff;padding:30px;border-radius:8px;color:#fff;box-shadow:0 8px 30px rgba(16,24,40,0.12)}
-.services-wrap{background:#fff;border-radius:8px;padding:28px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
-
-@media (max-width: 991.98px){
-  .featured-top{margin-top:-120px}
-  .request-form{width:320px;padding:22px}
-  .services-wrap{width:520px;padding:28px}
-}
-
-@media (max-width: 575.98px){
+	.request-form,
+	.services-wrap{
+		width:100%;
+		min-height:auto;
+	}
 	.hero-overlay{background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 100%)}
 	.featured-top{margin-top:-80px}
 }
