@@ -20,7 +20,7 @@ function Hero() {
       </div>
 
       {/* Overlapping Section with Both Panels */}
-      <div className="absolute left-0 right-0 bottom-0 w-full flex justify-center px-4 md:px-8 lg:px-12" style={{top: '65%'}}>
+      <div className="absolute left-0 right-0  w-full flex justify-center px-4 md:px-8 lg:px-12 " style={{top: '65%'}}>
         <div className="w-full max-w-7xl flex flex-col lg:flex-row  ">
           
           {/* Left Panel - Booking Form */}
