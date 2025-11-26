@@ -33,11 +33,10 @@ function Feeatured() {
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0)
   const lastAdvanceAt = useRef(0)
   const [visibleCount, setVisibleCount] = useState(() => {
-    if (typeof window === 'undefined') return 1
+    if (typeof window === 'undefined') return 2
     const w = window.innerWidth
     if (w >= 1024) return 3
-    if (w >= 768) return 2
-    return 1
+    return 2 // show two cards on mobile & tablet
   })
 
   // build extended slides to allow infinite loop while showing 3 at once
@@ -53,7 +52,7 @@ function Feeatured() {
   useEffect(() => {
     const handler = () => {
       const w = window.innerWidth
-      setVisibleCount(w >= 1024 ? 3 : w >= 768 ? 2 : 1)
+      setVisibleCount(w >= 1024 ? 3 : 2)
     }
     handler()
     window.addEventListener('resize', handler)
@@ -104,17 +103,19 @@ function Feeatured() {
                 className="flex-shrink-0"
                 style={{ flex: `0 0 calc(${100 / visibleCount}% )` }}
               >
-                <div className="bg-white rounded-xl shadow-xl overflow-hidden mx-3">
-                  <div className="w-full h-56 md:h-64">
-                    <img src={s.img} alt={s.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="p-6 flex flex-col gap-2">
-                    <h3 className="text-xl md:text-2xl font-semibold text-gray-800">{s.title}</h3>
-                    <p className="text-gray-500">{s.brand}</p>
-                    <p className="mt-2"><span className="text-[#1089ff] font-bold">{s.price}</span><span className="text-gray-400"> /day</span></p>
-                    <div className="flex gap-4 mt-4">
-                      <button className="px-5 py-3 bg-[#1089ff] hover:bg-[#0d75db] text-white rounded-md font-semibold">Book now</button>
-                      <button className="px-5 py-3 bg-[#01d28e] hover:bg-[#00ba7d] text-white rounded-md font-semibold">Details</button>
+                <div className="px-2 md:px-3">
+                  <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+                    <div className="w-full h-44 sm:h-52 md:h-64">
+                      <img src={s.img} alt={s.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="p-4 md:p-6 flex flex-col gap-2">
+                      <h3 className="text-lg md:text-2xl font-semibold text-gray-800">{s.title}</h3>
+                      <p className="text-gray-500">{s.brand}</p>
+                      <p className="mt-2"><span className="text-[#1089ff] font-bold">{s.price}</span><span className="text-gray-400"> /day</span></p>
+                      <div className="flex gap-3 md:gap-4 mt-4">
+                        <button className="px-4 py-2.5 md:px-5 md:py-3 bg-[#1089ff] hover:bg-[#0d75db] text-white rounded-md font-semibold">Book now</button>
+                        <button className="px-4 py-2.5 md:px-5 md:py-3 bg-[#01d28e] hover:bg-[#00ba7d] text-white rounded-md font-semibold">Details</button>
+                      </div>
                     </div>
                   </div>
                 </div>
