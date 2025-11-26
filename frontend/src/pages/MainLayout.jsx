@@ -17,15 +17,17 @@ export default function Layout({ children }) {
   return (
    <div className="min-h-screen relative bg-white"> 
   
-  <img
-    src={getBg()}
-    alt="background"
-    className="bg-hero absolute inset-0 w-full h-full object-cover object-top z-0 brightness-[80%] saturate-[85%]"
-    loading="eager"
-  />
-
-  {/* overlay */}
- <div aria-hidden="true" className="absolute inset-0 z-10 hero-overlay" />
+  {/* Top hero background is limited to the hero area height */}
+  <div className="absolute top-0 left-0 right-0 z-0" style={{ height: 'var(--hero-bg-height, 850px)' }}>
+    <img
+      src={getBg()}
+      alt="background"
+      className="bg-hero absolute inset-0 w-full h-full object-cover object-top brightness-[80%] saturate-[85%]"
+      loading="eager"
+    />
+    {/* overlay only over the hero area */}
+    <div aria-hidden="true" className="absolute inset-0 hero-overlay" />
+  </div>
 
 
   
