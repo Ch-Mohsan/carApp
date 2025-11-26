@@ -88,7 +88,7 @@ function Feeatured() {
   }, [])
 
   return (
-    <section ref={containerRef} className="w-full py-16 px-4 md:px-8">
+    <section ref={containerRef} className="w-full py-16 px-4 md:px-8 mt-[24px] md:mt-[160px] lg:mt-[300px]">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-10 text-gray-800">Featured Vehicles</h2>
 
