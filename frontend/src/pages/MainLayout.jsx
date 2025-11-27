@@ -40,9 +40,7 @@ export default function Layout({ children }) {
     {children}
   </main>
 
-  <footer className="relative z-40">
-   
-  </footer>
+  <Footer/>
 </div>
 
   );
