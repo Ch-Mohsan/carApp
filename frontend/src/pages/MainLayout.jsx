@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Text from "../components/Text";
 
 
 export default function Layout({ children }) {
@@ -9,9 +10,21 @@ export default function Layout({ children }) {
 
     const getBg = () => {
     if (pathname === "/") return "/images/bg_1.jpg";
-    if (pathname.startsWith("/about")) return "/images/about.jpg";
-    if (pathname.startsWith("/cars")) return "/images/bg_1.jpg";
-    return "/images/default-hero.jpg";
+    else  return "/images/about.jpg";
+    
+  };
+
+  const getSectionLabel = () => {
+    if (pathname === "/") return null;
+    const map = {
+      "/about": "About",
+      "/services": "Services",
+      "/blog": "Blog",
+      "/pricing": "Pricing",
+      "/cars": "Cars",
+      "/contact": "Contact"
+    };
+    return map[pathname] || pathname.replace(/^\//, "");
   };
 
   return (
@@ -27,6 +40,12 @@ export default function Layout({ children }) {
     />
     {/* overlay only over the hero area */}
     <div aria-hidden="true" className="absolute inset-0 hero-overlay" />
+    {/* Bottom-left page heading for non-home routes */}
+    {getSectionLabel() && (
+      <div className="absolute text-4xl left-16 bottom-16 z-10">
+        <Text Text={` ${getSectionLabel()}`} />
+      </div>
+    )}
   </div>
 
 
