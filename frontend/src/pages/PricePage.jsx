@@ -52,11 +52,11 @@ function PricePage() {
 
           <div className="lg:col-span-2">
             {/* Tabs header (visual only, columns remain visible) */}
-            <div className="flex rounded-md overflow-hidden">
+            <div className="flex rounded-md  overflow-hidden">
               {tabs.map((t) => (
                 <div
                   key={t.key}
-                  className={`flex-1 py-3 px-5 text-center font-semibold text-sm tracking-wide ${t.color}`}
+                  className={`flex-1 py-3 px-5 text-center font-semibold text-md tracking-wide ${t.color}`}
                 >
                   {t.label}
                 </div>
@@ -66,9 +66,9 @@ function PricePage() {
             {/* Per-car rows: each car has 3 pricing columns */}
             <div className="mt-4 space-y-5">
               {cars.map((c) => (
-                <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-3 gap-1">
                   {/* Hour column */}
-                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                  <div className="group px-4 py-4 rounded-md  bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
                     <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.hour.price}<span className="text-gray-500 font-normal">{pricing.hour.sub}</span></div>
                     <div className="text-gray-600 text-sm">{pricing.hour.note}</div>
                     <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>

@@ -47,16 +47,16 @@ function Navbar() {
   const linkClass = (path) => {
     const active = getpath === path;
     if (navLight) {
-      return `transition-colors duration-200 ${active ? 'text-[#1089ff] border-b-2 border-[#1089ff]' : 'text-black hover:text-[#1089ff]'}`;
+      return `transition-colors duration-200 ${active ? 'text-[#1089ff]' : 'text-black hover:text-[#1089ff]'} no-underline`;
     }
-    return `transition-colors duration-200 ${active ? 'text-[#01d28e] border-b-2 border-[#01d28e]' : 'text-white hover:text-[#01d28e]'}`;
+    return `transition-colors duration-200 ${active ? 'text-[#01d28e]' : 'text-white hover:text-[#01d28e]'} no-underline`;
   };
 
   return (
     <>
       <div className={`navbar-custom w-full h-full transition-colors duration-300 ${navLight ? 'bg-white text-black shadow-sm' :  'bg-black md:bg-transparent text-white'}`}>
         <div className="w-full max-w-7xl mx-auto flex items-center px-6 md:px-12 py-4">
-          <div className='flex items-center text-xl font-extrabold md:px-4 flex-shrink-0'>
+          <div className='flex items-center text-lg md:text-xl font-extrabold md:px-4 flex-shrink-0 whitespace-nowrap'>
             <span className={`${navLight ? 'text-black' : 'text-white'}`}>CAR</span>
             <span className='text-[#01d28e] ml-1'>BOOK</span>
           </div>

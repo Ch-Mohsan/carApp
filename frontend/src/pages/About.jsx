@@ -4,8 +4,8 @@ import AboutContent from '../components/AboutContent.jsx'
 
 function About() {
   return (
-    <div className=' w-full absolute top-[100%] '>
-    <AboutContent />
+    <div className='w-full mb-18'>
+      <AboutContent />
     </div>
   )
 }

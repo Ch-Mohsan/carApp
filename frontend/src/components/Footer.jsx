@@ -2,21 +2,21 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-black text-white h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
-        <div className="h-[350px]  w-full flex items-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 w-full">
+    <footer className="w-full bg-black text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        <div className="w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
           {/* Brand + description */}
           <div>
-            <div className="text-3xl font-extrabold tracking-tight">
+            <div className="text-2xl sm:text-3xl font-extrabold tracking-tight whitespace-nowrap">
               <span>CAR</span>
               <span className="text-[#01d28e]">BOOK</span>
             </div>
-            <p className="mt-6 text-md leading-9 text-gray-300 max-w-xs">
+            <p className="mt-4 text-sm sm:text-md leading-7 text-gray-300 max-w-xs">
               Far far away, behind the word mountains, far from the countries
               Vokalia and Consonantia, there live the blind texts.
             </p>
-            <div className="mt-12 flex items-center gap-4">
+            <div className="mt-6 sm:mt-8 flex items-center gap-4">
               {/* Twitter */}
               <a aria-label="Twitter" href="#" className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white"><path d="M22 5.8c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.3 1.7-2.2-.8.5-1.7.9-2.6 1.1A4 4 0 0 0 12 8.5c0 .3 0 .6.1.9A11.3 11.3 0 0 1 3 5.3a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.7-.5v.1c0 2 1.5 3.7 3.4 4.1-.4.1-.8.2-1.2.2-.3 0-.6 0-.9-.1.6 1.7 2.1 2.9 3.9 3a8 8 0 0 1-5 1.7H2A11.3 11.3 0 0 0 8.1 21c7.3 0 11.3-6 11.3-11.3v-.5c.8-.6 1.5-1.3 2.1-2.1Z" fill="currentColor"/></svg>
@@ -34,8 +34,8 @@ export default function Footer() {
 
           {/* Information */}
           <div>
-            <h3 className="text-xl font-semibold">Information</h3>
-            <ul className="mt-8 space-y-4 text-gray-300 text-sm">
+            <h3 className="text-lg sm:text-xl font-semibold">Information</h3>
+            <ul className="mt-6 space-y-3 text-gray-300 text-sm">
               <li><a href="#" className="hover:text-[#01d28e]">About</a></li>
               <li><a href="#" className="hover:text-[#01d28e]">Services</a></li>
               <li><a href="#" className="hover:text-[#01d28e]">Term and Conditions</a></li>
@@ -46,8 +46,8 @@ export default function Footer() {
 
           {/* Customer Support */}
           <div>
-            <h3 className="text-xl font-semibold">Customer Support</h3>
-            <ul className="mt-8 space-y-4 text-gray-300 text-sm">
+            <h3 className="text-lg sm:text-xl font-semibold">Customer Support</h3>
+            <ul className="mt-6 space-y-3 text-gray-300 text-sm">
               <li><a href="#" className="hover:text-[#01d28e]">FAQ</a></li>
               <li><a href="#" className="hover:text-[#01d28e]">Payment Option</a></li>
               <li><a href="#" className="hover:text-[#01d28e]">Booking Tips</a></li>
@@ -58,8 +58,8 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-xl font-semibold">Have a Questions?</h3>
-            <ul className="mt-8 space-y-5 text-gray-300 text-sm">
+            <h3 className="text-lg sm:text-xl font-semibold">Have a Questions?</h3>
+            <ul className="mt-6 space-y-4 text-gray-300 text-sm">
               <li className="flex items-start gap-3">
                 <span className="mt-1 inline-flex w-5 h-5 items-center justify-center">
                   <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[#01d28e]"><path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8Zm0 10.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg>
