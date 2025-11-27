@@ -5,7 +5,7 @@ export default function AboutSection() {
     <section className="w-full bg-white relative text-white text-lg overflow-x-auto overflow-y-hidden md:overflow-visible md:overflow-y-visible">
       {/* MOBILE (column): image first, then content */}
       {/* On md+: we switch to a row and use absolute positioning for overlap */}
-      <div className="flex flex-col md:flex-row items-start gap-6 md:gap-0 md:items-center relative">
+      <div className="flex flex-col md:flex-row items-start  md:gap-0 md:items-center relative">
         {/* IMAGE block */}
         <div className="w-full md:w-[60%] h-[50vh] md:h-[100vh] relative md:top-24">
           {/* On mobile the image fills the block.
