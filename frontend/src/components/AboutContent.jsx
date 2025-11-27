@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutSection() {
   return (
-    <section className="w-full bg-white relative text-white text-lg overflow-">
+    <section className="w-full bg-white relative text-white text-lg overflow-x-auto overflow-y-hidden md:overflow-visible md:overflow-y-visible">
       {/* MOBILE (column): image first, then content */}
       {/* On md+: we switch to a row and use absolute positioning for overlap */}
       <div className="flex flex-col md:flex-row items-start gap-6 md:gap-0 md:items-center relative">

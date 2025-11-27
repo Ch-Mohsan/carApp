@@ -15,7 +15,7 @@ export default function Layout({ children }) {
   };
 
   return (
-   <div className="min-h-screen relative bg-white"> 
+   <div className="min-h-screen relative bg-white overflow-x-hidden" > 
   
   {/* Top hero background is limited to the hero area height */}
   <div className="absolute top-0 left-0 right-0 z-0" style={{ height: 'var(--hero-bg-height, 850px)' }}>
