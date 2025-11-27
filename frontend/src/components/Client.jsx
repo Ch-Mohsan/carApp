@@ -104,7 +104,7 @@ export default function ClientCarousel() {
           Clients
         </p>
         <h2 className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
-          What Our Clients Say
+          Happy Clients
         </h2>
 
         {/* Carousel viewport */}
@@ -172,7 +172,7 @@ export default function ClientCarousel() {
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  i === index ? "bg-[#d28e10]" : "bg-gray-300 hover:bg-gray-400"
+                  i === index ? "bg-[#01d28e]" : "bg-gray-300 hover:bg-gray-400"
                 }`}
               />
             ))}
