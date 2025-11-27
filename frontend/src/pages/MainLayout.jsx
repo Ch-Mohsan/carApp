@@ -8,23 +8,43 @@ import Text from "../components/Text";
 export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
 
-    const getBg = () => {
+  const getBg = () => {
     if (pathname === "/") return "/images/bg_1.jpg";
-    else  return "/images/about.jpg";
-    
+    else return "/images/about.jpg";
   };
 
-  const getSectionLabel = () => {
+  // Returns route path (e.g., '/about') for breadcrumb/link; null on home
+  const getSectionPath = () => {
     if (pathname === "/") return null;
-    const map = {
-      "/about": "about",
-      "/services": "services",
-      "/blog": "blog",
-      "/pricing": "pricing",
-      "/cars": "cars",
-      "/contact": "contact"
-    };
-    return map[pathname] || pathname.replace(/^\//, "");
+    const known = ["/about", "/services", "/blog", "/pricing", "/cars", "/contact"];
+    return known.includes(pathname) ? pathname : pathname;
+  };
+
+  // Returns plain label (e.g., 'about') for truthy check
+  const getSectionLabel = () => {
+    const path = getSectionPath();
+    if (!path) return null;
+    return path.replace(/^\//, "");
+  };
+
+  // Returns the big heading text shown on hero
+  const getHeadingText = () => {
+    switch (pathname) {
+      case "/about":
+        return "Our About";
+      case "/services":
+        return "Our Services";
+      case "/blog":
+        return "Our Blog";
+      case "/pricing":
+        return "Pricing";
+      case "/cars":
+        return "Choose Your Car";
+      case "/contact":
+        return "Contact Us";
+      default:
+        return getSectionLabel() || "";
+    }
   };
 
   return (
@@ -42,8 +62,8 @@ export default function Layout({ children, overlay }) {
     <div aria-hidden="true" className="absolute inset-0 hero-overlay" />
     {/* Bottom-left page heading for non-home routes */}
     {getSectionLabel() && (
-    <div className="absolute text-4xl left-16 top-[50%] z-10">
-        <Text Text={` ${getSectionLabel()}`} />
+      <div className="absolute text-4xl left-16 top-[50%] z-10">
+        <Text Path={getSectionPath()} Crumb={getSectionLabel()} Text={getHeadingText()} />
       </div>
     )}
     {overlay && (

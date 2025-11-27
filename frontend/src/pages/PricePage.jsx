@@ -17,10 +17,11 @@ function PricePage() {
   ];
   const [active, setActive] = useState("hour");
 
+  // Default pricing values per column; can be customized per car later
   const pricing = {
-    hour: [{ price: "$10.99", sub: "/per hour", note: "$3/hour fuel surcharges" }],
-    day: [{ price: "$60.99", sub: "/per day", note: "$3/hour fuel surcharges" }],
-    lease: [{ price: "$995.99", sub: "/per month", note: "$3/hour fuel surcharges" }],
+    hour: { price: "$10.99", sub: "/per hour", note: "$3/hour fuel surcharges" },
+    day: { price: "$60.99", sub: "/per day", note: "$3/hour fuel surcharges" },
+    lease: { price: "$995.99", sub: "/per month", note: "$3/hour fuel surcharges" },
   };
 
   return (
@@ -50,58 +51,42 @@ function PricePage() {
           </div>
 
           <div className="lg:col-span-2">
+            {/* Tabs header (visual only, columns remain visible) */}
             <div className="flex rounded-md overflow-hidden">
               {tabs.map((t) => (
-                <button
+                <div
                   key={t.key}
-                  onClick={() => setActive(t.key)}
-                  className={`flex-1 py-3 px-5 text-center font-semibold text-sm tracking-wide ${t.color} transition-all ${active === t.key ? 'ring-2 ring-offset-1 ring-[#1089ff]' : 'opacity-95'}`}
+                  className={`flex-1 py-3 px-5 text-center font-semibold text-sm tracking-wide ${t.color}`}
                 >
                   {t.label}
-                </button>
+                </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-4">
-              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
-                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.hour[0].price}<span className="text-gray-500 font-normal">{pricing.hour[0].sub}</span></div>
-                <div className="text-gray-600 text-sm">{pricing.hour[0].note}</div>
-                <div className="mt-1 h-px w-full bg-gray-200" />
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li>Unlimited mileage in city</li>
-                  <li>Basic insurance</li>
-                  <li>Roadside assist 24/7</li>
-                  <li>Fuel efficiency guidance</li>
-                  <li>Free reservation edits</li>
-                </ul>
-                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
-              </div>
-              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
-                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.day[0].price}<span className="text-gray-500 font-normal">{pricing.day[0].sub}</span></div>
-                <div className="text-gray-600 text-sm">{pricing.day[0].note}</div>
-                <div className="mt-1 h-px w-full bg-gray-200" />
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li>Free pickup & drop-off</li>
-                  <li>Collision waiver</li>
-                  <li>Flexible cancellation</li>
-                  <li>Geo tracking opt-in</li>
-                  <li>Dedicated support line</li>
-                </ul>
-                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
-              </div>
-              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
-                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.lease[0].price}<span className="text-gray-500 font-normal">{pricing.lease[0].sub}</span></div>
-                <div className="text-gray-600 text-sm">{pricing.lease[0].note}</div>
-                <div className="mt-1 h-px w-full bg-gray-200" />
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li>Comprehensive maintenance</li>
-                  <li>Zero down options</li>
-                  <li>Upgrade after 12 months</li>
-                  <li>Loyalty discounts</li>
-                  <li>Replacement vehicle guarantee</li>
-                </ul>
-                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
-              </div>
+            {/* Per-car rows: each car has 3 pricing columns */}
+            <div className="mt-4 space-y-5">
+              {cars.map((c) => (
+                <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Hour column */}
+                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.hour.price}<span className="text-gray-500 font-normal">{pricing.hour.sub}</span></div>
+                    <div className="text-gray-600 text-sm">{pricing.hour.note}</div>
+                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
+                  </div>
+                  {/* Day column */}
+                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.day.price}<span className="text-gray-500 font-normal">{pricing.day.sub}</span></div>
+                    <div className="text-gray-600 text-sm">{pricing.day.note}</div>
+                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
+                  </div>
+                  {/* Lease column */}
+                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.lease.price}<span className="text-gray-500 font-normal">{pricing.lease.sub}</span></div>
+                    <div className="text-gray-600 text-sm">{pricing.lease.note}</div>
+                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
