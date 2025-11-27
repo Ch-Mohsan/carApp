@@ -17,12 +17,12 @@ export default function Layout({ children }) {
   const getSectionLabel = () => {
     if (pathname === "/") return null;
     const map = {
-      "/about": "About",
-      "/services": "Services",
-      "/blog": "Blog",
-      "/pricing": "Pricing",
-      "/cars": "Cars",
-      "/contact": "Contact"
+      "/about": "about",
+      "/services": "services",
+      "/blog": "blog",
+      "/pricing": "pricing",
+      "/cars": "cars",
+      "/contact": "contact"
     };
     return map[pathname] || pathname.replace(/^\//, "");
   };
@@ -42,7 +42,7 @@ export default function Layout({ children }) {
     <div aria-hidden="true" className="absolute inset-0 hero-overlay" />
     {/* Bottom-left page heading for non-home routes */}
     {getSectionLabel() && (
-      <div className="absolute text-4xl left-16 bottom-16 z-10">
+    <div className="absolute text-4xl left-16 top-[50%] z-10">
         <Text Text={` ${getSectionLabel()}`} />
       </div>
     )}
