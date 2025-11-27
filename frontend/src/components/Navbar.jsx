@@ -66,6 +66,7 @@ function Navbar() {
             <li className='mx-6'><a href='/about' className={linkClass('/about')}>About</a></li>
             <li className='mx-6'><a href='/services' className={linkClass('/services')}>Services</a></li>
             <li className='mx-6'><a href='/price' className={linkClass('/price')}>Price</a></li>
+            <li className='mx-6'><a href='/cars' className={linkClass('/cars')}>Cars</a></li>
             <li className='mx-6'><a href='/blog' className={linkClass('/blog')}>Blog</a></li>
             <li className='mx-6'><a href='/contact' className={linkClass('/contact')}>Contact</a></li>
           </ul>

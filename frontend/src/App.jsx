@@ -9,6 +9,7 @@ import Layout from './pages/MainLayout'
 import ServicesPage from './pages/ServicesPage'
 import BlogPage from './pages/BlogPage'
 import PricePage from './pages/PricePage'
+import Cars from './pages/Cars'
 function App() {
   return (
    <Layout>
@@ -19,6 +20,7 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/pricing" element={<PricePage />} />
+          <Route path="/cars" element={<Cars />} />
           
         </Routes>
       </Layout>
