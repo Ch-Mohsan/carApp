@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import Text from "../components/Text";
 
 
-export default function Layout({ children }) {
+export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
 
     const getBg = () => {
@@ -46,6 +46,13 @@ export default function Layout({ children }) {
         <Text Text={` ${getSectionLabel()}`} />
       </div>
     )}
+    {overlay && (
+      <div className="absolute inset-0 z-20 pointer-events-none">
+        <div className="relative w-full h-full pointer-events-none">
+          {overlay}
+        </div>
+      </div>
+    )}
   </div>
 
 
@@ -55,7 +62,7 @@ export default function Layout({ children }) {
   </header>
 
 
-  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))'}}>
+  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/' ? 0 : 'var(--hero-bg-height, 850px)'}}>
     {children}
   </main>
 

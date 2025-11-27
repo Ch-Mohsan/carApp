@@ -1,34 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-
-// Simple carousel with 3 car cards using images from public/images
-// Features: dots navigation, auto-advance, and scroll-driven advance when in view.
-
-const slides = [
-  {
-    id: 1,
-    title: 'Mercedes Grand Sedan',
-    brand: 'Cheverolet',
-    price: '$500',
-    img: '/images/car-1.jpg',
-  },
-  {
-    id: 2,
-    title: 'Mercedes Grand Sedan',
-    brand: 'Cheverolet',
-    price: '$500',
-    img: '/images/car-3.jpg',
-  },
-  {
-    id: 3,
-    title: 'Mercedes Grand Sedan',
-    brand: 'Cheverolet',
-    price: '$500',
-    img: '/images/car-4.jpg',
-  },
-]
+import React, { useState,useRef,useEffect } from 'react'
 
 function Feeatured() {
-  const [index, setIndex] = useState(slides.length) // start in the middle for seamless loop
+  const slides = [
+    { id: 1, img: '/images/car-1.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
+    { id: 2, img: '/images/car-2.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
+    { id: 3, img: '/images/car-3.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
+    { id: 4, img: '/images/car-4.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
+    { id: 5, img: '/images/car-1.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' }
+  ]
+  const [index, setIndex] = useState(slides.length)
+  
+  // start in the middle for seamless loop
   const containerRef = useRef(null)
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0)
   const lastAdvanceAt = useRef(0)
