@@ -54,7 +54,7 @@ export default function ServicesSection() {
   ];
 
   return (
-    <section id="services" aria-labelledby="services-heading" className="w-full bg-white">
+    <section id="services" aria-labelledby="services-heading" className="w-full bg-white py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         {/* Eyebrow */}
         <p className="text-center text-xs tracking-[0.3em] font-semibold text-blue-600 uppercase">Services</p>
@@ -68,13 +68,13 @@ export default function ServicesSection() {
           {items.map((item) => (
             <article
               key={item.title}
-              className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-2xl bg-white  ring-gray-100 hover:shadow-md transition-shadow duration-200"
+              className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-2xl bg-white  ring-gray-100 "
             >
-              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-blue-500 text-white">
+              <div className="flex items-center justify-center w-30 h-30 rounded-full bg-blue-500 text-white">
                 {item.icon}
               </div>
-              <h3 className="mt-6 text-lg font-semibold text-gray-900">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-gray-600 max-w-xs">
+              <h3 className="mt-6 text-xl font-semibold text-gray-900">{item.title}</h3>
+              <p className="mt-3 text-md leading-7 text-gray-600 max-w-xs">
                 {item.description}
               </p>
             </article>
