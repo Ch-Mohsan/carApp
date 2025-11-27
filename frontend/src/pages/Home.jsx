@@ -4,6 +4,7 @@ import Feeatured from '../components/Feeatured'
 import AboutContent from '../components/AboutContent'
 import ServicesSection from '../components/Services'
 import ClientCarousel from '../components/Client'
+import BlogSection from '../components/Blog'
 
 function Home() {
   return (
@@ -13,6 +14,7 @@ function Home() {
       <AboutContent />
       <ServicesSection />
       <ClientCarousel />
+      <BlogSection />
     </>
   )
 }
