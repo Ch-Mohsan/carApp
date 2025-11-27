@@ -24,9 +24,9 @@ function PricePage() {
   };
 
   return (
-    <section className="w-full px-4 md:px-8 py-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <section className="w-full px-4 md:px-8 py-12">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-1">
             <div className="space-y-8">
               {cars.map((c) => (
@@ -50,56 +50,57 @@ function PricePage() {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="flex rounded-md overflow-hidden shadow-sm">
+            <div className="flex rounded-md overflow-hidden">
               {tabs.map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setActive(t.key)}
-                  className={`flex-1 py-4 px-6 text-center font-semibold ${active === t.key ? t.color : 'bg-gray-100 text-gray-700'}`}
+                  className={`flex-1 py-3 px-5 text-center font-semibold text-sm tracking-wide ${t.color} transition-all ${active === t.key ? 'ring-2 ring-offset-1 ring-[#1089ff]' : 'opacity-95'}`}
                 >
                   {t.label}
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 mt-0 gap-6">
-              <div className={`group p-6 rounded-xl shadow-md flex flex-col items-start gap-3 transition-colors ${active === 'hour' ? 'bg-white' : 'bg-gray-50'} hover:bg-[#01d28e]/90`}>
-                <div className="text-[#1089ff] text-2xl font-bold">{pricing.hour[0].price}
-                  <span className="text-gray-500 text-base font-normal"> {pricing.hour[0].sub}</span>
-                </div>
-                <div className="text-gray-700">{pricing.hour[0].note}</div>
-                <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
-                  <li>Unlimited mileage within city limits</li>
-                  <li>Basic insurance included</li>
-                  <li>24/7 roadside assistance</li>
+            <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-4">
+              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
+                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.hour[0].price}<span className="text-gray-500 font-normal">{pricing.hour[0].sub}</span></div>
+                <div className="text-gray-600 text-sm">{pricing.hour[0].note}</div>
+                <div className="mt-1 h-px w-full bg-gray-200" />
+                <ul className="text-xs text-gray-600 space-y-1">
+                  <li>Unlimited mileage in city</li>
+                  <li>Basic insurance</li>
+                  <li>Roadside assist 24/7</li>
+                  <li>Fuel efficiency guidance</li>
+                  <li>Free reservation edits</li>
                 </ul>
-                <button className="mt-4 hidden group-hover:inline-flex items-center justify-center px-4 py-2.5 bg-[#1089ff] text-white rounded-md font-semibold">Rent Now</button>
+                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
               </div>
-
-              <div className={`group p-6 rounded-xl shadow-md flex flex-col items-start gap-3 transition-colors ${active === 'day' ? 'bg-white' : 'bg-gray-50'} hover:bg-[#01d28e]/90`}>
-                <div className="text-[#1089ff] text-2xl font-bold">{pricing.day[0].price}
-                  <span className="text-gray-500 text-base font-normal"> {pricing.day[0].sub}</span>
-                </div>
-                <div className="text-gray-700">{pricing.day[0].note}</div>
-                <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
+              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
+                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.day[0].price}<span className="text-gray-500 font-normal">{pricing.day[0].sub}</span></div>
+                <div className="text-gray-600 text-sm">{pricing.day[0].note}</div>
+                <div className="mt-1 h-px w-full bg-gray-200" />
+                <ul className="text-xs text-gray-600 space-y-1">
                   <li>Free pickup & drop-off</li>
-                  <li>Collision damage waiver</li>
-                  <li>Flexible cancellation policy</li>
+                  <li>Collision waiver</li>
+                  <li>Flexible cancellation</li>
+                  <li>Geo tracking opt-in</li>
+                  <li>Dedicated support line</li>
                 </ul>
-                <button className="mt-4 hidden group-hover:inline-flex items-center justify-center px-4 py-2.5 bg-[#1089ff] text-white rounded-md font-semibold">Rent Now</button>
+                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
               </div>
-
-              <div className={`group p-6 rounded-xl shadow-md flex flex-col items-start gap-3 transition-colors ${active === 'lease' ? 'bg-white' : 'bg-gray-50'} hover:bg-[#01d28e]/90`}>
-                <div className="text-[#1089ff] text-2xl font-bold">{pricing.lease[0].price}
-                  <span className="text-gray-500 text-base font-normal"> {pricing.lease[0].sub}</span>
-                </div>
-                <div className="text-gray-700">{pricing.lease[0].note}</div>
-                <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
+              <div className={`group px-4 py-5 rounded-md shadow-sm flex flex-col gap-2 bg-gray-50 hover:bg-[#01d28e]/90 transition-colors`}>                
+                <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.lease[0].price}<span className="text-gray-500 font-normal">{pricing.lease[0].sub}</span></div>
+                <div className="text-gray-600 text-sm">{pricing.lease[0].note}</div>
+                <div className="mt-1 h-px w-full bg-gray-200" />
+                <ul className="text-xs text-gray-600 space-y-1">
                   <li>Comprehensive maintenance</li>
-                  <li>Zero down payment options</li>
-                  <li>Upgrade eligible after 12 months</li>
+                  <li>Zero down options</li>
+                  <li>Upgrade after 12 months</li>
+                  <li>Loyalty discounts</li>
+                  <li>Replacement vehicle guarantee</li>
                 </ul>
-                <button className="mt-4 hidden group-hover:inline-flex items-center justify-center px-4 py-2.5 bg-[#1089ff] text-white rounded-md font-semibold">Rent Now</button>
+                <button className="mt-3 hidden group-hover:inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium">Rent Now</button>
               </div>
             </div>
           </div>
