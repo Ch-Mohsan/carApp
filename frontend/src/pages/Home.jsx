@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import Feeatured from '../components/Feeatured'
 import AboutContent from '../components/AboutContent'
 import ServicesSection from '../components/Services'
+import ClientCarousel from '../components/Client'
 
 function Home() {
   return (
@@ -11,6 +12,7 @@ function Home() {
       <Feeatured />
       <AboutContent />
       <ServicesSection />
+      <ClientCarousel />
     </>
   )
 }
