@@ -20,7 +20,7 @@ function Text({ Path: path, Text: heading, Crumb }) {
   return (
     <div className='w-[300px]  py-8 '>
       <div className='text-lg text-white py-4'>
-        <a href='/'>Home {alph} </a>
+        <a href='/home'>Home {alph} </a>
         {path ? <a href={path}>{crumbLabel}{alph}</a> : null}
       </div>
       <h1 className='text-4xl font-semibold leading-9 text-white'> {heading}</h1>

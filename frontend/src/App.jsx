@@ -15,9 +15,12 @@ import Landing from './pages/Landing'
 function App() {
   return (
     <Routes>
+      {/* Landing at root without layout */}
+      <Route path="/" element={<Landing />} />
+
       {/* Routes that use the site layout (Navbar + hero + Footer) */}
       <Route element={<Layout />}> 
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/services" element={<ServicesPage />} />
@@ -28,7 +31,6 @@ function App() {
 
       {/* Auth pages without layout */}
       <Route path="/login" element={<Login />} />
-      <Route path="/landing" element={<Landing />} />
     </Routes>
   )
 }

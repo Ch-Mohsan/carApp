@@ -62,7 +62,7 @@ function Navbar() {
           </div>
 
           <ul className='hidden md:flex items-center justify-center flex-1 text-[16px]'>
-            <li className='mx-6'><a href='/' className={linkClass('/')}>Home</a></li>
+            <li className='mx-6'><a href='/home' className={linkClass('/home')}>Home</a></li>
             <li className='mx-6'><a href='/about' className={linkClass('/about')}>About</a></li>
             <li className='mx-6'><a href='/services' className={linkClass('/services')}>Services</a></li>
             <li className='mx-6'><a href='/price' className={linkClass('/price')}>Price</a></li>
@@ -78,7 +78,7 @@ function Navbar() {
       </div>
 
       <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-evenly items-start ${Menu ? 'open' : ''} ${navLight ? 'bg-white text-black' : 'bg-black text-white'}`}>
-        <li className={`mx-4 my-2 cursor-pointer ${getpath=='/'? "text-[#1089ff]" : ""} `} ><a href="/" onClick={() => setMenu(false)}>Home </a></li>
+        <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>

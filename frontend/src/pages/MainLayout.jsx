@@ -9,14 +9,14 @@ export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
 
   const getBg = () => {
-    if (pathname === "/") return "/images/bg_1.jpg";
-    else return "/images/about.jpg";
+    if (pathname === "/home") return "/images/bg_1.jpg";
+    return "/images/about.jpg";
   };
 
   // Returns route path (e.g., '/about') for breadcrumb/link; null on home
   const getSectionPath = () => {
-    if (pathname === "/") return null;
-    const known = ["/about", "/services", "/blog", "/pricing", "/cars", "/contact"];
+    if (pathname === "/home") return null;
+    const known = ["/about", "/services", "/blog", "/pricing", "/cars", "/contact", "/home"];
     return known.includes(pathname) ? pathname : pathname;
   };
 
@@ -82,7 +82,7 @@ export default function Layout({ children, overlay }) {
   </header>
 
 
-  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/' ? 0 : 'var(--hero-bg-height, 850px)'}}>
+  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/home' ? 0 : 'var(--hero-bg-height, 850px)'}}>
     {children ?? <Outlet />}
   </main>
 

@@ -19,12 +19,12 @@ export default function Login() {
     if (activeTab === 'register') {
       if (!validatePhone(form.phone)) { setError('Please enter a valid phone number.'); return }
       localStorage.setItem('registered', JSON.stringify({ email: form.email, phone: form.phone }))
-      navigate('/')
+      navigate('/home')
       return
     }
     // Mock login success
     localStorage.setItem('auth', JSON.stringify({ email: form.email, ts: Date.now() }))
-    navigate('/')
+    navigate('/home')
   }
 
   // React to query param changes if user navigates between modes via URL
