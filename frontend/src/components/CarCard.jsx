@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
+import {useDispatch,useSelector } from 'react-redux';
 
 // Grid of car cards with dot-number pagination
 // - Shows 12 items per page (4 rows x 3 columns)
 // - Pagination dots 1..4; active dot has blue background and white text
 // - Clicking a dot updates displayed cars
 export default function CarCard({ cars }) {
+ const dispatch = useDispatch();
   const PAGE_SIZE = 12; // 4 rows * 3 columns
   const TOTAL_PAGES = 4; // as requested
 
