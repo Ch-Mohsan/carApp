@@ -1,13 +1,18 @@
-import React, { useState,useRef,useEffect } from 'react'
+import React, { useState,useRef,useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { selectAllCars } from '../feetures/carsSlices.js'
 
 function Feeatured() {
-  const slides = [
-    { id: 1, img: '/images/car-1.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
-    { id: 2, img: '/images/car-2.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
-    { id: 3, img: '/images/car-3.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
-    { id: 4, img: '/images/car-4.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' },
-    { id: 5, img: '/images/car-1.jpg', title: 'Mercedes Grand Sedan', brand: 'Chevrolet', price: '$500' }
-  ]
+  const storeCars = useSelector(selectAllCars)
+  const slides = useMemo(() => (
+    (storeCars || []).map(c => ({
+      id: c.id,
+      img: c.imageUrl,
+      title: c.name,
+      brand: c.brand,
+      price: `$${c.pricePerDay}`
+    }))
+  ), [storeCars])
   const [index, setIndex] = useState(slides.length)
   
   // start in the middle for seamless loop
@@ -27,6 +32,7 @@ function Feeatured() {
   const advance = (dir = 1) =>
     setIndex((i) => {
       const len = extendedSlides.length
+      if (len === 0) return i
       return (i + dir + len) % len
     })
 

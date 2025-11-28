@@ -1,17 +1,19 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectAllCars } from '../feetures/carsSlices.js'
 
 // Lightweight landing page without global layout (no Navbar/Footer/Hero from MainLayout)
 // Theme: primary #1089ff, accent #01d28e, dark overlays, glass touches.
 export default function Landing() {
-  const cars = [
-    { id: 1, img: '/images/car-1.jpg', title: 'Executive Sedan', brand: 'Chevrolet', price: '$480' },
-    { id: 2, img: '/images/car-2.jpg', title: 'Luxury SUV', brand: 'Audi', price: '$720' },
-    { id: 3, img: '/images/car-3.jpg', title: 'Sport Coupe', brand: 'BMW', price: '$650' },
-    { id: 4, img: '/images/car-4.jpg', title: 'Urban Compact', brand: 'Honda', price: '$300' },
-    { id: 5, img: '/images/car-5.jpg', title: 'Convertible', brand: 'Mercedes', price: '$760' },
-    { id: 6, img: '/images/car-6.jpg', title: 'Electric Performance', brand: 'Tesla', price: '$820' }
-  ]
+  const storeCars = useSelector(selectAllCars)
+  const cars = useMemo(() => (storeCars || []).slice(0, 6).map(c => ({
+    id: c.id,
+    img: c.imageUrl,
+    title: c.name,
+    brand: c.brand,
+    price: `$${c.pricePerDay}`
+  })), [storeCars])
 
   return (
     <div className='min-h-screen w-full flex flex-col bg-black text-white'>

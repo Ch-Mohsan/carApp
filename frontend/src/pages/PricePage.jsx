@@ -1,14 +1,19 @@
 import React, { useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { selectAllCars } from '../feetures/carsSlices.js'
 
 
 
 function PricePage() {
-  const cars = useMemo(() => ([
-    { id: 1, img: "/images/car-1.jpg", title: "Cheverolet SUV Car", rating: 4 },
-    { id: 2, img: "/images/car-2.jpg", title: "Cheverolet SUV Car", rating: 4 },
-    { id: 3, img: "/images/car-3.jpg", title: "Cheverolet SUV Car", rating: 4 },
-    { id: 4, img: "/images/car-4.jpg", title: "Cheverolet SUV Car", rating: 4 },
-  ]), []);
+  const storeCars = useSelector(selectAllCars)
+  const cars = useMemo(() => (
+    (storeCars || []).map(c => ({
+      id: c.id,
+      img: c.imageUrl,
+      title: c.name,
+      rating: Math.round((c.rating ?? 4) )
+    }))
+  ), [storeCars]);
 
   const tabs = [
     { key: "hour", label: "Per Hour Rate", color: "bg-[#1089ff] text-white" },

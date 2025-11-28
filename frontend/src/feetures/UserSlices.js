@@ -14,26 +14,27 @@ const initialState = {
     ]
 };
 const userSlice = createSlice({
-  name: "users",
-    initialState,
-    reducers: {},
+  name: 'users',
+  initialState,
+  reducers: {
     addUser: (state, action) => {
       state.users.push({
         id: state.users.length + 1,
         ...action.payload
-      });
+      })
     },
     removeUser: (state, action) => {
-      state.users = state.users.filter(user => user.id !== action.payload);
+      state.users = state.users.filter(user => user.id !== action.payload)
     },
     updateUser: (state, action) => {
-      const index = state.users.findIndex(user => user.id === action.payload.id);
+      const { id, ...updates } = action.payload
+      const index = state.users.findIndex(user => user.id === id)
       if (index !== -1) {
-        state.users[index] = { ...state.users[index], ...action.payload };
+        state.users[index] = { ...state.users[index], ...updates }
       }
     }
-});
-const { addUser, removeUser, updateUser } = userSlice.actions;
-export { addUser, removeUser, updateUser };
+  }
+})
+export const { addUser, removeUser, updateUser } = userSlice.actions
 export const selectAllUsers = (state) => state.users.users;
 export default userSlice.reducer;
