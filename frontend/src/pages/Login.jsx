@@ -1,51 +1,34 @@
 import React, { useState } from 'react'
 
 export default function Login() {
+  const [activeTab, setActiveTab] = useState('login') // 'login' or 'register'
   const [form, setForm] = useState({ email: '', password: '' })
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
   const onSubmit = (e) => { e.preventDefault(); /* TODO: handle auth */ }
 
   return (
-    <section className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
-        <div className="bg-[#1089ff] text-white px-6 py-5">
-          <div className="text-2xl font-extrabold tracking-tight">
-            <span>CAR</span>
-            <span className="text-[#01d28e] ml-1">BOOK</span>
-          </div>
-          <p className="text-white/90 text-sm mt-1">Welcome back! Sign in to continue.</p>
-        </div>
+    <section className='w-full h-screen flex   items-center md:justify-around justify-center bg-gray-200'>
 
-        <form onSubmit={onSubmit} className="px-6 py-6">
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={onChange}
-            required
-            className="mt-1 mb-4 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1089ff]"
-            placeholder="you@example.com"
-          />
-
-          <label className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={onChange}
-            required
-            className="mt-1 mb-6 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1089ff]"
-            placeholder="••••••••"
-          />
-
-          <button type="submit" className="w-full bg-[#1089ff] hover:bg-[#0d75db] text-white font-semibold py-2.5 rounded-md">Sign In</button>
-
-          <div className="mt-4 text-sm text-center">
-            <a href="/" className="text-[#1089ff] hover:underline">Back to Home</a>
-          </div>
-        </form>
+      <div className=' hidden w-full md:w-1/2 h-[90%]  shadow-lg   md:block '>
+        <img src="/images/car-3.jpg" alt="" className='w-full h-full object-cover rounded-lg' />
       </div>
+      <div  className='md:w-[40%] md:h-[90%] flex  py-10 p-10 flex-col shadow-lg bg-white  rounded-lg '>
+        <div className='flex justify-start items-baseline mb-2 gap-6  text-3xl  '> 
+          <a href="/login"  className={`${activeTab === 'login' ? 'text-[#1089ff]' : 'text-black'}`} onClick={()=>{setActiveTab('login')}}>Login</a>
+          <a href="/register" className={`${activeTab === 'register' ? 'text-[#1089ff]' : 'text-black'}`} onClick={()=>{setActiveTab('register')}}>Register</a>
+        </div>
+        <hr className=' text-gray-200 mb-10'  />
+      <h1 className='mb-6 text-2xl font-bold'>Wellcom Back</h1>
+      <p className='pb-4 text-lg'>Sign in to access your account and bookings.</p>
+      <form onSubmit={onSubmit} className='flex flex-col h-auto    '>
+        <label htmlFor="email">Email Address</label>
+        <input type="text" className='w-full p-2 my-6 outline-none rounded-lg border-[1px] border-gray-400' />
+        <label htmlFor="password">Password</label>
+        <input type="text" className='w-full py-2 my-6 outline-none  rounded-lg   border-[1px] border-gray-400' />
+        <button className='w-full p-4 bg-[#01d28e] text-white text-lg rounded-lg pointer-coarse hover:opacity-80 hover:text-[#1089ff]'>Log In</button>
+      </form>
+      </div>
+
     </section>
   )
 }
