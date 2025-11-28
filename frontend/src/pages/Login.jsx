@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAllUsers, signupUser, loginUser } from '../feetures/UserSlices.js'
 
 export default function Login() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const users = useSelector(selectAllUsers)
   const [searchParams] = useSearchParams()
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login'
   const [activeTab, setActiveTab] = useState(initialMode) // 'login' or 'register'
-  const [form, setForm] = useState({ email: '', password: '', phone: '' })
+  const [form, setForm] = useState({ username: '', phone: '', password: '' })
   const [error, setError] = useState('')
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-  const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
   const validatePhone = (v) => /^\+?[0-9\-\s]{7,15}$/.test(v)
   const onSubmit = (e) => {
     e.preventDefault()
     setError('')
-    if (!validateEmail(form.email)) { setError('Please enter a valid email address.'); return }
-    if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    if (!form.username.trim()) { setError('Username is required.'); return }
+    if (!form.password || form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
+
     if (activeTab === 'register') {
       if (!validatePhone(form.phone)) { setError('Please enter a valid phone number.'); return }
-      localStorage.setItem('registered', JSON.stringify({ email: form.email, phone: form.phone }))
+      const exists = users.some(u => u.username === form.username)
+      if (exists) { setError('User already exists. Try logging in.'); return }
+      dispatch(signupUser({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
       navigate('/home')
       return
     }
-    // Mock login success
-    localStorage.setItem('auth', JSON.stringify({ email: form.email, ts: Date.now() }))
+
+    const found = users.find(u => u.username === form.username && u.password === form.password)
+    if (!found) { setError('Invalid credentials.'); return }
+    dispatch(loginUser({ username: form.username.trim(), password: form.password }))
     navigate('/home')
   }
 
@@ -76,21 +84,21 @@ export default function Login() {
 
           <form onSubmit={onSubmit} className='space-y-3 flex-1'>
             <div>
-              <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email address</label>
+              <label htmlFor='username' className='block text-sm font-medium text-gray-700'>Username</label>
               <div className='mt-2 relative'>
                 <span className='absolute inset-y-0 left-3 flex items-center text-gray-400'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>
-                    <path d='M12 13.5L1 6h22L12 13.5zM1 18h22V8l-11 7L1 8v10z' />
+                    <path d='M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v2h16v-2c0-2.761-3.582-5-8-5z' />
                   </svg>
                 </span>
                 <input
-                  id='email'
-                  name='email'
-                  type='email'
-                  value={form.email}
+                  id='username'
+                  name='username'
+                  type='text'
+                  value={form.username}
                   onChange={onChange}
                   className='w-full rounded-lg border border-white/50 bg-white/20 text-black placeholder-black/70 pl-10 pr-3 py-2.5 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30'
-                  placeholder='you@example.com'
+                  placeholder='your username'
                   required
                 />
               </div>
@@ -139,18 +147,6 @@ export default function Login() {
                 />
               </div>
             </div>
-
-            {/* Confirm password removed as per request */}
-
-            {activeTab === 'login' && (
-              <div className='flex items-center justify-between pt-2'>
-                <label className='flex items-center gap-2 text-sm text-gray-700'>
-                  <input type='checkbox' className='rounded border-gray-300 text-[#1089ff] focus:ring-[#1089ff]' />
-                  Remember me
-                </label>
-                <button type='button' className='text-sm text-[#1089ff] hover:underline'>Forgot password?</button>
-              </div>
-            )}
 
             <div className='mt-4 flex items-center gap-3'>
               <button className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors'>
