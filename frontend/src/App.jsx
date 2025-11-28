@@ -10,6 +10,7 @@ import BlogPage from './pages/BlogPage'
 import PricePage from './pages/PricePage'
 import Cars from './pages/Cars'
 import Login from './pages/Login'
+import Landing from './pages/Landing'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 
       {/* Auth pages without layout */}
       <Route path="/login" element={<Login />} />
+      <Route path="/landing" element={<Landing />} />
     </Routes>
   )
 }

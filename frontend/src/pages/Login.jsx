@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('login') // 'login' or 'register'
+  const [searchParams] = useSearchParams()
+  const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login'
+  const [activeTab, setActiveTab] = useState(initialMode) // 'login' or 'register'
   const [form, setForm] = useState({ email: '', password: '', phone: '' })
   const [error, setError] = useState('')
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
@@ -24,6 +26,13 @@ export default function Login() {
     localStorage.setItem('auth', JSON.stringify({ email: form.email, ts: Date.now() }))
     navigate('/')
   }
+
+  // React to query param changes if user navigates between modes via URL
+  useEffect(() => {
+    const mode = searchParams.get('mode')
+    if (mode === 'register' && activeTab !== 'register') setActiveTab('register')
+    if (mode === 'login' && activeTab !== 'login') setActiveTab('login')
+  }, [searchParams, activeTab])
 
   return (
     <section
