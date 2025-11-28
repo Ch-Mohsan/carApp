@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Text from "../components/Text";
@@ -82,8 +82,8 @@ export default function Layout({ children, overlay }) {
   </header>
 
 
-  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/' ? 0 : 'var(--hero-bg-height, 850px)'}}>
-    {children}
+    <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/' ? 0 : 'var(--hero-bg-height, 850px)'}}>
+      {children ? children : <Outlet />}
   </main>
 
   <Footer/>
