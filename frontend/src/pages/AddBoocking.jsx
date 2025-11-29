@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 import { addBooking } from '../feetures/bookingSlice.js'
+import { setCarStatus } from '../feetures/carsSlices.js'
 
 function AddBoocking() {
   const dispatch = useDispatch()
@@ -40,6 +41,8 @@ function AddBoocking() {
     instructions: ''
   })
 
+  const [success, setSuccess] = useState(false)
+
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const onSubmit = (e) => {
@@ -50,6 +53,7 @@ function AddBoocking() {
     if (!form.cnic.trim()) return
     if (!form.pickup.trim() || !form.dropoff.trim()) return
     // date range enforced by input min/max
+    const fare = selectedCar.pricePerDay // single-day booking for now
     const payload = {
       userId: currentUser ? currentUser.id : 'guest',
       carId: selectedCar.id,
@@ -59,10 +63,12 @@ function AddBoocking() {
       pickup: form.pickup.trim(),
       dropoff: form.dropoff.trim(),
       date: form.date,
-      instructions: form.instructions.trim()
+      instructions: form.instructions.trim(),
+      fare
     }
     dispatch(addBooking(payload))
-    navigate('/home')
+    dispatch(setCarStatus({ id: selectedCar.id, status: 'booked' }))
+    setSuccess(true)
   }
 
   return (
@@ -102,6 +108,11 @@ function AddBoocking() {
             {/* Right: Booking Form */}
             <div className="rounded-xl bg-white/10 backdrop-blur-md ring-1 ring-white/20 p-5">
               <h2 className="text-2xl font-bold text-white mb-4">Add Booking</h2>
+              {success && (
+                <div className="mb-4 rounded-lg bg-[#10d28e]/15 text-[#10d28e] border border-[#10d28e]/30 px-4 py-3">
+                  Booking confirmed. <button onClick={() => navigate('/bookings')} className="underline">View bookings</button>
+                </div>
+              )}
               <form onSubmit={onSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-white/90">Customer Name</label>

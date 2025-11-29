@@ -12,6 +12,8 @@ import Cars from './pages/Cars'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
 import AddBoocking from './pages/AddBoocking'
+import Bookings from './pages/Bookings'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -19,16 +21,31 @@ function App() {
       {/* Landing at root without layout */}
       <Route path="/" element={<Landing />} />
 
-      {/* Routes that use the site layout (Navbar + hero + Footer) */}
+      {/* Public routes under layout */}
       <Route element={<Layout />}> 
-        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/price" element={<PricePage />} />
-        <Route path="/cars" element={<Cars />} />
+      </Route>
+
+      {/* Protected routes: require login, still use layout */}
+      <Route element={<ProtectedRoute />}> 
+        <Route element={<Layout />}> 
+          <Route path="/home" element={<Home />} />
+          <Route path="/cars" element={<Cars />} />
+          <Route path="/add-booking" element={<AddBoocking />} />
+          <Route path="/bookings" element={<Bookings />} />
+        </Route>
+      </Route>
+
+      {/* Protected routes wrapper (auth required) */}
+      <Route element={<ProtectedRoute />}> 
         <Route path="/add-booking" element={<AddBoocking />} />
+        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/cars" element={<Cars />} />
       </Route>
 
       {/* Auth pages without layout */}
