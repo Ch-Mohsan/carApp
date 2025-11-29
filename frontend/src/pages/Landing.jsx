@@ -21,7 +21,7 @@ export default function Landing() {
       <section
         className='relative w-full flex items-center justify-center min-h-[88vh] md:min-h-[92vh] lg:min-h-screen px-6 md:px-10 overflow-hidden'
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 40%, rgba(16,137,255,0.25) 100%), url(/images/bg_1.jpg)`,
+          backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 40%, rgba(16,137,255,0.25) 100%), url(/images/landing.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}

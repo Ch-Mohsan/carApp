@@ -13,16 +13,17 @@ export default function Layout({ children, overlay }) {
     if (pathname === "/home") return "/images/bg_1.jpg"; // keep home
     if (pathname === "/about") return "/images/about.jpg"; // keep about
     const map = {
-      "/services": "/images/hero_services.jpg",
+      "/services": "/images/hero_services.jpeg",
       "/blog": "/images/hero_blog.jpg",
       "/pricing": "/images/hero_pricing.jpg",
-      "/cars": "/images/hero_cars.jpg",
-      "/contact": "/images/hero_contact.jpg",
-      "/bookings": "/images/hero_bookings.jpg",
-      "/add-booking": "/images/hero_addbooking.jpg",
-      "/price": "/images/hero_pricing.jpg",
+      "/cars": "/images/hero_cars.jpeg",
+      "/contact": "/images/hero_contact.avif",
+      "/bookings": "/images/hero_bookings.avif",
+      "/add-booking": "/images/hero_addbookings.jpg",
+      "/price": "/images/hero_pricing.jpeg",
+
     };
-    return map[pathname] || "/images/about.jpg";
+    return map[pathname] || "/images/exta.avif";
   };
 
   // Returns route path (e.g., '/about') for breadcrumb/link; null on home
