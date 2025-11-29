@@ -17,14 +17,18 @@ const userSlice = createSlice({
       const { username, phone, password } = action.payload
       const exists = state.users.some(u => u.username === username)
       if (!exists) {
-        state.users.push({ id: nanoid(), username, phone, password })
+        const id = nanoid()
+        state.users.push({ id, username, phone, password })
+        state.currentUser = { id, username, phone }
+      } else {
+        const found = state.users.find(u => u.username === username)
+        state.currentUser = found ? { id: found.id, username: found.username, phone: found.phone } : null
       }
-      state.currentUser = { username, phone }
     },
     loginUser: (state, action) => {
       const { username, password } = action.payload
       const found = state.users.find(u => u.username === username && u.password === password)
-      state.currentUser = found ? { username: found.username, phone: found.phone } : null
+      state.currentUser = found ? { id: found.id, username: found.username, phone: found.phone } : null
     },
     logoutUser: (state) => {
       state.currentUser = null

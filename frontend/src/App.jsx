@@ -11,6 +11,7 @@ import PricePage from './pages/PricePage'
 import Cars from './pages/Cars'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
+import AddBoocking from './pages/AddBoocking'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
 
       {/* Auth pages without layout */}
       <Route path="/login" element={<Login />} />
+      <Route path="/add-booking" element={<AddBoocking />} />
     </Routes>
   )
 }
