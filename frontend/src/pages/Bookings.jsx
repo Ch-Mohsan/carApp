@@ -18,6 +18,7 @@ export default function Bookings() {
       const car = cars.find(c => c.id === b.carId)
       const end = b.endDate || b.date
       const expired = b.status === 'pending' && end < today
+       console.log(currentUser,"..................user.........")
       return { ...b, car, expired }
     })
   }, [bookings, cars, today])
@@ -26,6 +27,7 @@ export default function Bookings() {
     if (booking.status !== 'pending') return
     dispatch(updateBookingStatus({ id: booking.id, status: 'cancelled' }))
     dispatch(setCarStatus({ id: booking.carId, status: 'available' }))
+
   }
 
   const statusChipClass = (b) => {
