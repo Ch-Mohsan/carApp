@@ -14,7 +14,8 @@ export default function Bookings() {
   const enriched = useMemo(() => {
     return bookings.map(b => {
       const car = cars.find(c => c.id === b.carId)
-      const expired = b.status === 'pending' && b.date < today
+      const end = b.endDate || b.date
+      const expired = b.status === 'pending' && end < today
       return { ...b, car, expired }
     })
   }, [bookings, cars, today])
@@ -48,7 +49,7 @@ export default function Bookings() {
                 </div>
                 <p className="text-sm text-gray-500">Brand: {b.car ? b.car.brand : 'N/A'}</p>
                 <div className="text-sm text-gray-700 flex flex-col gap-1">
-                  <span>Date: {b.date}</span>
+                  <span>Period: {b.startDate || b.date} → {b.endDate || b.date}</span>
                   <span>Pickup: {b.pickup}</span>
                   <span>Dropoff: {b.dropoff}</span>
                 </div>

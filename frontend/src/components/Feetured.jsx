@@ -10,7 +10,7 @@ function Feeatured() {
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const slides = useMemo(() => (
     (storeCars || []).map(c => {
-      const activeBooking = bookings.find(b => b.carId === c.id && b.status === 'pending' && b.date >= today)
+      const activeBooking = bookings.find(b => b.carId === c.id && b.status === 'pending' && (b.endDate || b.date) >= today)
       const booked = !!activeBooking || c.status === 'booked'
       return {
         id: c.id,

@@ -15,10 +15,11 @@ export default function CarCard({ cars }) {
   const storeCars = useSelector(selectAllCars)
   const bookings = useSelector(selectAllBookings)
 
+  const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const data = useMemo(() => {
     const list = (storeCars && storeCars.length) ? storeCars : (cars || [])
     return list.map(c => {
-      const activeBooking = bookings.find(b => b.carId === c.id && b.status === 'pending' && b.date >= new Date().toISOString().slice(0,10))
+      const activeBooking = bookings.find(b => b.carId === c.id && b.status === 'pending' && (b.endDate || b.date) >= today)
       const booked = !!activeBooking || c.status === 'booked'
       return {
         id: c.id,
@@ -29,7 +30,7 @@ export default function CarCard({ cars }) {
         booked
       }
     })
-  }, [storeCars, cars, bookings])
+  }, [storeCars, cars, bookings, today])
 
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE))

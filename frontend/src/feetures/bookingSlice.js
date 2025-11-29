@@ -1,7 +1,7 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 
 // Booking model
-// { id, userId, carId, name, phone, cnic, pickup, dropoff, date, instructions, status }
+// { id, userId, carId, name, phone, cnic, pickup, dropoff, startDate, endDate, instructions, status, fare }
 const initialState = {
   bookings: []
 }

@@ -23,13 +23,7 @@ function AddBoocking() {
     const d = new Date()
     return d.toISOString().slice(0,10)
   }, [])
-  const monthMax = useMemo(() => {
-    const d = new Date()
-    const y = d.getFullYear()
-    const m = d.getMonth()
-    const lastDay = new Date(y, m + 1, 0)
-    return lastDay.toISOString().slice(0,10)
-  }, [])
+  // Allow bookings across months; we only enforce a minimum of today.
 
   const [form, setForm] = useState({
     name: currentUser?.username || '',
@@ -37,23 +31,39 @@ function AddBoocking() {
     cnic: '',
     pickup: '',
     dropoff: '',
-    date: today,
+    startDate: today,
+    endDate: today,
     instructions: ''
   })
 
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
+  const days = useMemo(() => {
+    const s = new Date(form.startDate)
+    const e = new Date(form.endDate)
+    const ms = e.getTime() - s.getTime()
+    const diff = Math.floor(ms / (1000*60*60*24))
+    return Math.max(1, diff + 1)
+  }, [form.startDate, form.endDate])
+
+  const computedFare = useMemo(() => {
+    if (!selectedCar) return 0
+    return days * Number(selectedCar.pricePerDay || 0)
+  }, [days, selectedCar])
+
   const onSubmit = (e) => {
     e.preventDefault()
-    if (!selectedCar) return
-    if (!form.name.trim()) return
-    if (!/^\+?[0-9\-\s]{7,15}$/.test(form.phone)) return
-    if (!form.cnic.trim()) return
-    if (!form.pickup.trim() || !form.dropoff.trim()) return
+    if (!selectedCar) { setError('Please select a car to book.'); return }
+    if (!form.name.trim()) { setError('Customer name is required.'); return }
+    // Relaxed phone validation to accept common formats, and it's read-only from user profile
+    if (!/^[0-9+\-\s()]{7,20}$/.test(form.phone)) { setError('Phone number format looks invalid.'); return }
+    if (!form.cnic.trim()) { setError('CNIC is required.'); return }
+    if (!form.pickup.trim() || !form.dropoff.trim()) { setError('Pickup and dropoff locations are required.'); return }
+    if (new Date(form.endDate) < new Date(form.startDate)) { setError('Return date cannot be before pickup date.'); return }
     // date range enforced by input min/max
-    const fare = selectedCar.pricePerDay // single-day booking for now
     const payload = {
       userId: currentUser ? currentUser.id : 'guest',
       carId: selectedCar.id,
@@ -62,13 +72,15 @@ function AddBoocking() {
       cnic: form.cnic.trim(),
       pickup: form.pickup.trim(),
       dropoff: form.dropoff.trim(),
-      date: form.date,
+      startDate: form.startDate,
+      endDate: form.endDate,
       instructions: form.instructions.trim(),
-      fare
+      fare: computedFare
     }
     dispatch(addBooking(payload))
     dispatch(setCarStatus({ id: selectedCar.id, status: 'booked' }))
-    setSuccess(true)
+    setError('')
+    navigate('/bookings')
   }
 
   return (
@@ -113,6 +125,11 @@ function AddBoocking() {
                   Booking confirmed. <button onClick={() => navigate('/bookings')} className="underline">View bookings</button>
                 </div>
               )}
+              {error && (
+                <div className="mb-4 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-3">
+                  {error}
+                </div>
+              )}
               <form onSubmit={onSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-white/90">Customer Name</label>
@@ -138,12 +155,22 @@ function AddBoocking() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-white/90">Date</label>
-                    <input type="date" name="date" value={form.date} onChange={onChange} min={today} max={monthMax} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" />
+                    <label className="block text-sm font-medium text-white/90">Pickup Date</label>
+                    <input type="date" name="startDate" value={form.startDate} onChange={onChange} min={today} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/90">Return Date</label>
+                    <input type="date" name="endDate" value={form.endDate} onChange={onChange} min={form.startDate || today} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-white/90">Special Instructions</label>
                     <input name="instructions" value={form.instructions} onChange={onChange} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" placeholder="Any notes" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/90">Estimated Fare</label>
+                    <input readOnly value={`$${computedFare} (${days} day${days>1?'s':''})`} className="mt-1 w-full rounded-lg border border-white/40 bg-white/10 text-white px-3 py-2 outline-none" />
                   </div>
                 </div>
                 <button className="w-full p-3 bg-[#10d28e] text-white text-lg rounded-lg hover:bg-[#0fb781] shadow-md shadow-[#10d28e]/20">Confirm Booking</button>
