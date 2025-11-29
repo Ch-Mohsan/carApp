@@ -11,7 +11,8 @@ function PricePage() {
       id: c.id,
       img: c.imageUrl,
       title: c.name,
-      rating: Math.round((c.rating ?? 4) )
+      rating: Math.round((c.rating ?? 4)),
+      rentPerDay: Number(c.rentPerDay ?? c.pricePerDay ?? 0)
     }))
   ), [storeCars]);
 
@@ -23,11 +24,8 @@ function PricePage() {
   const [active, setActive] = useState("hour");
 
   // Default pricing values per column; can be customized per car later
-  const pricing = {
-    hour: { price: "$10.99", sub: "/per hour", note: "$3/hour fuel surcharges" },
-    day: { price: "$60.99", sub: "/per day", note: "$3/hour fuel surcharges" },
-    lease: { price: "$995.99", sub: "/per month", note: "$3/hour fuel surcharges" },
-  };
+  // Derive rates per car from rentPerDay (professionally rounded)
+  const format = (n) => `$${n.toFixed(2)}`
 
   return (
     <section className="w-full px-4 md:px-8 py-12">
@@ -49,6 +47,7 @@ function PricePage() {
                         ))}
                       </span>
                     </div>
+                    <div className="mt-1 text-sm text-gray-700">Daily: <span className="font-semibold text-[#1089ff]">{format(c.rentPerDay)}</span></div>
                   </div>
                 </div>
               ))}
@@ -74,20 +73,20 @@ function PricePage() {
                 <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-3 gap-1">
                   {/* Hour column */}
                   <div className="group px-4 py-4 rounded-md  bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
-                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.hour.price}<span className="text-gray-500 font-normal">{pricing.hour.sub}</span></div>
-                    <div className="text-gray-600 text-sm">{pricing.hour.note}</div>
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay / 24)}<span className="text-gray-500 font-normal">/per hour</span></div>
+                    <div className="text-gray-600 text-sm">Rates derived from daily pricing</div>
                     <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
                   </div>
                   {/* Day column */}
                   <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
-                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.day.price}<span className="text-gray-500 font-normal">{pricing.day.sub}</span></div>
-                    <div className="text-gray-600 text-sm">{pricing.day.note}</div>
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay)}<span className="text-gray-500 font-normal">/per day</span></div>
+                    <div className="text-gray-600 text-sm">Standard daily rental</div>
                     <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
                   </div>
                   {/* Lease column */}
                   <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
-                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{pricing.lease.price}<span className="text-gray-500 font-normal">{pricing.lease.sub}</span></div>
-                    <div className="text-gray-600 text-sm">{pricing.lease.note}</div>
+                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay * 30)}<span className="text-gray-500 font-normal">/per month</span></div>
+                    <div className="text-gray-600 text-sm">Monthly estimate (30 days)</div>
                     <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
                   </div>
                 </div>

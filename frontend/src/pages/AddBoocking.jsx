@@ -51,7 +51,8 @@ function AddBoocking() {
 
   const computedFare = useMemo(() => {
     if (!selectedCar) return 0
-    return days * Number(selectedCar.pricePerDay || 0)
+    const rate = Number(selectedCar.rentPerDay ?? selectedCar.pricePerDay ?? 0)
+    return days * rate
   }, [days, selectedCar])
 
   const onSubmit = (e) => {
