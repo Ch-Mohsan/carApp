@@ -3,6 +3,7 @@ import { useLocation, Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Text from "../components/Text";
+import AvailabilitySync from "../components/AvailabilitySync";
 
 
 export default function Layout({ children, overlay }) {
@@ -49,6 +50,8 @@ export default function Layout({ children, overlay }) {
 
   return (
    <div className="min-h-screen relative bg-white overflow-hidden" > 
+  {/* Keep car availability in sync with current bookings */}
+  <AvailabilitySync />
   
   {/* Top hero background is limited to the hero area height */}
   <div className="absolute top-0 left-0 right-0 z-0" style={{ height: 'var(--hero-bg-height, 850px)' }}>
