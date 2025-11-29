@@ -67,7 +67,7 @@ function AddBoocking() {
 
   return (
     <section
-      className="relative w-full min-h-screen flex items-center justify-center px-4 py-10"
+      className="relative w-full min-h-screen flex items-center justify-center px-4 pb-10"
       style={{
         backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.35) 100%), url(/images/car-5.jpg)`,
         backgroundSize: 'cover',
@@ -105,11 +105,11 @@ function AddBoocking() {
               <form onSubmit={onSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-white/90">Customer Name</label>
-                  <input name="name" value={form.name} onChange={onChange} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" placeholder="Your name" />
+                  <input name="name" value={form.name} readOnly className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none" placeholder="Your name" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-white/90">Phone</label>
-                  <input name="phone" value={form.phone} onChange={onChange} className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:border-[#1089ff] focus:ring-2 focus:ring-[#1089ff]/30" placeholder="+1 555 123 4567" />
+                  <input name="phone" value={form.phone} readOnly className="mt-1 w-full rounded-lg border border-white/40 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none" placeholder="+1 555 123 4567" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-white/90">CNIC</label>

@@ -82,7 +82,7 @@ export default function Layout({ children, overlay }) {
   </header>
 
 
-  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/home' ? 0 : 'var(--hero-bg-height, 850px)'}}>
+  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/home' ? 0 : 'var(--hero-bg-height, 780px)'}}>
     {children ?? <Outlet />}
   </main>
 

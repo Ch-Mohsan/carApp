@@ -1,4 +1,5 @@
 import React, { useState,useRef,useEffect, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectAllCars } from '../feetures/carsSlices.js'
 
@@ -101,8 +102,8 @@ function Feeatured() {
                       <p className="text-gray-500">{s.brand}</p>
                       <p className="mt-2"><span className="text-[#1089ff] font-bold">{s.price}</span><span className="text-gray-400"> /day</span></p>
                       <div className="flex gap-3 md:gap-4 mt-4">
-                        <button className="px-4 py-2.5 md:px-5 md:py-3 bg-[#1089ff] hover:bg-[#0d75db] text-white rounded-md font-semibold">Book now</button>
-                        <button className="px-4 py-2.5 md:px-5 md:py-3 bg-[#01d28e] hover:bg-[#00ba7d] text-white rounded-md font-semibold">Details</button>
+                        <Link to={`/add-booking?carId=${s.id}`} className="px-4 py-2.5 md:px-5 md:py-3 bg-[#10d28e] hover:bg-[#0fb781] text-white rounded-md font-semibold">Rent now</Link>
+                        <Link to={`/car/${s.id}`} className="px-4 py-2.5 md:px-5 md:py-3 bg-[#1089ff] hover:bg-[#0d75db] text-white rounded-md font-semibold">Details</Link>
                       </div>
                     </div>
                   </div>

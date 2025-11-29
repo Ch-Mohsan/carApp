@@ -28,11 +28,11 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/price" element={<PricePage />} />
         <Route path="/cars" element={<Cars />} />
+        <Route path="/add-booking" element={<AddBoocking />} />
       </Route>
 
       {/* Auth pages without layout */}
       <Route path="/login" element={<Login />} />
-      <Route path="/add-booking" element={<AddBoocking />} />
     </Routes>
   )
 }
