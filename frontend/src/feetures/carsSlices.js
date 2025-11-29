@@ -1,5 +1,12 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 
+function normalizeCar(raw) {
+  if (!raw) return raw
+  const id = raw.id || raw._id || nanoid()
+  const rent = typeof raw.rentPerDay === 'number' ? raw.rentPerDay : (typeof raw.pricePerDay === 'number' ? raw.pricePerDay : 0)
+  return { ...raw, id, rentPerDay: rent, pricePerDay: rent }
+}
+
 const initialState = {
   cars: [
     { id: nanoid(), name: 'Honda Civic', brand: 'Honda', pricePerDay: 50, rentPerDay: 50, category: 'sedan', rating: 4.5, imageUrl: '/images/car-1.jpg', status: 'available' },
@@ -15,16 +22,17 @@ const carsSlice = createSlice({
   initialState,
   reducers: {
     addCar: (state, action) => {
-      const { pricePerDay, rentPerDay, category, ...rest } = action.payload || {}
-      const daily = typeof rentPerDay === 'number' ? rentPerDay : (typeof pricePerDay === 'number' ? pricePerDay : 0)
-      state.cars.push({ id: nanoid(), status: 'available', pricePerDay: daily, rentPerDay: daily, category: category || 'uncategorized', ...rest })
+      const normalized = normalizeCar(action.payload || {})
+      if (!normalized.status) normalized.status = 'available'
+      state.cars.push(normalized)
     },
     removeCar: (state, action) => {
       state.cars = state.cars.filter(car => car.id !== action.payload)
     },
     updateCar: (state, action) => {
       const { id, updates } = action.payload
-      const index = state.cars.findIndex(car => car.id === id)
+      const realId = id || (updates && updates._id)
+      const index = state.cars.findIndex(car => car.id === realId)
       if (index !== -1) {
         const applied = { ...updates }
         if (applied.rentPerDay != null && typeof applied.rentPerDay === 'number') {
@@ -39,10 +47,14 @@ const carsSlice = createSlice({
       const { id, status } = action.payload
       const index = state.cars.findIndex(car => car.id === id)
       if (index !== -1) state.cars[index].status = status
+    },
+    hydrateCars: (state, action) => {
+      const list = Array.isArray(action.payload) ? action.payload : []
+      state.cars = list.map(normalizeCar)
     }
   }
 })
 
-export const { addCar, removeCar, updateCar, setCarStatus } = carsSlice.actions
+export const { addCar, removeCar, updateCar, setCarStatus, hydrateCars } = carsSlice.actions
 export const selectAllCars = state => state.cars.cars
 export default carsSlice.reducer
