@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -93,6 +94,7 @@ function PricePage() {
     }
     dispatch(addBooking(payload))
     dispatch(setCarStatus({ id: car.id, status: 'booked' }))
+    toast.success('Booking confirmed')
     setBookingTarget(null)
     setCnic('')
     setPickup('')

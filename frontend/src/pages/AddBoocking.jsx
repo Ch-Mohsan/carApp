@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -81,6 +82,7 @@ function AddBoocking() {
     dispatch(addBooking(payload))
     dispatch(setCarStatus({ id: selectedCar.id, status: 'booked' }))
     setError('')
+    toast.success('Booking confirmed')
     navigate('/bookings')
   }
 

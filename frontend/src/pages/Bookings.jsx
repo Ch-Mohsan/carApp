@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectAllBookings, updateBookingStatus } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -27,6 +28,7 @@ export default function Bookings() {
     if (booking.status !== 'pending') return
     dispatch(updateBookingStatus({ id: booking.id, status: 'cancelled' }))
     dispatch(setCarStatus({ id: booking.carId, status: 'available' }))
+    toast.success('Booking cancelled')
 
   }
 

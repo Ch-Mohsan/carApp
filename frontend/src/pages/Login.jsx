@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAllUsers, signupUser, loginUser } from '../feetures/UserSlices.js'
@@ -24,7 +25,8 @@ export default function Login() {
       if (!validatePhone(form.phone)) { setError('Please enter a valid phone number.'); return }
       const exists = users.some(u => u.username === form.username)
       if (exists) { setError('User already exists. Try logging in.'); return }
-      dispatch(signupUser({ username: form.username.trim(), phone: form.phone.trim(), password: form.password, isAdmin: false, isDriver: false }))
+      dispatch(signupUser({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
+      toast.success('Account created successfully')
       navigate('/home')
       return
     }
@@ -32,7 +34,7 @@ export default function Login() {
     const found = users.find(u => u.username === form.username && u.password === form.password)
     if (!found) { setError('Invalid credentials.'); return }
     dispatch(loginUser({ username: form.username.trim(), password: form.password }))
-    console.log("............",users)
+    toast.success('Logged in successfully')
     navigate('/home')
   }
 

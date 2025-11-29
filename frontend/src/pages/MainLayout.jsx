@@ -10,8 +10,19 @@ export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
 
   const getBg = () => {
-    if (pathname === "/home") return "/images/bg_1.jpg";
-    return "/images/about.jpg";
+    if (pathname === "/home") return "/images/bg_1.jpg"; // keep home
+    if (pathname === "/about") return "/images/about.jpg"; // keep about
+    const map = {
+      "/services": "/images/hero_services.jpg",
+      "/blog": "/images/hero_blog.jpg",
+      "/pricing": "/images/hero_pricing.jpg",
+      "/cars": "/images/hero_cars.jpg",
+      "/contact": "/images/hero_contact.jpg",
+      "/bookings": "/images/hero_bookings.jpg",
+      "/add-booking": "/images/hero_addbooking.jpg",
+      "/price": "/images/hero_pricing.jpg",
+    };
+    return map[pathname] || "/images/about.jpg";
   };
 
   // Returns route path (e.g., '/about') for breadcrumb/link; null on home
@@ -32,17 +43,22 @@ export default function Layout({ children, overlay }) {
   const getHeadingText = () => {
     switch (pathname) {
       case "/about":
-        return "Our About";
+        return "About Our Company";
       case "/services":
-        return "Our Services";
+        return "Premium Car Rental Services";
       case "/blog":
-        return "Our Blog";
+        return "Insights & Travel Tips";
       case "/pricing":
-        return "Pricing";
+      case "/price":
+        return "Transparent Pricing Plans";
       case "/cars":
-        return "Choose Your Car";
+        return "Explore Our Fleet";
       case "/contact":
-        return "Contact Us";
+        return "We’re Here To Help";
+      case "/bookings":
+        return "Your Booking History";
+      case "/add-booking":
+        return "Complete Your Booking";
       default:
         return getSectionLabel() || "";
     }
