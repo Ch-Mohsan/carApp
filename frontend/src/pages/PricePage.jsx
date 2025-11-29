@@ -1,31 +1,104 @@
 import React, { useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
+import { selectAllBookings } from '../feetures/bookingSlice.js'
+import { addBooking } from '../feetures/bookingSlice.js'
+import { setCarStatus } from '../feetures/carsSlices.js'
+import { selectCurrentUser } from '../feetures/UserSlices.js'
 
 
 
 function PricePage() {
   const storeCars = useSelector(selectAllCars)
+  const currentUser = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const bookings = useSelector(selectAllBookings)
   const cars = useMemo(() => (
     (storeCars || []).map(c => ({
       id: c.id,
       img: c.imageUrl,
       title: c.name,
       rating: Math.round((c.rating ?? 4)),
-      rentPerDay: Number(c.rentPerDay ?? c.pricePerDay ?? 0)
+      rentPerDay: Number(c.rentPerDay ?? c.pricePerDay ?? 0),
+      status: c.status
     }))
   ), [storeCars]);
 
   const tabs = [
-    { key: "hour", label: "Per Hour Rate", color: "bg-[#1089ff] text-white" },
-    { key: "day", label: "Per Day Rate", color: "bg-[#343a40] text-white" },
-    { key: "lease", label: "Leasing", color: "bg-black text-white" },
+    { key: "day", label: "Per Day Package", color: "bg-[#1089ff] text-white" },
+    { key: "lease", label: "Per Month Package", color: "bg-black text-white" },
   ];
-  const [active, setActive] = useState("hour");
+  const [active, setActive] = useState("day");
 
   // Default pricing values per column; can be customized per car later
   // Derive rates per car from rentPerDay (professionally rounded)
   const format = (n) => `$${n.toFixed(2)}`
+  const today = useMemo(() => new Date().toISOString().slice(0,10), [])
+  const isBooked = (carId) => {
+    const active = (bookings || []).find(b => b.carId === carId && b.status === 'pending' && (b.endDate || b.date) >= today)
+    return !!active
+  }
+
+  // Quick booking panel state
+  const [bookingTarget, setBookingTarget] = useState(null) // {carId, package}
+  const [cnic, setCnic] = useState('')
+  const [pickup, setPickup] = useState('')
+  const [dropoff, setDropoff] = useState('')
+  const [error, setError] = useState('')
+  const startDate = today
+  const endDateFor = (pkg) => {
+    if (pkg === 'lease') {
+      const d = new Date(startDate)
+      d.setDate(d.getDate() + 29) // 30 day span
+      return d.toISOString().slice(0,10)
+    }
+    return startDate // single day
+  }
+  const daysFor = (pkg) => pkg === 'lease' ? 30 : 1
+  const fareFor = (car, pkg) => {
+    if (!car) return 0
+    const daily = Number(car.rentPerDay ?? car.pricePerDay ?? 0)
+    return daily * daysFor(pkg)
+  }
+  const beginBooking = (carId, pkg) => {
+    if (isBooked(carId)) return
+    if (!currentUser) { window.location.href = '/login'; return }
+    setError('')
+    setCnic('')
+    setPickup('')
+    setDropoff('')
+    setBookingTarget({ carId, package: pkg })
+    setActive(pkg === 'lease' ? 'lease' : 'day')
+  }
+  const confirmQuickBooking = () => {
+    if (!bookingTarget) return
+    const car = cars.find(c => c.id === bookingTarget.carId)
+    if (!car) { setError('Car not found.'); return }
+    if (!cnic.trim()) { setError('CNIC required.'); return }
+    if (!pickup.trim() || !dropoff.trim()) { setError('Pickup and dropoff locations are required.'); return }
+    const payload = {
+      userId: currentUser.id,
+      carId: car.id,
+      name: currentUser.username,
+      phone: currentUser.phone,
+      cnic: cnic.trim(),
+      pickup: pickup.trim(),
+      dropoff: dropoff.trim(),
+      startDate: startDate,
+      endDate: endDateFor(bookingTarget.package),
+      instructions: bookingTarget.package === 'lease' ? 'Monthly package' : 'Daily package',
+      fare: fareFor(car, bookingTarget.package)
+    }
+    dispatch(addBooking(payload))
+    dispatch(setCarStatus({ id: car.id, status: 'booked' }))
+    setBookingTarget(null)
+    setCnic('')
+    setPickup('')
+    setDropoff('')
+    navigate('/bookings')
+  }
 
   return (
     <section className="w-full px-4 md:px-8 py-12">
@@ -67,31 +140,137 @@ function PricePage() {
               ))}
             </div>
 
-            {/* Per-car rows: each car has 3 pricing columns */}
+            {/* Per-car rows: each car has 2 pricing columns (day, month) */}
             <div className="mt-4 space-y-5">
               {cars.map((c) => (
-                <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-3 gap-1">
-                  {/* Hour column */}
-                  <div className="group px-4 py-4 rounded-md  bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
-                    <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay / 24)}<span className="text-gray-500 font-normal">/per hour</span></div>
-                    <div className="text-gray-600 text-sm">Rates derived from daily pricing</div>
-                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
-                  </div>
+                <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-2 gap-1">
                   {/* Day column */}
                   <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
                     <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay)}<span className="text-gray-500 font-normal">/per day</span></div>
-                    <div className="text-gray-600 text-sm">Standard daily rental</div>
-                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
+                    <div className="text-gray-600 text-sm">One-day package</div>
+                    <button
+                      onClick={() => beginBooking(c.id,'day')}
+                      disabled={isBooked(c.id) || c.status === 'booked'}
+                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                    >{isBooked(c.id) || c.status === 'booked' ? 'Unavailable' : 'Book Day'}</button>
                   </div>
-                  {/* Lease column */}
+                  {/* Month column */}
                   <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
                     <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay * 30)}<span className="text-gray-500 font-normal">/per month</span></div>
-                    <div className="text-gray-600 text-sm">Monthly estimate (30 days)</div>
-                    <button className="mt-3 inline-flex items-center justify-center px-3 py-2 bg-[#1089ff] text-white rounded text-sm font-medium opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">Rent Now</button>
+                    <div className="text-gray-600 text-sm">30-day package</div>
+                    <button
+                      onClick={() => beginBooking(c.id,'lease')}
+                      disabled={isBooked(c.id) || c.status === 'booked'}
+                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                    >{isBooked(c.id) || c.status === 'booked' ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
               ))}
             </div>
+            {bookingTarget && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                {/* Backdrop with blur */}
+                <div
+                  className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                  onClick={() => { setBookingTarget(null); setCnic(''); }}
+                />
+                {/* Modal Card */}
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  className="relative z-10 w-full max-w-lg mx-4 rounded-2xl bg-white/10 backdrop-blur-lg ring-1 ring-white/20 shadow-2xl text-white"
+                >
+                  <div className="flex items-center justify-between px-5 pt-5">
+                    <h3 className="text-xl font-bold">Quick Booking</h3>
+                    <button
+                      onClick={() => { setBookingTarget(null); setCnic(''); }}
+                      className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 shadow"
+                      aria-label="Close"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div className="px-5 pb-5 space-y-4">
+                    {error && <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">{error}</div>}
+                    <div className="text-sm text-white/90 flex flex-col gap-1">
+                      <span>Car: {cars.find(c => c.id === bookingTarget.carId)?.title}</span>
+                      <span>Package: {bookingTarget.package === 'lease' ? 'Monthly (30 days)' : 'Single Day'}</span>
+                      {currentUser && (
+                        <span>Customer: {currentUser.username} ({currentUser.phone})</span>
+                      )}
+                      <span>Start: {startDate}</span>
+                      <span>End: {endDateFor(bookingTarget.package)}</span>
+                      <span>Fare: <strong className="text-[#1089ff]">{format(fareFor(cars.find(c=>c.id===bookingTarget.carId), bookingTarget.package))}</strong></span>
+                    </div>
+                    {!currentUser && (
+                      <div className="text-sm text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 rounded px-3 py-2">Login required before booking.</div>
+                    )}
+                    {currentUser && (
+                      <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm font-medium text-white/90">Customer Name</label>
+                            <input
+                              value={currentUser.username}
+                              readOnly
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-white/90">Phone</label>
+                            <input
+                              value={currentUser.phone}
+                              readOnly
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm font-medium text-white/90">Pickup Location</label>
+                            <input
+                              value={pickup}
+                              onChange={e=>setPickup(e.target.value)}
+                              placeholder="City / Address"
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-white/90">Dropoff Location</label>
+                            <input
+                              value={dropoff}
+                              onChange={e=>setDropoff(e.target.value)}
+                              placeholder="City / Address"
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-white/90">CNIC</label>
+                          <input
+                            value={cnic}
+                            onChange={e=>setCnic(e.target.value)}
+                            placeholder="XXXXX-XXXXXXX-X"
+                            className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                          />
+                        </div>
+                        <div className="flex items-center justify-end gap-3">
+                          <button
+                            onClick={() => { setBookingTarget(null); setCnic(''); }}
+                            className="px-5 py-2 rounded-md bg-[#1089ff] text-white font-semibold hover:bg-[#0d75db]"
+                          >Cancel</button>
+                          <button
+                            onClick={confirmQuickBooking}
+                            disabled={!cnic.trim() || !pickup.trim() || !dropoff.trim()}
+                            className="px-5 py-2 rounded-md bg-[#10d28e] text-white font-semibold hover:bg-[#0fb781] disabled:bg-gray-300 disabled:text-gray-500"
+                          >Confirm</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
