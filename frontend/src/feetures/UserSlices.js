@@ -2,11 +2,20 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 // Auth model: users registered with { id, username, phone, password }
 // Current session stored in currentUser
+// Hydrate current user from localStorage if present
+let persistedUser = null
+try {
+  const raw = typeof window !== 'undefined' ? localStorage.getItem('authUser') : null
+  if (raw) persistedUser = JSON.parse(raw)
+} catch (e) {
+  persistedUser = null
+}
+
 const initialState = {
   users: [
     { id: nanoid(), username: "demo", phone: "+10000000000", password: "demo123" }
   ],
-  currentUser: null
+  currentUser: persistedUser
 };
 
 const userSlice = createSlice({
@@ -24,14 +33,21 @@ const userSlice = createSlice({
         const found = state.users.find(u => u.username === username)
         state.currentUser = found ? { id: found.id, username: found.username, phone: found.phone } : null
       }
+      if (state.currentUser) {
+        try { localStorage.setItem('authUser', JSON.stringify(state.currentUser)) } catch {}
+      }
     },
     loginUser: (state, action) => {
       const { username, password } = action.payload
       const found = state.users.find(u => u.username === username && u.password === password)
       state.currentUser = found ? { id: found.id, username: found.username, phone: found.phone } : null
+      if (state.currentUser) {
+        try { localStorage.setItem('authUser', JSON.stringify(state.currentUser)) } catch {}
+      }
     },
     logoutUser: (state) => {
       state.currentUser = null
+      try { localStorage.removeItem('authUser') } catch {}
     }
   }
 })

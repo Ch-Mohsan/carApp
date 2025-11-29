@@ -67,6 +67,7 @@ function Navbar() {
             <li className='mx-6'><a href='/services' className={linkClass('/services')}>Services</a></li>
             <li className='mx-6'><a href='/price' className={linkClass('/price')}>Price</a></li>
             <li className='mx-6'><a href='/cars' className={linkClass('/cars')}>Cars</a></li>
+            <li className='mx-6'><a href='/bookings' className={linkClass('/bookings')}>myBookings</a></li>
             <li className='mx-6'><a href='/blog' className={linkClass('/blog')}>Blog</a></li>
             <li className='mx-6'><a href='/contact' className={linkClass('/contact')}>Contact</a></li>
           </ul>
@@ -82,7 +83,8 @@ function Navbar() {
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>
-        <li className={`mx-4 my-2 cursor-pointer ${getpath=='/car'? "text-[#1089ff]" : ""}`}><a href="/car" onClick={() => setMenu(false)}>Car</a></li>
+        <li className={`mx-4 my-2 cursor-pointer ${getpath=='/cars'? "text-[#1089ff]" : ""}`}><a href="/cars" onClick={() => setMenu(false)}>Cars</a></li>
+        <li className={`mx-4 my-2 cursor-pointer ${getpath=='/bookings'? "text-[#1089ff]" : ""}`}><a href="/bookings" onClick={() => setMenu(false)}>myBookings</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/blog'? "text-[#1089ff]" : ""}`}><a href="/blog" onClick={() => setMenu(false)}>Blog</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/contact'? "text-[#1089ff]" : ""}`}><a href="/contact" onClick={() => setMenu(false)}>Contact</a></li>
       </ul>
