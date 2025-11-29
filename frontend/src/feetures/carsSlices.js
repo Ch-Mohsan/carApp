@@ -14,7 +14,9 @@ const initialState = {
     { id: nanoid(), name: 'Ford Mustang', brand: 'Ford', pricePerDay: 80, rentPerDay: 80, category: 'sport', rating: 4.8, imageUrl: '/images/car-3.jpg', status: 'available' },
     { id: nanoid(), name: 'Chevrolet Camaro', brand: 'Chevrolet', pricePerDay: 75, rentPerDay: 75, category: 'muscle', rating: 4.6, imageUrl: '/images/car-4.jpg', status: 'available' },
     { id: nanoid(), name: 'BMW 3 Series', brand: 'BMW', pricePerDay: 90, rentPerDay: 90, category: 'luxury', rating: 4.7, imageUrl: '/images/car-5.jpg', status: 'available' }
-  ]
+  ],
+  loading: false,
+  error: null
 }
 
 const carsSlice = createSlice({
@@ -51,10 +53,21 @@ const carsSlice = createSlice({
     hydrateCars: (state, action) => {
       const list = Array.isArray(action.payload) ? action.payload : []
       state.cars = list.map(normalizeCar)
+      state.loading = false
+      state.error = null
+    },
+    setCarsLoading: (state, action) => {
+      state.loading = !!action.payload
+    },
+    setCarsError: (state, action) => {
+      state.error = action.payload || null
+      state.loading = false
     }
   }
 })
 
-export const { addCar, removeCar, updateCar, setCarStatus, hydrateCars } = carsSlice.actions
+export const { addCar, removeCar, updateCar, setCarStatus, hydrateCars, setCarsLoading, setCarsError } = carsSlice.actions
 export const selectAllCars = state => state.cars.cars
+export const selectCarsLoading = state => state.cars.loading
+export const selectCarsError = state => state.cars.error
 export default carsSlice.reducer

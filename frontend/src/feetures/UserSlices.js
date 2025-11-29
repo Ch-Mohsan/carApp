@@ -21,7 +21,9 @@ const initialState = {
   users: [
     { id: nanoid(), username: "demo", phone: "+10000000000", password: "demo123", isAdmin: true, isDriver: false },
   ],
-  currentUser: persistedUser
+  currentUser: persistedUser,
+  loading: false,
+  error: null
 };
 
 const userSlice = createSlice({
@@ -57,16 +59,27 @@ const userSlice = createSlice({
     logoutUser: (state) => {
       state.currentUser = null
       try { localStorage.removeItem('authUser') } catch {}
-    }
-    ,hydrateUsers: (state, action) => {
+    },
+    hydrateUsers: (state, action) => {
       const list = Array.isArray(action.payload) ? action.payload : []
       state.users = list.map(normalizeUser)
+      state.loading = false
+      state.error = null
+    },
+    setUsersLoading: (state, action) => {
+      state.loading = !!action.payload
+    },
+    setUsersError: (state, action) => {
+      state.error = action.payload || null
+      state.loading = false
     }
   }
 })
 
-export const { signupUser, loginUser, logoutUser, hydrateUsers } = userSlice.actions
+export const { signupUser, loginUser, logoutUser, hydrateUsers, setUsersLoading, setUsersError } = userSlice.actions
 export const selectAllUsers = (state) => state.users.users
+export const selectUsersLoading = (state) => state.users.loading
+export const selectUsersError = (state) => state.users.error
 export const selectCurrentUser = (state) => state.users.currentUser
 // Helper selector to get current user with role flags from users array
 export const selectCurrentUserWithRoles = (state) => {

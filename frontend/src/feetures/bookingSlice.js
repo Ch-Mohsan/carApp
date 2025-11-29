@@ -9,7 +9,9 @@ function normalizeBooking(raw) {
 // Booking model
 // { id, userId, carId, name, phone, cnic, pickup, dropoff, startDate, endDate, instructions, status, fare }
 const initialState = {
-  bookings: []
+  bookings: [],
+  loading: false,
+  error: null
 }
 
 const bookingSlice = createSlice({
@@ -39,10 +41,21 @@ const bookingSlice = createSlice({
     hydrateBookings: (state, action) => {
       const list = Array.isArray(action.payload) ? action.payload : []
       state.bookings = list.map(normalizeBooking)
+      state.loading = false
+      state.error = null
+    },
+    setBookingsLoading: (state, action) => {
+      state.loading = !!action.payload
+    },
+    setBookingsError: (state, action) => {
+      state.error = action.payload || null
+      state.loading = false
     }
   }
 })
 
-export const { addBooking, updateBooking, removeBooking, updateBookingStatus, hydrateBookings } = bookingSlice.actions
+export const { addBooking, updateBooking, removeBooking, updateBookingStatus, hydrateBookings, setBookingsLoading, setBookingsError } = bookingSlice.actions
 export const selectAllBookings = state => state.bookings.bookings
+export const selectBookingsLoading = state => state.bookings.loading
+export const selectBookingsError = state => state.bookings.error
 export default bookingSlice.reducer
