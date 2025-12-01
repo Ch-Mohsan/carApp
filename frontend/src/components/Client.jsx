@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { motion } from 'framer-motion'
+import { staggerContainer, fadeUp, viewFadeUp } from '../components/animations'
 
 // Responsive carousel: 3 cards per slide on md+, 2 on mobile.
 // Uses public images: /images/person_1.jpg, /images/person_2.jpg, /images/person_3.jpg
@@ -98,17 +100,22 @@ export default function ClientCarousel() {
   // Removed previous-index tracking as slides now snap by groups
 
   return (
-    <section id="clients" className="w-full bg-white">
+    <motion.section id="clients" className="w-full bg-white"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <p className="text-center text-xs tracking-[0.3em] font-semibold text-blue-600 uppercase">
+        <motion.p className="text-center text-xs tracking-[0.3em] font-semibold text-blue-600 uppercase" variants={fadeUp}>
           Clients
-        </p>
-        <h2 className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
+        </motion.p>
+        <motion.h2 className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900" variants={fadeUp}>
           Happy Clients
-        </h2>
+        </motion.h2>
 
         {/* Carousel viewport */}
-        <div className="mt-12 relative">
+        <motion.div className="mt-12 relative" variants={viewFadeUp}>
           {/* Carousel sliding viewport */}
           <div className="overflow-hidden">
             <div
@@ -161,8 +168,6 @@ export default function ClientCarousel() {
             </div>
           </div>
 
-          {/* Controls removed (dots only navigation) */}
-
           {/* Dots */}
           <div className="mt-6 flex items-center justify-center gap-3">
             {Array.from({ length: totalSlides }).map((_, i) => (
@@ -177,8 +182,8 @@ export default function ClientCarousel() {
               />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

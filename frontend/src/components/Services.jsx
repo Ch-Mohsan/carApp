@@ -1,4 +1,6 @@
 import React from "react";
+import { motion } from 'framer-motion'
+import { staggerContainer, viewFadeUp, fadeUp } from '../components/animations'
 
 export default function ServicesSection() {
   const items = [
@@ -54,21 +56,25 @@ export default function ServicesSection() {
   ];
 
   return (
-    <section id="services" aria-labelledby="services-heading" className="w-full bg-white py-4">
+    <motion.section id="services" aria-labelledby="services-heading" className="w-full bg-white py-4"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        {/* Eyebrow */}
-        <p className="text-center text-xs tracking-[0.3em] font-semibold text-blue-600 uppercase">Services</p>
-        {/* Heading */}
-        <h2 id="services-heading" className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
+        <motion.p className="text-center text-xs tracking-[0.3em] font-semibold text-blue-600 uppercase" variants={fadeUp}>Services</motion.p>
+        <motion.h2 id="services-heading" className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900" variants={fadeUp}>
           Our Latest Services
-        </h2>
+        </motion.h2>
 
-        {/* Grid */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" variants={staggerContainer}>
           {items.map((item) => (
-            <article
+            <motion.article
               key={item.title}
               className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-2xl bg-white  ring-gray-100 "
+              variants={viewFadeUp}
+              whileHover={{ y: -3 }}
             >
               <div className="flex items-center justify-center w-30 h-30 rounded-full bg-blue-500 text-white">
                 {item.icon}
@@ -77,10 +83,10 @@ export default function ServicesSection() {
               <p className="mt-3 text-md leading-7 text-gray-600 max-w-xs">
                 {item.description}
               </p>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

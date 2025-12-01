@@ -1,4 +1,6 @@
 import React from "react";
+import { motion } from 'framer-motion'
+import { staggerContainer, fadeUp, viewFadeUp } from '../components/animations'
 
 export default function BlogSection() {
   const posts = [
@@ -38,19 +40,21 @@ export default function BlogSection() {
   ];
 
   return (
-    <section id="blog" aria-labelledby="blog-heading" className="w-full bg-white">
+    <motion.section id="blog" aria-labelledby="blog-heading" className="w-full bg-white"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        {/* Eyebrow */}
-        <p className="text-center text-xs tracking-[0.3em] font-semibold text-[#1089ff] uppercase">Bolog</p>
-        {/* Heading */}
-        <h2 id="blog-heading" className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900">
+        <motion.p className="text-center text-xs tracking-[0.3em] font-semibold text-[#1089ff] uppercase" variants={fadeUp}>Bolog</motion.p>
+        <motion.h2 id="blog-heading" className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900" variants={fadeUp}>
           Recent Blog
-        </h2>
+        </motion.h2>
 
-        {/* Grid */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <motion.div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10" variants={staggerContainer}>
           {posts.map((post) => (
-            <article key={post.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col">
+            <motion.article key={post.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col" variants={viewFadeUp}>
               <a href={post.href} className="block">
                 <img
                   src={post.img}
@@ -60,19 +64,15 @@ export default function BlogSection() {
                 />
               </a>
               <div className="p-6 sm:p-7 flex flex-col flex-1">
-                {/* meta */}
                 <div className="flex items-center gap-5 text-sm text-gray-500">
                   <span>{post.date}</span>
                   <span className="relative pl-5 before:content-['•'] before:absolute before:left-2 before:text-gray-300">{post.author}</span>
-                  <span className="relative pl-5 before:content-['•'] before:absolute before:left-2 before:text-gray-300">{post.comments}</span>
+                  <span className="relative pl-5 before:content-['•'] before:absolute before.left-2 before:text-gray-300">{post.comments}</span>
                 </div>
-                {/* title */}
                 <h3 className="mt-4 text-xl font-semibold text-gray-900 group-hover:text-[#1089ff]">
                   <a href={post.href}>{post.title}</a>
                 </h3>
-                {/* excerpt */}
                 <p className="mt-3 text-sm leading-7 text-gray-600 flex-1">{post.excerpt}</p>
-                {/* cta */}
                 <div className="mt-6">
                   <a
                     href={post.href}
@@ -82,10 +82,10 @@ export default function BlogSection() {
                   </a>
                 </div>
               </div>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

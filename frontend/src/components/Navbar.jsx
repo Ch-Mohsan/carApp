@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { FaBars } from "react-icons/fa"
 
 function Navbar() {
@@ -6,6 +7,7 @@ function Navbar() {
   const [navLight, setNavLight] = useState(false);
   const getpath = window.location.pathname;
   const menuRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const hendleMenuClick = () => {
     setMenu((m) => !m);
@@ -24,6 +26,14 @@ function Navbar() {
       body.classList.remove('menu-open');
     }
   }, [Menu]);
+
+  // track viewport to differentiate desktop vs mobile backgrounds
+  useEffect(() => {
+    const compute = () => setIsDesktop(window.innerWidth >= 768);
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
   // scroll threshold: demo uses ~150px to switch navbar style
   useEffect(() => {
@@ -54,7 +64,15 @@ function Navbar() {
 
   return (
     <>
-      <div className={`navbar-custom w-full h-full transition-colors duration-300 ${navLight ? 'bg-white text-black shadow-sm' :  'bg-black md:bg-transparent text-white'}`}>
+      <motion.div
+        className={`navbar-custom w-full h-full ${navLight ? 'text-black' : 'text-white'}`}
+        animate={{
+          // Desktop: transparent when not scrolled; Mobile: subtle dark when not scrolled
+          backgroundColor: navLight ? '#ffffff' : (isDesktop ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.85)'),
+          boxShadow: navLight ? '0 1px 12px rgba(0,0,0,0.08)' : '0px 0px 0px rgba(0,0,0,0)'
+        }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+      >
         <div className="w-full max-w-7xl mx-auto flex items-center px-6 md:px-12 py-4">
           <div className='flex items-center text-lg md:text-xl font-extrabold md:px-4 flex-shrink-0 whitespace-nowrap'>
             <span className={`${navLight ? 'text-black' : 'text-white'}`}>CAR</span>
@@ -76,7 +94,7 @@ function Navbar() {
             <button aria-expanded={Menu} aria-label="Toggle menu" onClick={hendleMenuClick} className={`px-2 py-1 font-thin ${navLight ? 'text-black/80' : 'text-[#ffffff80]'}`}><FaBars size={20} /></button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-evenly items-start ${Menu ? 'open' : ''} ${navLight ? 'bg-white text-black' : 'bg-black text-white'}`}>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>

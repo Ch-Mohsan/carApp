@@ -1,4 +1,6 @@
 import React, { useState,useRef,useEffect, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { staggerContainer, fadeUp, viewFadeUp } from '../components/animations'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -84,12 +86,17 @@ function Feeatured() {
   }, [])
 
   return (
-    <section ref={containerRef} className="w-full py-16 px-4 md:px-8 mt-[24px] md:mt-[160px] lg:mt-[300px]">
+    <motion.section ref={containerRef} className="w-full py-16 px-4 md:px-8 mt-[24px] md:mt-[160px] lg:mt-[300px]"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-10 text-gray-800">Featured Vehicles</h2>
+        <motion.h2 className="text-3xl md:text-4xl font-extrabold text-center mb-10 text-gray-800" variants={fadeUp}>Featured Vehicles</motion.h2>
 
         {/* Multi-item carousel always; shows 1/2/3 items depending on width */}
-        <div className="relative overflow-hidden rounded-2xl">
+        <motion.div className="relative overflow-hidden rounded-2xl" variants={viewFadeUp}>
           <div
             className="flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${index * (100 / visibleCount)}%)` }}
@@ -140,9 +147,9 @@ function Feeatured() {
               />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 

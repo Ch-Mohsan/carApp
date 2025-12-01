@@ -19,7 +19,7 @@ export default function Login() {
   const validatePhone = (v) => /^\+?[0-9\-\s]{7,15}$/.test(v)
   const onSubmit = (e) => {
     e.preventDefault()
-    toast.warn('')
+    setForm({ username: '', phone: '', password: '' })
     if (!form.username.trim()) { toast.warn('Username is required.'); return }
     if (!form.password || form.password.length < 6) { toast.warn('Password must be at least 6 characters.'); return }
 
