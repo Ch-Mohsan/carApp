@@ -17,14 +17,14 @@ export default function Login() {
   const validatePhone = (v) => /^\+?[0-9\-\s]{7,15}$/.test(v)
   const onSubmit = (e) => {
     e.preventDefault()
-    setError('')
-    if (!form.username.trim()) { setError('Username is required.'); return }
-    if (!form.password || form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    toast.warn('')
+    if (!form.username.trim()) { toast.warn('Username is required.'); return }
+    if (!form.password || form.password.length < 6) { toast.warn('Password must be at least 6 characters.'); return }
 
     if (activeTab === 'register') {
-      if (!validatePhone(form.phone)) { setError('Please enter a valid phone number.'); return }
+      if (!validatePhone(form.phone)) { toast.warn('Please enter a valid phone number.'); return }
       const exists = users.some(u => u.username === form.username)
-      if (exists) { setError('User already exists. Try logging in.'); return }
+      if (exists) {toast.warn('User already exists. Try logging in.'); return }
       dispatch(signupUser({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
       toast.success('Account created successfully')
       navigate('/home')
@@ -32,7 +32,7 @@ export default function Login() {
     }
 
     const found = users.find(u => u.username === form.username && u.password === form.password)
-    if (!found) { setError('Invalid credentials.'); return }
+    if (!found) {toast.warnr('Invalid credentials.'); return }
     dispatch(loginUser({ username: form.username.trim(), password: form.password }))
     toast.success('Logged in successfully')
     navigate('/home')

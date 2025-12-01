@@ -58,13 +58,13 @@ function AddBoocking() {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    if (!selectedCar) { setError('Please select a car to book.'); return }
-    if (!form.name.trim()) { setError('Customer name is required.'); return }
+    if (!selectedCar) {toast.warn('Please select a car to book.'); return }
+    if (!form.name.trim()) {toast.warn('Customer name is required.'); return }
     // Relaxed phone validation to accept common formats, and it's read-only from user profile
-    if (!/^[0-9+\-\s()]{7,20}$/.test(form.phone)) { setError('Phone number format looks invalid.'); return }
-    if (!form.cnic.trim()) { setError('CNIC is required.'); return }
-    if (!form.pickup.trim() || !form.dropoff.trim()) { setError('Pickup and dropoff locations are required.'); return }
-    if (new Date(form.endDate) < new Date(form.startDate)) { setError('Return date cannot be before pickup date.'); return }
+    if (!/^[0-9+\-\s()]{7,20}$/.test(form.phone)) {toast.warn('Phone number format looks invalid.'); return }
+    if (!form.cnic.trim()) {toast.warn('CNIC is required.'); return }
+    if (!form.pickup.trim() || !form.dropoff.trim()) {toast.warn('Pickup and dropoff locations are required.'); return }
+    if (new Date(form.endDate) < new Date(form.startDate)) {toast.warn('Return date cannot be before pickup date.'); return }
     // date range enforced by input min/max
     const payload = {
       userId: currentUser ? currentUser.id : 'guest',
