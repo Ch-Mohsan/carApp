@@ -1,0 +1,3 @@
+[
+  { "id": "user-1", "username": "demo", "phone": "+10000000000", "password": "demo123", "isAdmin": true, "isDriver": false }
+]

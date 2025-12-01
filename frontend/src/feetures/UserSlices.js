@@ -1,4 +1,5 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import usersData from '../data/user.json'
 
 function normalizeUser(raw) {
   if (!raw) return raw
@@ -18,9 +19,7 @@ try {
 }
 
 const initialState = {
-  users: [
-    { id: nanoid(), username: "demo", phone: "+10000000000", password: "demo123", isAdmin: true, isDriver: false },
-  ],
+  users: (Array.isArray(usersData) ? usersData : []).map(normalizeUser),
   currentUser: persistedUser,
   loading: false,
   error: null
@@ -35,7 +34,7 @@ const userSlice = createSlice({
       const { username, phone, password, _id, id: incomingId } = action.payload
       const exists = state.users.some(u => u.username === username)
       if (!exists) {
-        const id = incomingId || _id || nanoid()
+        const id = incomingId || _id
         // Force default roles; ignore any incoming role flags from payload
         state.users.push({ id, username, phone, password, isAdmin: false, isDriver: false })
         state.currentUser = { id, username, phone }

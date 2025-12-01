@@ -1,15 +1,16 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import bookingsData from '../data/booking.json'
 
 function normalizeBooking(raw) {
   if (!raw) return raw
-  const id = raw.id || raw._id || nanoid()
+  const id = raw.id || raw._id
   return { ...raw, id }
 }
 
 // Booking model
 // { id, userId, carId, name, phone, cnic, pickup, dropoff, startDate, endDate, instructions, status, fare }
 const initialState = {
-  bookings: [],
+  bookings: (Array.isArray(bookingsData) ? bookingsData : []).map(normalizeBooking),
   loading: false,
   error: null
 }

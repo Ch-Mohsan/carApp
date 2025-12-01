@@ -1,20 +1,15 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import carsData from '../data/car.json'
 
 function normalizeCar(raw) {
   if (!raw) return raw
-  const id = raw.id || raw._id || nanoid()
+  const id = raw.id || raw._id
   const rent = typeof raw.rentPerDay === 'number' ? raw.rentPerDay : (typeof raw.pricePerDay === 'number' ? raw.pricePerDay : 0)
   return { ...raw, id, rentPerDay: rent, pricePerDay: rent }
 }
 
 const initialState = {
-  cars: [
-    { id: nanoid(), name: 'Honda Civic', brand: 'Honda', pricePerDay: 50, rentPerDay: 50, category: 'sedan', rating: 4.5, imageUrl: '/images/car-1.jpg', status: 'available' },
-    { id: nanoid(), name: 'Toyota Corolla', brand: 'Toyota', pricePerDay: 45, rentPerDay: 45, category: 'sedan', rating: 4.2, imageUrl: '/images/car-2.jpg', status: 'available' },
-    { id: nanoid(), name: 'Ford Mustang', brand: 'Ford', pricePerDay: 80, rentPerDay: 80, category: 'sport', rating: 4.8, imageUrl: '/images/car-3.jpg', status: 'available' },
-    { id: nanoid(), name: 'Chevrolet Camaro', brand: 'Chevrolet', pricePerDay: 75, rentPerDay: 75, category: 'muscle', rating: 4.6, imageUrl: '/images/car-4.jpg', status: 'available' },
-    { id: nanoid(), name: 'BMW 3 Series', brand: 'BMW', pricePerDay: 90, rentPerDay: 90, category: 'luxury', rating: 4.7, imageUrl: '/images/car-5.jpg', status: 'available' }
-  ],
+  cars: (Array.isArray(carsData) ? carsData : []).map(normalizeCar),
   loading: false,
   error: null
 }
