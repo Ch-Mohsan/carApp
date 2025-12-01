@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
+import { staggerContainer, fadeUp, viewFadeUp, zoomIn } from '../components/animations'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -54,65 +56,82 @@ function Hero() {
 
   return (
     <section className="hero-section flex md:justify-center flex-col px-4">
-      <div className="w-full hero-content-padding flex flex-col text-center items-center justify-center text-white py-16 md:py-24 px-4">
-        <h1 className="font-extrabold text-[40px] md:text-[52px] mb-4 leading-tight">Fast & Easy Way To Rent A Car</h1>
-        <p className="text-lg max-w-2xl mb-4">Find the right vehicle, filter by category, and book instantly with transparent pricing.</p>
-        <p className="text-lg"><span className="text-gray-300">_____</span> Easy Steps for renting a car</p>
-      </div>
+      <motion.div
+        className="w-full hero-content-padding flex flex-col text-center items-center justify-center text-white py-16 md:py-24 px-4"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h1 className="font-extrabold text-[40px] md:text-[52px] mb-4 leading-tight" variants={fadeUp}>
+          Fast & Easy Way To Rent A Car
+        </motion.h1>
+        <motion.p className="text-lg max-w-2xl mb-4" variants={fadeUp}>
+          Find the right vehicle, filter by category, and book instantly with transparent pricing.
+        </motion.p>
+        <motion.p className="text-lg" variants={fadeUp}>
+          <span className="text-gray-300">_____</span> Easy Steps for renting a car
+        </motion.p>
+      </motion.div>
 
       <div className="hero-panels md:flex justify-center px-4 md:px-6">
         <div className="w-full max-w-7xl flex flex-col md:flex-row items-start mx-auto gap-8">
           {/* Redesigned Booking/Search Panel */}
-          <div className="flex-1 rounded-2xl bg-[#1089ff] p-6 md:p-7 shadow-xl text-white relative overflow-hidden">
+          <motion.div
+            className="flex-1 rounded-2xl bg-[#1089ff] p-6 md:p-7 shadow-xl text-white relative overflow-hidden"
+            variants={zoomIn}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
             <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle_at_top_left,#fff,transparent_70%)]" />
-            <h2 className="relative text-xl md:text-2xl font-bold mb-4">Plan Your Trip</h2>
+            <motion.h2 className="relative text-xl md:text-2xl font-bold mb-4" variants={fadeUp}>Plan Your Trip</motion.h2>
             {error && <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">{error}</div>}
-            <form onSubmit={onSearch} className="space-y-4">
+            <motion.form onSubmit={onSearch} className="space-y-4" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">Pickup Location</label>
-                  <input name="pickup" value={form.pickup} onChange={onChange} placeholder="City / Airport" className="w-full rounded-md bg-white text-gray-800 placeholder-gray-400 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
+                  <motion.input variants={fadeUp} name="pickup" value={form.pickup} onChange={onChange} placeholder="City / Airport" className="w-full rounded-md bg-white text-gray-800 placeholder-gray-400 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">Dropoff Location</label>
-                  <input name="dropoff" value={form.dropoff} onChange={onChange} placeholder="City / Airport" className="w-full rounded-md bg-white text-gray-800 placeholder-gray-400 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
+                  <motion.input variants={fadeUp} name="dropoff" value={form.dropoff} onChange={onChange} placeholder="City / Airport" className="w-full rounded-md bg-white text-gray-800 placeholder-gray-400 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">Start Date</label>
-                  <input type="date" name="start" value={form.start} min={today} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
+                  <motion.input variants={fadeUp} type="date" name="start" value={form.start} min={today} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">End Date</label>
-                  <input type="date" name="end" value={form.end} min={form.start} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
+                  <motion.input variants={fadeUp} type="date" name="end" value={form.end} min={form.start} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">Category</label>
-                  <select name="category" value={form.category} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition">
+                  <motion.select variants={fadeUp} name="category" value={form.category} onChange={onChange} className="w-full rounded-md bg-white text-gray-800 px-3 py-2 outline-none focus:ring-2 focus:ring-[#10d28e]/40 focus:border-[#10d28e] border border-transparent transition">
                     {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                  </select>
+                  </motion.select>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-white/90 text-xs uppercase tracking-wider">Summary</label>
-                  <div className="w-full rounded-md bg-[#0d75db]/20 border border-white/20 text-white px-3 py-2 text-sm flex flex-col gap-1">
+                  <motion.div variants={fadeUp} className="w-full rounded-md bg-[#0d75db]/20 border border-white/20 text-white px-3 py-2 text-sm flex flex-col gap-1">
                     <span>{days} day{days>1?'s':''}</span>
                     <span>{available.length} car{available.length!==1?'s':''} available</span>
                     {fareRange && <span className="text-[#10d28e] font-semibold">Est: ${fareRange.min.toFixed(2)} - ${fareRange.max.toFixed(2)}</span>}
-                  </div>
+                  </motion.div>
                 </div>
               </div>
-              <button className="w-full px-4 py-3 md:py-4 text-white bg-[#10d28e] hover:bg-[#0fb781] rounded font-semibold text-base transition-colors shadow-lg shadow-[#10d28e]/30">Search Cars</button>
-            </form>
+              <motion.button variants={fadeUp} className="w-full px-4 py-3 md:py-4 text-white bg-[#10d28e] hover:bg-[#0fb781] rounded font-semibold text-base transition-colors shadow-lg shadow-[#10d28e]/30">Search Cars</motion.button>
+            </motion.form>
             {currentUser && <p className="mt-3 text-xs text-white/80">Logged in as {currentUser.username}</p>}
-          </div>
+          </motion.div>
 
           {/* Info / Steps Panel */}
-          <div className="flex-1 rounded-2xl bg-white shadow-xl p-6 md:p-8">
+          <motion.div className="flex-1 rounded-2xl bg-white shadow-xl p-6 md:p-8" variants={viewFadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Better Way to Rent Your Perfect Cars</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-6" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
               {[{
                 icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#1089ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>),
                 text: 'Choose Pickup Location'
@@ -123,14 +142,14 @@ function Hero() {
                 icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#1089ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>),
                 text: 'Reserve Your Rental Car'
               }].map((s,i)=>(
-                <div key={i} className="flex flex-col items-center gap-4 text-center">
+                <motion.div key={i} className="flex flex-col items-center gap-4 text-center" variants={fadeUp}>
                   <div className="bg-[#1089ff1a] p-4 rounded-full">{s.icon}</div>
                   <p className="font-semibold text-gray-700 text-sm md:text-base leading-snug">{s.text}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
-            <button onClick={()=>navigate('/price')} className="mt-6 px-8 py-3 md:py-4 text-center bg-[#1089ff] hover:bg-[#0d75db] text-white rounded font-semibold text-base w-fit transition-colors">View Pricing</button>
-          </div>
+            </motion.div>
+            <motion.button variants={fadeUp} onClick={()=>navigate('/price')} className="mt-6 px-8 py-3 md:py-4 text-center bg-[#1089ff] hover:bg-[#0d75db] text-white rounded font-semibold text-base w-fit transition-colors">View Pricing</motion.button>
+          </motion.div>
         </div>
       </div>
     </section>

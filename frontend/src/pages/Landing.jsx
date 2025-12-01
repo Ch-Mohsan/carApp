@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectAllCars } from '../feetures/carsSlices.js'
@@ -18,7 +19,10 @@ export default function Landing() {
   return (
     <div className='min-h-screen w-full flex flex-col bg-black text-white'>
       {/* Poster / Hero */}
-      <section
+      <motion.section
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35 }}
         className='relative w-full flex items-center justify-center min-h-[88vh] md:min-h-[92vh] lg:min-h-screen px-6 md:px-10 overflow-hidden'
         style={{
           backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 40%, rgba(16,137,255,0.25) 100%), url(/images/landing.jpg)`,
@@ -28,11 +32,28 @@ export default function Landing() {
       >
         <div className='absolute inset-0 pointer-events-none mix-blend-multiply' />
         <div className='relative max-w-4xl mx-auto text-center space-y-6'>
-          <h1 className='text-4xl md:text-6xl font-extrabold tracking-tight'>
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className='text-4xl md:text-6xl font-extrabold tracking-tight'
+          >
             Drive Your Next <span className='text-[#1089ff]'>Experience</span>
-          </h1>
-          <p className='text-lg md:text-xl text-gray-200 max-w-2xl mx-auto'>Premium, sport, and eco-friendly cars ready when you are. Seamless booking, honest pricing, flexible plans.</p>
-          <div className='flex flex-col sm:flex-row items-center justify-center gap-4 pt-2'>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className='text-lg md:text-xl text-gray-200 max-w-2xl mx-auto'
+          >
+            Premium, sport, and eco-friendly cars ready when you are. Seamless booking, honest pricing, flexible plans.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.18 }}
+            className='flex flex-col sm:flex-row items-center justify-center gap-4 pt-2'
+          >
             <Link
               to='/login'
               className='w-full sm:w-auto px-8 py-3 rounded-full bg-[#1089ff] hover:bg-[#0d75db] transition-colors font-semibold shadow-lg shadow-[#1089ff]/30'
@@ -41,9 +62,9 @@ export default function Landing() {
               to='/login?mode=register'
               className='w-full sm:w-auto px-8 py-3 rounded-full bg-[#01d28e] hover:bg-[#00b37a] transition-colors font-semibold shadow-lg shadow-[#01d28e]/30'
             >Register</Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Car highlight grid */}
       <section className='w-full px-6 md:px-10 py-12 md:py-16 bg-white text-gray-900'>
@@ -58,9 +79,24 @@ export default function Landing() {
               <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='h-5 w-5'><path d='M5 12h14'/><path d='M13 5l7 7-7 7'/></svg>
             </Link>
           </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
+            }}
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'
+          >
             {cars.map(c => (
-              <div key={c.id} className='group rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-shadow'>
+              <motion.div
+                key={c.id}
+                className='group rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-shadow'
+                variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.3 }}
+                whileHover={{ y: -2 }}
+              >
                 <div className='h-48 md:h-56 w-full overflow-hidden'>
                   <img src={c.img} alt={c.title} className='w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-500' />
                 </div>
@@ -72,9 +108,9 @@ export default function Landing() {
                     <span className='text-gray-400 text-sm'>/day</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

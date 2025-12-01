@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -46,6 +48,7 @@ export default function Login() {
   }, [searchParams, activeTab])
 
   return (
+    <PageTransition>
     <section
       className='relative w-full min-h-screen flex items-center justify-center px-4 py-10 md:py-16'
       style={{
@@ -57,22 +60,47 @@ export default function Login() {
       <div className='absolute inset-0 bg-black/20' />
 
       <div className='relative w-full max-w-sm md:max-w-md'>
-        <div className='rounded-2xl bg-transparent backdrop-blur-md shadow-xl ring-1 ring-white/20 p-6 md:p-7 h-screen md:h-[85vh] flex flex-col'>
-          <div className='flex items-center gap-3 mb-6'>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className='rounded-2xl bg-transparent backdrop-blur-md shadow-xl ring-1 ring-white/20 p-6 md:p-7 h-screen md:h-[85vh] flex flex-col'
+        >
+          <motion.div className='flex items-center gap-3 mb-6'
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
             <span className='inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1089ff] text-white shadow-md'>
               <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>
                 <path d='M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v2h16v-2c0-2.761-3.582-5-8-5z' />
               </svg>
             </span>
             <div>
-              <h1 className='text-2xl md:text-3xl font-bold tracking-tight'>
-                {activeTab === 'login' ? 'Welcome Back' : 'Create Your Account'}
-              </h1>
-              <p className='text-sm md:text-base text-gray-600'>
-                {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
-              </p>
+              <AnimatePresence mode='wait'>
+                <motion.h1 key={`title-${activeTab}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className='text-2xl md:text-3xl font-bold tracking-tight'
+                >
+                  {activeTab === 'login' ? 'Welcome Back' : 'Create Your Account'}
+                </motion.h1>
+              </AnimatePresence>
+              <AnimatePresence mode='wait'>
+                <motion.p key={`subtitle-${activeTab}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.22 }}
+                  className='text-sm md:text-base text-gray-600'
+                >
+                  {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
+                </motion.p>
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
        
 
@@ -107,8 +135,15 @@ export default function Login() {
               </div>
             </div>
 
+            <AnimatePresence initial={false} mode='wait'>
             {activeTab === 'register' && (
-              <div>
+              <motion.div
+                key='phone-field'
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
                 <label htmlFor='phone' className='block text-sm font-medium text-gray-700'>Phone number</label>
                 <div className='mt-2 relative'>
                   <span className='absolute inset-y-0 left-3 flex items-center text-gray-400'>
@@ -127,8 +162,9 @@ export default function Login() {
                     required
                   />
                 </div>
-              </div>
+              </motion.div>
             )}
+            </AnimatePresence>
 
             <div>
               <label htmlFor='password' className='block text-sm font-medium text-gray-700'>Password</label>
@@ -152,30 +188,37 @@ export default function Login() {
             </div>
 
             <div className='mt-4 flex items-center gap-3'>
-              <button className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors'>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -1 }}
+                className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors'
+              >
                 {activeTab === 'login' ? 'Log In' : 'Register'}
-              </button>
+              </motion.button>
               {activeTab === 'login' ? (
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
                   type='button'
                   className='px-4 py-3 rounded-lg border border-white/40 bg-white/20 text-[#1089ff] hover:bg-white/30'
                   onClick={() => setActiveTab('register')}
                 >
                   Register
-                </button>
+                </motion.button>
               ) : (
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
                   type='button'
                   className='px-4 py-3 rounded-lg border border-white/40 bg-white/20 text-[#1089ff] hover:bg-white/30'
                   onClick={() => setActiveTab('login')}
                 >
                   Log In
-                </button>
+                </motion.button>
               )}
             </div>
           </form>
-        </div>
+        </motion.div>
       </div>
     </section>
+    </PageTransition>
   )
 }

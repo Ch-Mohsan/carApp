@@ -1,11 +1,14 @@
 import React from 'react'
+import PageTransition from '../components/PageTransition'
 import CarCard from '../components/CarCard'
 
 function Cars() {
   return (
-    <div>
+    <PageTransition>
+      <div>
         <CarCard />
-    </div>
+      </div>
+    </PageTransition>
   )
 }
 

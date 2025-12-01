@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -28,21 +29,18 @@ function PricePage() {
   ), [storeCars]);
 
   const tabs = [
-    { key: "day", label: "Per Day Package", color: "bg-[#1089ff] text-white" },
-    { key: "lease", label: "Per Month Package", color: "bg-black text-white" },
+    { key: 'day', label: 'Per Day Package', color: 'bg-[#1089ff] text-white' },
+    { key: 'lease', label: 'Per Month Package', color: 'bg-black text-white' },
   ];
-  const [active, setActive] = useState("day");
+  const [active, setActive] = useState('day');
 
-  // Default pricing values per column; can be customized per car later
-  // Derive rates per car from rentPerDay (professionally rounded)
   const format = (n) => `$${n.toFixed(2)}`
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const isBooked = (carId) => {
-    const active = (bookings || []).find(b => b.carId === carId && b.status === 'pending' && (b.endDate || b.date) >= today)
-    return !!active
+    const act = (bookings || []).find(b => b.carId === carId && b.status === 'pending' && (b.endDate || b.date) >= today)
+    return !!act
   }
 
-  // Quick booking panel state
   const [bookingTarget, setBookingTarget] = useState(null) // {carId, package}
   const [cnic, setCnic] = useState('')
   const [pickup, setPickup] = useState('')
@@ -52,10 +50,10 @@ function PricePage() {
   const endDateFor = (pkg) => {
     if (pkg === 'lease') {
       const d = new Date(startDate)
-      d.setDate(d.getDate() + 29) // 30 day span
+      d.setDate(d.getDate() + 29)
       return d.toISOString().slice(0,10)
     }
-    return startDate // single day
+    return startDate
   }
   const daysFor = (pkg) => pkg === 'lease' ? 30 : 1
   const fareFor = (car, pkg) => {
@@ -103,6 +101,7 @@ function PricePage() {
   }
 
   return (
+    <PageTransition>
     <section className="w-full px-4 md:px-8 py-12">
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -163,7 +162,7 @@ function PricePage() {
                     <button
                       onClick={() => beginBooking(c.id,'lease')}
                       disabled={isBooked(c.id) || c.status === 'booked'}
-                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                      className={`mt-3 inline-flex items-center justify.center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
                     >{isBooked(c.id) || c.status === 'booked' ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
@@ -234,7 +233,7 @@ function PricePage() {
                               value={pickup}
                               onChange={e=>setPickup(e.target.value)}
                               placeholder="City / Address"
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
                             />
                           </div>
                           <div>
@@ -243,7 +242,7 @@ function PricePage() {
                               value={dropoff}
                               onChange={e=>setDropoff(e.target.value)}
                               placeholder="City / Address"
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline.none"
                             />
                           </div>
                         </div>
@@ -253,7 +252,7 @@ function PricePage() {
                             value={cnic}
                             onChange={e=>setCnic(e.target.value)}
                             placeholder="XXXXX-XXXXXXX-X"
-                            className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none focus:ring-0 focus:border-[#1089ff]"
+                            className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
                           />
                         </div>
                         <div className="flex items-center justify-end gap-3">
@@ -277,6 +276,7 @@ function PricePage() {
         </div>
       </div>
     </section>
+    </PageTransition>
   )
 }
 

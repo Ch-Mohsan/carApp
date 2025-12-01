@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -87,6 +88,7 @@ function AddBoocking() {
   }
 
   return (
+    <PageTransition>
     <section
       className="relative w-full min-h-screen flex items-center justify-center px-4 pb-10"
       style={{
@@ -183,6 +185,7 @@ function AddBoocking() {
         </div>
       </div>
     </section>
+    </PageTransition>
   )
 }
 

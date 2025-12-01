@@ -1,11 +1,14 @@
 import React from 'react'
+import PageTransition from '../components/PageTransition'
 import BlogSection from '../components/Blog'
 
 function BlogPage() {
   return (
-    <div>
+    <PageTransition>
+      <div>
         <BlogSection/>
-    </div>
+      </div>
+    </PageTransition>
   )
 }
 

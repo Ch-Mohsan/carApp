@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectAllBookings, updateBookingStatus } from '../feetures/bookingSlice.js'
@@ -43,6 +44,7 @@ export default function Bookings() {
   }
 
   return (
+    <PageTransition>
     <section className="relative w-full min-h-screen px-4 md:px-8 py-12">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
@@ -111,5 +113,6 @@ export default function Bookings() {
         </div>
       </div>
     </section>
+    </PageTransition>
   )
 }

@@ -1,10 +1,17 @@
 import React from "react";
+import { motion } from 'framer-motion'
 
 export default function Footer() {
   return (
     <footer className="w-full bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-        <div className="w-full">
+        <motion.div
+          className="w-full"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
           {/* Brand + description */}
           <div>
@@ -81,7 +88,7 @@ export default function Footer() {
             </ul>
           </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

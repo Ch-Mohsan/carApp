@@ -1,6 +1,7 @@
 
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Home from './pages/Home'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -16,8 +17,10 @@ import Bookings from './pages/Bookings'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
+  const location = useLocation()
   return (
-    <Routes>
+    <AnimatePresence mode="wait">
+    <Routes location={location} key={location.pathname}>
       {/* Landing at root without layout */}
       <Route path="/" element={<Landing />} />
 
@@ -51,6 +54,7 @@ function App() {
       {/* Auth pages without layout */}
       <Route path="/login" element={<Login />} />
     </Routes>
+    </AnimatePresence>
   )
 }
 
