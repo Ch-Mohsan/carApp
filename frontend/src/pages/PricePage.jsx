@@ -4,10 +4,9 @@ import Alert from '../components/Alert'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { selectAllCars } from '../feetures/carsSlices.js'
+import { selectAllCars, selectCarsLoading, selectCarsError } from '../feetures/carsSlices.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { addBooking } from '../feetures/bookingSlice.js'
-import { setCarStatus } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 
 
@@ -40,8 +39,18 @@ function PricePage() {
   const format = (n) => `$${n.toFixed(2)}`
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const isBooked = (carId) => {
-    const act = (bookings || []).find(b => b.carId === carId && b.status === 'pending' && (b.endDate || b.date) >= today)
-    return !!act
+    const car = (storeCars || []).find(x => x.id === carId)
+    const statusBooked = ((car?.status || '').trim().toLowerCase() === 'booked')
+    if (statusBooked) return true
+    return (bookings || []).some(b => {
+      if (b.carId !== carId) return false
+      const statusHolds = b.status === 'confirmed' || b.status === 'pending'
+      if (!statusHolds) return false
+      const start = (b.startDate || b.date || '').slice(0,10)
+      const end = (b.endDate || b.date || '').slice(0,10)
+      if (!start || !end) return false
+      return start <= today && today <= end
+    })
   }
 
   const [bookingTarget, setBookingTarget] = useState(null) // {carId, package}
@@ -94,7 +103,6 @@ function PricePage() {
       fare: fareFor(car, bookingTarget.package)
     }
     dispatch(addBooking(payload))
-    dispatch(setCarStatus({ id: car.id, status: 'booked' }))
     toast.success('Booking confirmed')
     setBookingTarget(null)
     setCnic('')
@@ -161,9 +169,9 @@ function PricePage() {
                     <div className="text-gray-600 text-sm">One-day package</div>
                     <button
                       onClick={() => beginBooking(c.id,'day')}
-                      disabled={isBooked(c.id) || c.status === 'booked'}
-                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
-                    >{isBooked(c.id) || c.status === 'booked' ? 'Unavailable' : 'Book Day'}</button>
+                      disabled={isBooked(c.id)}
+                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                    >{isBooked(c.id) ? 'Unavailable' : 'Book Day'}</button>
                   </div>
                   {/* Month column */}
                   <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
@@ -171,9 +179,9 @@ function PricePage() {
                     <div className="text-gray-600 text-sm">30-day package</div>
                     <button
                       onClick={() => beginBooking(c.id,'lease')}
-                      disabled={isBooked(c.id) || c.status === 'booked'}
-                      className={`mt-3 inline-flex items-center justify.center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) || c.status === 'booked' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
-                    >{isBooked(c.id) || c.status === 'booked' ? 'Unavailable' : 'Book Month'}</button>
+                      disabled={isBooked(c.id)}
+                      className={`mt-3 inline-flex items-center justify.center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                    >{isBooked(c.id) ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
               ))}

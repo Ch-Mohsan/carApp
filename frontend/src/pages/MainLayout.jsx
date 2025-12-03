@@ -69,7 +69,7 @@ export default function Layout({ children, overlay }) {
 
   return (
    <div className="min-h-screen relative bg-white overflow-hidden" > 
-  {/* Keep car availability in sync with current bookings */}
+  {/* Availability derived from bookings; sync component is a no-op */}
   <AvailabilitySync />
   
   {/* Top hero background is limited to the hero area height */}

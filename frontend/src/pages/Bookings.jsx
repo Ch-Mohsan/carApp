@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectAllBookings, updateBookingStatus, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
-import { setCarStatus } from '../feetures/carsSlices.js'
 import Alert from '../components/Alert'
 
 // Transparent themed bookings list page
@@ -31,7 +30,6 @@ export default function Bookings() {
   const onCancel = (booking) => {
     if (booking.status !== 'pending') return
     dispatch(updateBookingStatus({ id: booking.id, status: 'cancelled' }))
-    dispatch(setCarStatus({ id: booking.carId, status: 'available' }))
     toast.success('Booking cancelled')
 
   }

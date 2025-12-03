@@ -6,7 +6,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 import { addBooking } from '../feetures/bookingSlice.js'
-import { setCarStatus } from '../feetures/carsSlices.js'
+import { selectAllBookings } from '../feetures/bookingSlice.js'
 
 function AddBoocking() {
   const dispatch = useDispatch()
@@ -15,6 +15,7 @@ function AddBoocking() {
   const carIdParam = params.get('carId')
   const cars = useSelector(selectAllCars)
   const currentUser = useSelector(selectCurrentUser)
+  const bookings = useSelector(selectAllBookings)
 
   const selectedCar = useMemo(() => {
     const id = carIdParam
@@ -40,6 +41,18 @@ function AddBoocking() {
 
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const isBookedNow = useMemo(() => {
+    if (!selectedCar) return false
+    return (bookings || []).some(b => {
+      if (b.carId !== selectedCar.id) return false
+      const statusHolds = b.status === 'confirmed' || b.status === 'pending'
+      if (!statusHolds) return false
+      const start = (b.startDate || b.date || '').slice(0,10)
+      const end = (b.endDate || b.date || '').slice(0,10)
+      if (!start || !end) return false
+      return start <= today && today <= end
+    })
+  }, [bookings, selectedCar, today])
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -80,8 +93,8 @@ function AddBoocking() {
       instructions: form.instructions.trim(),
       fare: computedFare
     }
+    if (isBookedNow) { toast.warn('This car is currently unavailable.'); return }
     dispatch(addBooking(payload))
-    dispatch(setCarStatus({ id: selectedCar.id, status: 'booked' }))
     setError('')
     toast.success('Booking confirmed')
     navigate('/bookings')
@@ -125,6 +138,11 @@ function AddBoocking() {
             {/* Right: Booking Form */}
             <div className="rounded-xl bg-white/10 backdrop-blur-md ring-1 ring-white/20 p-5">
               <h2 className="text-2xl font-bold text-white mb-4">Add Booking</h2>
+              {isBookedNow && (
+                <div className="mb-4 rounded-lg bg-red-500/10 text-red-300 border border-red-500/30 px-4 py-3">
+                  This car is currently unavailable for today.
+                </div>
+              )}
               {success && (
                 <div className="mb-4 rounded-lg bg-[#10d28e]/15 text-[#10d28e] border border-[#10d28e]/30 px-4 py-3">
                   Booking confirmed. <button onClick={() => navigate('/bookings')} className="underline">View bookings</button>
@@ -178,7 +196,7 @@ function AddBoocking() {
                     <input readOnly value={`$${computedFare} (${days} day${days>1?'s':''})`} className="mt-1 w-full rounded-lg border border-white/40 bg-white/10 text-white px-3 py-2 outline-none" />
                   </div>
                 </div>
-                <button className="w-full p-3 bg-[#10d28e] text-white text-lg rounded-lg hover:bg-[#0fb781] shadow-md shadow-[#10d28e]/20">Confirm Booking</button>
+                <button disabled={isBookedNow} className="w-full p-3 bg-[#10d28e] text-white text-lg rounded-lg hover:bg-[#0fb781] disabled:bg-gray-300 disabled:text-gray-500 shadow-md shadow-[#10d28e]/20">Confirm Booking</button>
               </form>
             </div>
           </div>

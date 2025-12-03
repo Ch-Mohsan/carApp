@@ -12,8 +12,17 @@ function Feeatured() {
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const slides = useMemo(() => (
     (storeCars || []).map(c => {
-      const activeBooking = bookings.find(b => b.carId === c.id && b.status === 'pending' && (b.endDate || b.date) >= today)
-      const booked = !!activeBooking || c.status === 'booked'
+      const statusBooked = ((c.status || '').trim().toLowerCase() === 'booked')
+      const bookedByRange = (bookings || []).some(b => {
+        if (b.carId !== c.id) return false
+        const statusHolds = b.status === 'confirmed' || b.status === 'pending'
+        if (!statusHolds) return false
+        const start = (b.startDate || b.date || '').slice(0,10)
+        const end = (b.endDate || b.date || '').slice(0,10)
+        if (!start || !end) return false
+        return start <= today && today <= end
+      })
+      const booked = statusBooked || bookedByRange
       return {
         id: c.id,
         img: c.imageUrl,

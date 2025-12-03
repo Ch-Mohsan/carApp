@@ -1,2 +1,44 @@
 [
+	{
+		"id": "booking-1",
+		"userId": "user-1",
+		"carId": "car-3",
+		"name": "demo",
+		"phone": "+10000000000",
+		"pickup": "Downtown Branch",
+		"dropoff": "Airport Terminal",
+		"startDate": "2025-12-04",
+		"endDate": "2025-12-06",
+		"instructions": "Include child seat",
+		"status": "confirmed",
+		"fare": 160
+	},
+	{
+		"id": "booking-2",
+		"userId": "user-1",
+		"carId": "car-5",
+		"name": "demo",
+		"phone": "+10000000000",
+		"pickup": "City Center",
+		"dropoff": "City Center",
+		"startDate": "2025-12-10",
+		"endDate": "2025-12-12",
+		"instructions": "No smoking vehicle",
+		"status": "pending",
+		"fare": 180
+	},
+	{
+		"id": "booking-3",
+		"userId": "user-1",
+		"carId": "car-2",
+		"name": "demo",
+		"phone": "+10000000000",
+		"pickup": "Suburb Hub",
+		"dropoff": "Suburb Hub",
+		"startDate": "2025-11-20",
+		"endDate": "2025-11-21",
+		"instructions": "Late pickup allowed",
+		"status": "cancelled",
+		"fare": 45
+	}
 ]
