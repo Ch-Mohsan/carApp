@@ -9,6 +9,7 @@ import AvailabilitySync from "../components/AvailabilitySync";
 
 export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
+  const showHero = pathname !== "/dashboard";
 
   const getBg = () => {
     if (pathname === "/home") return "/images/bg_1.jpg"; // keep home
@@ -72,6 +73,7 @@ export default function Layout({ children, overlay }) {
   <AvailabilitySync />
   
   {/* Top hero background is limited to the hero area height */}
+  {showHero && (
   <AnimatePresence mode="wait">
     <motion.div
       key={pathname}
@@ -114,6 +116,7 @@ export default function Layout({ children, overlay }) {
       )}
     </motion.div>
   </AnimatePresence>
+  )}
 
 
   
@@ -122,7 +125,7 @@ export default function Layout({ children, overlay }) {
   </header>
 
 
-  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: pathname === '/home' ? 0 : 'var(--hero-bg-height, 780px)'}}>
+  <main className="relative z-20" style={{paddingTop: 'calc(var(--header-height) + var(--menu-shift, 0px))', marginTop: (!showHero || pathname === '/home') ? 0 : 'var(--hero-bg-height, 780px)'}}>
     <motion.div
       key={pathname}
       initial={{ opacity: 0, y: 12 }}

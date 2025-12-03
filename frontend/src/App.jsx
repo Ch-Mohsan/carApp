@@ -15,6 +15,8 @@ import Landing from './pages/Landing'
 import AddBoocking from './pages/AddBoocking'
 import Bookings from './pages/Bookings'
 import ProtectedRoute from './components/ProtectedRoute'
+import Dashboard from './pages/Dashboard'
+
 
 function App() {
   const location = useLocation()
@@ -36,6 +38,7 @@ function App() {
       {/* Protected routes: require login, still use layout */}
       <Route element={<ProtectedRoute />}> 
         <Route element={<Layout />}> 
+        <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/home" element={<Home />} />
           <Route path="/cars" element={<Cars />} />
           <Route path="/add-booking" element={<AddBoocking />} />
