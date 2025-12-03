@@ -6,6 +6,7 @@ import { selectCurrentUserWithRoles } from '../feetures/UserSlices.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
+import AdminSidebar from '../components/AdminSidebar'
 
 export default function Dashboard() {
   const user = useSelector(selectCurrentUserWithRoles)
@@ -102,11 +103,43 @@ export default function Dashboard() {
                       .sort((a,b) => String(a.startDate||a.date).localeCompare(String(b.startDate||b.date)))[0]
                     const nextLabel = next ? (next.startDate || next.date) : '—'
 
+                    const Icon = ({ name }) => {
+                      const base = 'h-5 w-5'
+                      switch (name) {
+                        case 'car':
+                          return (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={base}>
+                              <path d="M3 13l2.5-6A2 2 0 017.4 5h9.2a2 2 0 011.9 2l2.5 6v5a1 1 0 01-1 1h-1a2 2 0 01-2-2v-1H6v1a2 2 0 01-2 2H3a1 1 0 01-1-1v-5zm4.5 0h9l-1.8-4.5a1 1 0 00-.93-.63H10.23a1 1 0 00-.93.63L7.5 13zM7 17a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                            </svg>
+                          )
+                        case 'money':
+                          return (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={base}>
+                              <path d="M3 6.75A1.75 1.75 0 014.75 5h14.5A1.75 1.75 0 0121 6.75v10.5A1.75 1.75 0 0119.25 19H4.75A1.75 1.75 0 013 17.25V6.75zm2.5.75v9h13v-9h-13zm6.5 1.5a3 3 0 110 6 3 3 0 010-6z" />
+                            </svg>
+                          )
+                        case 'star':
+                          return (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={base}>
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" />
+                            </svg>
+                          )
+                        case 'calendar':
+                          return (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={base}>
+                              <path d="M7 2.75a.75.75 0 01.75.75v1h8.5v-1a.75.75 0 011.5 0v1H19a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2v-12a2 2 0 012-2h.25v-1A.75.75 0 017 2.75zM5 8v10h14V8H5z" />
+                            </svg>
+                          )
+                        default:
+                          return null
+                      }
+                    }
+
                     const cards = [
-                      { title: 'Active Rentals', value: String(activeCount), sub: activeCount ? '+ Live' : 'No active rentals', icon: '🚗' },
-                      { title: 'Total Spent', value: `$${totalSpent.toFixed(0)}`, sub: 'All time confirmed', icon: '💰' },
-                      { title: 'Loyalty Points', value: String(points), sub: points >= 1000 ? 'Gold Status' : 'Member', icon: '⭐' },
-                      { title: 'Next Booking', value: nextLabel, sub: next ? 'Upcoming' : 'None scheduled', icon: '📅' },
+                      { title: 'Active Rentals', value: String(activeCount), sub: activeCount ? '+ Live' : 'No active rentals', icon: 'car' },
+                      { title: 'Total Spent', value: `$${totalSpent.toFixed(0)}`, sub: 'All time confirmed', icon: 'money' },
+                      { title: 'Loyalty Points', value: String(points), sub: points >= 1000 ? 'Gold Status' : 'Member', icon: 'star' },
+                      { title: 'Next Booking', value: nextLabel, sub: next ? 'Upcoming' : 'None scheduled', icon: 'calendar' },
                     ]
 
                     return cards.map((k, i) => (
@@ -117,7 +150,7 @@ export default function Dashboard() {
                       >
                         <div className='flex items-center justify-between'>
                           <h3 className='text-gray-700 font-semibold'>{k.title}</h3>
-                          <span>{k.icon}</span>
+                          <span className='text-[#01d28e]'><Icon name={k.icon} /></span>
                         </div>
                         <div className='mt-3 text-3xl font-extrabold text-gray-900'>{k.value}</div>
                         <div className='mt-1 text-sm text-gray-500'>{k.sub}</div>
@@ -126,13 +159,18 @@ export default function Dashboard() {
                   })()}
                 </motion.div>
 
-              {/* Current Rentals: full-width column list with right-side filter */}
-              <motion.div className='grid grid-cols-1 lg:grid-cols-3 gap-6'
+              {/* Current Rentals + Admin Sidebar */}
+              <motion.div className='grid grid-cols-1 lg:grid-cols-4 gap-6'
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 26 }}
               >
+                {/* Left: Admin sidebar (only for admins) */}
+                <div className='hidden lg:block lg:col-span-1'>
+                  <AdminSidebar />
+                </div>
+
                 <motion.div className='lg:col-span-2 rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-6'
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
