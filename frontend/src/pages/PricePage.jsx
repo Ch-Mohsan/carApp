@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import PageTransition from '../components/PageTransition'
+import Alert from '../components/Alert'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -27,6 +28,8 @@ function PricePage() {
       status: c.status
     }))
   ), [storeCars]);
+  const carsLoading = useSelector(selectCarsLoading)
+  const carsError = useSelector(selectCarsError)
 
   const tabs = [
     { key: 'day', label: 'Per Day Package', color: 'bg-[#1089ff] text-white' },
@@ -140,6 +143,13 @@ function PricePage() {
                 </div>
               ))}
             </div>
+
+            {/* Status banners */}
+            {carsLoading && <Alert type='info' className='mb-4'>Loading cars…</Alert>}
+            {carsError && !carsLoading && <Alert type='error' className='mb-4'>{String(carsError)}</Alert>}
+            {!carsLoading && !carsError && cars.length === 0 && (
+              <Alert type='warning' className='mb-4'>No cars available right now.</Alert>
+            )}
 
             {/* Per-car rows: each car has 2 pricing columns (day, month) */}
             <div className="mt-4 space-y-5">

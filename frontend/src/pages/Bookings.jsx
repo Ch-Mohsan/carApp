@@ -2,15 +2,18 @@ import React, { useMemo } from 'react'
 import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectAllBookings, updateBookingStatus } from '../feetures/bookingSlice.js'
+import { selectAllBookings, updateBookingStatus, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 import { setCarStatus } from '../feetures/carsSlices.js'
+import Alert from '../components/Alert'
 
 // Transparent themed bookings list page
 export default function Bookings() {
   const dispatch = useDispatch()
   const bookings = useSelector(selectAllBookings)
+  const loading = useSelector(selectBookingsLoading)
+  const error = useSelector(selectBookingsError)
   const cars = useSelector(selectAllCars)
   const currentUser = useSelector(selectCurrentUser)
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
@@ -52,10 +55,10 @@ export default function Bookings() {
           <p className="text-gray-600 mt-2">{currentUser ? `Logged in as ${currentUser.username}` : 'Not logged in'}</p>
         </div>
 
-        {enriched.length === 0 && (
-          <div className="rounded-xl bg-white/60 p-8 text-center text-gray-700 shadow">
-            No bookings yet. Rent a car to get started.
-          </div>
+        {loading && <Alert type='info' className='mb-4'>Loading bookings…</Alert>}
+        {error && !loading && <Alert type='error' className='mb-4'>{String(error)}</Alert>}
+        {!loading && !error && enriched.length === 0 && (
+          <Alert type='warning'>No bookings yet. Rent a car to get started.</Alert>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
