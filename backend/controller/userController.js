@@ -6,18 +6,20 @@ const signup = async (req, res) => {
     try {
         const { username, password, phone, isAdmin, isDriver } = req.body;
         if (!username || !password) {
-            return res.status(400).json({ message: 'Username and password are required' });
+            next(new Error('Username and password are required'));
+            return;
         }
         const existingUser = await User.findOne({ username });
         if (existingUser) {
-            return res.status(400).json({ message: 'Username already exists' });
+            next(new Error('Username already exists'));
+            return;
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, password: hashedPassword, phone, isAdmin, isDriver });
         await newUser.save();
         return res.status(201).json({ message: 'User created successfully', user: { id: newUser._id, username: newUser.username } });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error', error: error.message });
+        next(error);
     }
 }
 const login= async(req,res)=>{
@@ -28,7 +30,8 @@ const login= async(req,res)=>{
         console.log(user)
         if(!user){
             console.log('User not found');
-            return res.status(400).send('Invalid credentials');
+            next(new Error('User not found'));
+            return;
         }
                 // Compare against hash; if stored is plaintext, fall back and migrate
                 let isMatch = false;
@@ -55,14 +58,90 @@ const login= async(req,res)=>{
                 }
         const userData={id:user._id,username:user.username,phone:user.phone,isAdmin:user.isAdmin,isDriver:user.isDriver};
 
- 
-        const token= jwt.sign({id:user._id,username:user.username},jwt_key,{expiresIn:'5d'});
+        // Include role flags in JWT so middleware can authorize admin/driver routes
+        const token= jwt.sign({
+            id: user._id,
+            username: user.username,
+            isAdmin: !!user.isAdmin,
+            isDriver: !!user.isDriver,
+        },jwt_key,{expiresIn:'5d'});
         res.status(200).json({ message:"user logged in", userData, token } );
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        next(error);
         
     }
 }
+const logout= async(req,res)=>{
+    try {
+        res.status(200).json({message:'User logged out successfully'});
+    }
+    catch (error) {
+        next(error);
+    }
+}
+const getAllUsers= async(req,res)=>{
+    try {
+        const users= await User.find({}); 
+        if(!users){
+            next(new Error('No users found'));
+            return;
+        }  
+        res.status(200).json({users});
+    } catch (error) {
+        next(error);
+    }
+}
 
+const getUserBYID=async (req,res)=>{
+try {
+    const userId=req.params.id;
+    const user= await User.findById(userId);
+    if(!user){
+        next(new Error('User not found'));
+        return;
+    }
+    res.status(200).json({user});
+} catch (error) {
+    next(error)
+    
+}
 
-module.exports = { signup, login };
+} 
+const deletAllUsers= async(req,res)=>{
+    try {
+        const result= await User.deleteMany({});
+        res.status(200).json({message:'All users deleted successfully', result});
+    } catch (error) {
+        next(error);
+    }
+}   
+const deleteByID= async(req,res)=>{
+    try {
+        const userId=req.params.id; 
+        const deletedUser= await User.findByIdAndDelete(userId);
+        if(!deletedUser){
+            next(new Error('User not found'));
+            return;
+        }
+        res.status(200).json({message:'User deleted successfully',deletedUser});
+    } catch (error) {
+        next(error);
+    }
+}
+const updateByID= async(req,res,)=>{
+    try {
+        const userId=req.params.id; 
+        const updateData=req.body;
+        const updatedUser= await User.findByIdAndUpdate(userId,updateData,{new:true});
+        if(!updatedUser){
+            return res.status(404).json({message:'User not found'});
+        }
+        res.status(200).json({message:'User updated successfully', updatedUser});
+    } catch (error)
+    {
+        next(error);
+    
+    }
+}
+
+module.exports = { signup, login, logout, getAllUsers, getUserBYID, deleteByID, deletAllUsers, updateByID };

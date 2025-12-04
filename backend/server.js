@@ -3,14 +3,12 @@ const express = require('express');
 const app = express();
 const connectDB = require('./utlities/bd');
 const authRoute = require('./routes/auth_route');
-
+const errorHandler = require('./middleware/error_middleware');
 const port = 3000;
+
+app.use(errorHandler);
 app.use(express.json());
 app.use('/api/auth', authRoute);
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 
 (async () => {
   await connectDB();
