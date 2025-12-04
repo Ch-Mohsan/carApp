@@ -5,7 +5,9 @@ const isAurthenticated= async(req,res,next)=>{
     try {
         const authHeader=req.headers.authorization; 
         if(!authHeader || !authHeader.startsWith('Bearer ')){
-            return res.status(401).json({message:'No token provided'});
+            const err = new Error('No token provided');
+            err.status = 401;
+            return next(err);
         }
 
         const token= authHeader.split(' ')[1];
@@ -21,14 +23,17 @@ const isAurthenticated= async(req,res,next)=>{
         next();
     }
     catch (error) {
-        return res.status(401).json({message:'Invalid token',error:error.message});
+        error.status = 401;
+        return next(error);
     }
 }
 const isAdmin= async(req,res,next)=>{
     try {
         if(!req.user.isAdmin){  
             console.log('Access denied. Admins only.',req.user);
-            return res.status(403).json({message:'Access denied. Admins only.'});
+            const err = new Error('Access denied. Admins only.');
+            err.status = 403;
+            return next(err);
         }
         next();
     } catch (error) {
@@ -38,7 +43,9 @@ const isAdmin= async(req,res,next)=>{
 const isDriver= async(req,res,next)=>{
     try {
         if(!req.user.isDriver){  
-            return res.status(403).json({message:'Access denied. Drivers only.'});
+            const err = new Error('Access denied. Drivers only.');
+            err.status = 403;
+            return next(err);
         }   
         next();
     } catch (error) {

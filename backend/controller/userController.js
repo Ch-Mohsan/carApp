@@ -2,17 +2,19 @@ const User=require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwt_key=process.env.JWT_SECRET;
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
     try {
         const { username, password, phone, isAdmin, isDriver } = req.body;
         if (!username || !password) {
-            next(new Error('Username and password are required'));
-            return;
+            const err = new Error('Username and password are required');
+            err.status = 400;
+            return next(err);
         }
         const existingUser = await User.findOne({ username });
         if (existingUser) {
-            next(new Error('Username already exists'));
-            return;
+            const err = new Error('Username already exists');
+            err.status = 409;
+            return next(err);
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, password: hashedPassword, phone, isAdmin, isDriver });
@@ -22,7 +24,7 @@ const signup = async (req, res) => {
         next(error);
     }
 }
-const login= async(req,res)=>{
+const login= async(req,res,next)=>{
     try {
      const {username,password}=req.body;   
      console.log({username,password}) 
@@ -30,8 +32,9 @@ const login= async(req,res)=>{
         console.log(user)
         if(!user){
             console.log('User not found');
-            next(new Error('User not found'));
-            return;
+            const err = new Error('Invalid credentials');
+            err.status = 400;
+            return next(err);
         }
                 // Compare against hash; if stored is plaintext, fall back and migrate
                 let isMatch = false;
@@ -53,8 +56,10 @@ const login= async(req,res)=>{
                     }
                 }
                 if(!isMatch){
-                        console.log('Invalid password');
-                        return res.status(400).json({ message: 'Invalid credentials' });
+                    console.log('Invalid password');
+                    const err = new Error('Invalid credentials');
+                    err.status = 400;
+                    return next(err);
                 }
         const userData={id:user._id,username:user.username,phone:user.phone,isAdmin:user.isAdmin,isDriver:user.isDriver};
 

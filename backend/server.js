@@ -6,9 +6,10 @@ const authRoute = require('./routes/auth_route');
 const errorHandler = require('./middleware/error_middleware');
 const port = 3000;
 
-app.use(errorHandler);
 app.use(express.json());
 app.use('/api/auth', authRoute);
+// Register error handler AFTER routes so it can catch errors
+app.use(errorHandler);
 
 (async () => {
   await connectDB();
