@@ -72,7 +72,7 @@ function Navbar() {
   return (
     <>
       <motion.div
-        className={`navbar-custom w-full h-full ${(forceLight || navLight) ? 'text-black' : 'text-white'}`}
+        className={`navbar navbar-custom w-full ${(forceLight || navLight) ? 'text-black' : 'text-white'}`}
         animate={{
           // Force white on dashboard; else animate by scroll
           backgroundColor: (forceLight || navLight) ? '#ffffff' : (isDesktop ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.85)'),
@@ -80,7 +80,7 @@ function Navbar() {
         }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
       >
-        <div className="w-full max-w-7xl mx-auto flex items-center px-6 md:px-12 py-4">
+        <div className="container navbar-inner">
           <div className='flex items-center text-lg md:text-xl font-extrabold md:px-4 flex-shrink-0 whitespace-nowrap'>
             <span className={`${(forceLight || navLight) ? 'text-black' : 'text-white'}`}>CAR</span>
             <span className='text-[#01d28e] ml-1'>BOOK</span>

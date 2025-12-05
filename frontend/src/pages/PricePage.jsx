@@ -114,7 +114,7 @@ function PricePage() {
   return (
     <PageTransition>
     <section className="w-full px-4 md:px-8 py-12">
-      <div className="max-w-5xl mx-auto">
+      <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-1">
             <div className="space-y-8">
@@ -170,7 +170,7 @@ function PricePage() {
                     <button
                       onClick={() => beginBooking(c.id,'day')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                      className={`mt-3 btn btn-primary opacity-0 group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Day'}</button>
                   </div>
                   {/* Month column */}
@@ -180,7 +180,7 @@ function PricePage() {
                     <button
                       onClick={() => beginBooking(c.id,'lease')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 inline-flex items-center justify.center px-3 py-2 rounded text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ${isBooked(c.id) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#1089ff] text-white hover:bg-[#0d75db]'}`}
+                      className={`mt-3 btn btn-primary opacity-0 group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
@@ -260,7 +260,7 @@ function PricePage() {
                               value={dropoff}
                               onChange={e=>setDropoff(e.target.value)}
                               placeholder="City / Address"
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline.none"
+                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
                             />
                           </div>
                         </div>
@@ -276,12 +276,12 @@ function PricePage() {
                         <div className="flex items-center justify-end gap-3">
                           <button
                             onClick={() => { setBookingTarget(null); setCnic(''); }}
-                            className="px-5 py-2 rounded-md bg-[#1089ff] text-white font-semibold hover:bg-[#0d75db]"
+                            className="btn btn-primary"
                           >Cancel</button>
                           <button
                             onClick={confirmQuickBooking}
                             disabled={!cnic.trim() || !pickup.trim() || !dropoff.trim()}
-                            className="px-5 py-2 rounded-md bg-[#10d28e] text-white font-semibold hover:bg-[#0fb781] disabled:bg-gray-300 disabled:text-gray-500"
+                            className="btn btn-secondary"
                           >Confirm</button>
                         </div>
                       </div>

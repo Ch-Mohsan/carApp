@@ -6,7 +6,7 @@ import AboutContent from '../components/AboutContent.jsx'
 function About() {
   return (
     <PageTransition>
-      <div className='w-full mb-18'>
+      <div className='container py-10'>
         <AboutContent />
       </div>
     </PageTransition>

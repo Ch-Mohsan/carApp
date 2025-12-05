@@ -4,7 +4,7 @@ import PageTransition from '../components/PageTransition'
 function Contact() {
   return (
     <PageTransition>
-      <div>Contact</div>
+      <div className='container py-10'>Contact</div>
     </PageTransition>
   )
 }

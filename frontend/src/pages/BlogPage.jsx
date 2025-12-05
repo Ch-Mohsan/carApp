@@ -5,7 +5,7 @@ import BlogSection from '../components/Blog'
 function BlogPage() {
   return (
     <PageTransition>
-      <div>
+      <div className='container py-10'>
         <BlogSection/>
       </div>
     </PageTransition>

@@ -70,7 +70,7 @@ export default function Login() {
     >
       <div className='absolute inset-0 bg-black/20' />
 
-      <div className='relative w-full max-w-sm md:max-w-md'>
+      <div className='relative w-full max-w-sm md:max-w-md container'>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -195,7 +195,7 @@ export default function Login() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ y: -1 }}
-                className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors disabled:opacity-60'
+                className='btn btn-primary flex-1 text-lg disabled:opacity-60'
                 disabled={loading}
               >
                 {activeTab === 'login' ? 'Log In' : 'Register'}
@@ -204,7 +204,7 @@ export default function Login() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type='button'
-                  className='px-4 py-3 rounded-lg border border-white/40 bg-white/20 text-[#1089ff] hover:bg-white/30'
+                  className='btn'
                   onClick={() => setActiveTab('register')}
                 >
                   Register
@@ -213,7 +213,7 @@ export default function Login() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type='button'
-                  className='px-4 py-3 rounded-lg border border-white/40 bg-white/20 text-[#1089ff] hover:bg-white/30'
+                  className='btn'
                   onClick={() => setActiveTab('login')}
                 >
                   Log In

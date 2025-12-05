@@ -241,7 +241,7 @@ body, input, button, select, textarea {
 .btn-secondary:hover { filter: brightness(0.95); }
 
 /* Navbar baseline wrapper */
-.navbar { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid #e5e7eb; }
+.navbar { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: none; }
 .navbar-inner { display:flex; align-items:center; justify-content:space-between; height:64px; }
 
 /* Dashboard layout */

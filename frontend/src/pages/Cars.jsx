@@ -12,7 +12,7 @@ function Cars() {
   return (
     <PageTransition>
       <section className='w-full px-4 md:px-8 py-12'>
-        <div className='max-w-7xl mx-auto'>
+          <div className='container py-10'>
           {loading && <Alert type='info' className='mb-4'>Loading cars…</Alert>}
           {error && !loading && <Alert type='error' className='mb-4'>{String(error)}</Alert>}
           {!loading && !error && cars.length === 0 && (

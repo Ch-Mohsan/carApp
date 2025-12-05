@@ -133,7 +133,9 @@ export default function Layout({ children, overlay }) {
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
     >
-      {children ?? <Outlet />}
+      <div className="container">
+        {children ?? <Outlet />}
+      </div>
     </motion.div>
   </main>
 

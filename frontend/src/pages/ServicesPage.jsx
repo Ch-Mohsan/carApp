@@ -5,7 +5,7 @@ import ServicesSection from '../components/Services'
 function ServicesPage() {
   return (
     <PageTransition>
-      <div>
+      <div className='container py-10'>
         <ServicesSection />
       </div>
     </PageTransition>

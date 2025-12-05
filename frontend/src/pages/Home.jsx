@@ -15,7 +15,7 @@ function Home() {
     <PageTransition>
       <>
         <Hero />
-        <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
+        <motion.div className="container" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
           <motion.div variants={viewFadeUp}><Feeatured /></motion.div>
           <motion.div variants={viewFadeUp}><AboutContent /></motion.div>
           <motion.div variants={viewFadeUp}><ServicesSection /></motion.div>

@@ -46,8 +46,8 @@ export default function Bookings() {
 
   return (
     <PageTransition>
-    <section className="relative w-full min-h-screen px-4 md:px-8 py-12">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative w-full min-h-screen py-12">
+      <div className="container">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Your Bookings</h1>
           <p className="text-gray-600 mt-2">{currentUser ? `Logged in as ${currentUser.username}` : 'Not logged in'}</p>
@@ -105,7 +105,7 @@ export default function Bookings() {
                   <button
                     onClick={() => onCancel(b)}
                     disabled={b.status !== 'pending' || b.expired}
-                    className={`w-full text-sm font-semibold px-3 py-2 rounded-md transition-colors ${b.status === 'pending' && !b.expired ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                    className={`w-full btn ${b.status === 'pending' && !b.expired ? 'btn-primary !w-full' : '!bg-gray-300 !text-gray-500 cursor-not-allowed !w-full'}`}
                   >Cancel Booking</button>
                 </div>
               </div>
