@@ -27,7 +27,10 @@ export const signupThunk = createAsyncThunk('users/signup', async (payload, { re
     const res = await apiSignup(payload);
     return res;
   } catch (err) {
-    return rejectWithValue(err?.response?.data?.message || 'Signup failed');
+    const data = err?.response?.data;
+    const message = data?.message || 'Signup failed';
+    const issues = Array.isArray(data?.issues) ? data.issues : undefined;
+    return rejectWithValue({ message, issues });
   }
 });
 
@@ -36,7 +39,10 @@ export const loginThunk = createAsyncThunk('users/login', async (payload, { reje
     const res = await apiLogin(payload);
     return res;
   } catch (err) {
-    return rejectWithValue(err?.response?.data?.message || 'Login failed');
+    const data = err?.response?.data;
+    const message = data?.message || 'Login failed';
+    const issues = Array.isArray(data?.issues) ? data.issues : undefined;
+    return rejectWithValue({ message, issues });
   }
 });
 
@@ -90,7 +96,7 @@ const userSlice = createSlice({
       })
       .addCase(signupThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Signup failed';
+        state.error = (action.payload && action.payload.message) || 'Signup failed';
       })
       .addCase(loginThunk.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(loginThunk.fulfilled, (state, action) => {
@@ -110,7 +116,7 @@ const userSlice = createSlice({
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Login failed';
+        state.error = (action.payload && action.payload.message) || 'Login failed';
       })
   }
 })

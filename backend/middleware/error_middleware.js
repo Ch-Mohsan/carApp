@@ -3,8 +3,15 @@ const { ZodError } = require('zod');
 const errorHandler = (err, req, res, next) => { 
     // Zod validation errors
     if (err instanceof ZodError) {
-        const issues = (err.errors || []).map(e => ({ path: e.path, code: e.code, message: e.message }));
-        return res.status(400).json({ message: 'Validation error', issues });
+        const issues = (err.issues || []).map(e => ({
+            path: e.path,
+            code: e.code,
+            message: e.message,
+            minimum: e.minimum,
+            maximum: e.maximum,
+            inclusive: e.inclusive
+        }));
+        return res.status(422).json({ message: 'Validation error', issues });
     }
 
     // Mongoose CastError

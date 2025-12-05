@@ -5,8 +5,8 @@ const middleware = require('../middleware/middle_auth');
 const zodValidator= require('../middleware/zod_middleweare');
 const {authSchema}= require('../validators/auth_validator');    
 
-router.post('/signup',auth_controller.signup);
-router.post('/login',  auth_controller.login);
+router.post('/signup',zodValidator(authSchema),auth_controller.signup);
+router.post('/login', zodValidator(authSchema), auth_controller.login);
 router.post('/logout', middleware.isAurthenticated, auth_controller.logout);
 router.get('/getAll/users', middleware.isAurthenticated, middleware.isAdmin, auth_controller.getAllUsers);
 router.get('/getbyid/users/:id', middleware.isAurthenticated, middleware.isAdmin, auth_controller.getUserBYID);

@@ -29,14 +29,26 @@ export default function Login() {
       dispatch(signupThunk({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
         .unwrap()
         .then(() => { toast.success('Account created successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
-        .catch((err) => { toast.error(err || 'Signup failed') })
+        .catch((err) => {
+          if (err && Array.isArray(err.issues)) {
+            err.issues.forEach((i) => toast.error(i.message))
+          } else {
+            toast.error((err && err.message) || 'Signup failed')
+          }
+        })
       return
     }
 
     dispatch(loginThunk({ username: form.username.trim(), password: form.password }))
       .unwrap()
       .then(() => { toast.success('Logged in successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
-      .catch((err) => { toast.error(err || 'Invalid credentials') })
+      .catch((err) => {
+        if (err && Array.isArray(err.issues)) {
+          err.issues.forEach((i) => toast.error(i.message))
+        } else {
+          toast.error((err && err.message) || 'Invalid credentials')
+        }
+      })
   }
 
   // React to query param changes if user navigates between modes via URL
