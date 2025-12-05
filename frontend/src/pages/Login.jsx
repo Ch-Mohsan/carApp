@@ -70,12 +70,12 @@ export default function Login() {
     >
       <div className='absolute inset-0 bg-black/20' />
 
-      <div className='relative w-full max-w-sm md:max-w-md container'>
+      <div className='relative w-full max-w-md'>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className='rounded-2xl bg-transparent backdrop-blur-md shadow-xl ring-1 ring-white/20 p-6 md:p-7 h-screen md:h-[85vh] flex flex-col'
+          className='rounded-2xl bg-transparent backdrop-blur-md shadow-xl ring-1 ring-white/20 p-6 md:p-7 min-h-[520px] flex flex-col'
         >
           <motion.div className='flex items-center gap-3 mb-6'
             initial={{ opacity: 0, y: 12 }}
@@ -96,20 +96,10 @@ export default function Login() {
                   transition={{ duration: 0.25 }}
                   className='heading-2'
                 >
-                  {activeTab === 'login' ? 'Welcome Back' : 'Create Your Account'}
+                  {activeTab === 'login' ? 'Welcome Back' : 'Create Account'}
                 </motion.h1>
               </AnimatePresence>
-              <AnimatePresence mode='wait'>
-                <motion.p key={`subtitle-${activeTab}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.22 }}
-                  className='paragraph'
-                >
-                  {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
-                </motion.p>
-              </AnimatePresence>
+             
             </div>
           </motion.div>
 
@@ -191,11 +181,11 @@ export default function Login() {
               </div>
             </div>
 
-            <div className='mt-4 flex items-center gap-3'>
+            <div className='mt-4 flex flex-col items-stretch gap-3'>
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ y: -1 }}
-                className='btn btn-primary flex-1 text-lg disabled:opacity-60'
+                className='btn btn-primary w-full text-lg disabled:opacity-60'
                 disabled={loading}
               >
                 {activeTab === 'login' ? 'Log In' : 'Register'}
@@ -204,7 +194,7 @@ export default function Login() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type='button'
-                  className='btn'
+                  className='btn w-full'
                   onClick={() => setActiveTab('register')}
                 >
                   Register
@@ -213,7 +203,7 @@ export default function Login() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type='button'
-                  className='btn'
+                  className='btn w-full bg-[#01d28e] text-white hover:bg-[#0d75db]'
                   onClick={() => setActiveTab('login')}
                 >
                   Log In
