@@ -4,40 +4,39 @@ import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectAllUsers, signupUser, loginUser } from '../feetures/UserSlices.js'
+import { loginThunk, signupThunk, selectUsersError, selectUsersLoading } from '../feetures/UserSlices.js'
 
 export default function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const users = useSelector(selectAllUsers)
+  const loading = useSelector(selectUsersLoading)
+  const sliceError = useSelector(selectUsersError)
   const [searchParams] = useSearchParams()
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login'
   const [activeTab, setActiveTab] = useState(initialMode) // 'login' or 'register'
   const [form, setForm] = useState({ username: '', phone: '', password: '' })
   const [error, setError] = useState('')
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-  const validatePhone = (v) => /^\+?[0-9\-\s]{7,15}$/.test(v)
+  const validatePhone = (v) => !v || /^\+?[0-9\-\s]{7,15}$/.test(v)
   const onSubmit = (e) => {
     e.preventDefault()
-    setForm({ username: '', phone: '', password: '' })
-    if (!form.username.trim()) { toast.warn('Username is required.'); return }
-    if (!form.password || form.password.length < 6) { toast.warn('Password must be at least 6 characters.'); return }
+    // Client-side validation only; keep form values to show in UI until success
+    if (!form.username.trim()) { toast.warn('Username is required'); return }
+    if (!form.password || form.password.length < 6) { toast.warn('Password must be at least 6 characters'); return }
 
     if (activeTab === 'register') {
-      if (!validatePhone(form.phone)) { toast.warn('Please enter a valid phone number.'); return }
-      const exists = users.some(u => u.username === form.username)
-      if (exists) {toast.warn('User already exists. Try logging in.'); return }
-      dispatch(signupUser({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
-      toast.success('Account created successfully')
-      navigate('/home')
+      if (!validatePhone(form.phone)) { toast.warn('Please enter a valid phone number'); return }
+      dispatch(signupThunk({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
+        .unwrap()
+        .then(() => { toast.success('Account created successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
+        .catch((err) => { toast.error(err || 'Signup failed') })
       return
     }
 
-    const found = users.find(u => u.username === form.username && u.password === form.password)
-    if (!found) {toast.warnr('Invalid credentials.'); return }
-    dispatch(loginUser({ username: form.username.trim(), password: form.password }))
-    toast.success('Logged in successfully')
-    navigate('/home')
+    dispatch(loginThunk({ username: form.username.trim(), password: form.password }))
+      .unwrap()
+      .then(() => { toast.success('Logged in successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
+      .catch((err) => { toast.error(err || 'Invalid credentials') })
   }
 
   // React to query param changes if user navigates between modes via URL
@@ -104,14 +103,7 @@ export default function Login() {
 
        
 
-          {error && (
-            <div className='mb-4 flex items-center gap-2 rounded-md bg-red-50 text-red-700 px-3 py-2 border border-red-100'>
-              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-4 w-4'>
-                <path d='M11 7h2v6h-2z' /><path d='M11 15h2v2h-2z' /><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z' />
-              </svg>
-              <span className='text-sm'>{error}</span>
-            </div>
-          )}
+          {/* Use toasts for error feedback; no inline alert block */}
 
           <form onSubmit={onSubmit} className='space-y-3 flex-1'>
             <div>
@@ -191,7 +183,8 @@ export default function Login() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ y: -1 }}
-                className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors'
+                className='flex-1 p-3 bg-[#1089ff] text-white text-lg rounded-lg hover:bg-[#0d75db] shadow-md shadow-[#1089ff]/20 transition-colors disabled:opacity-60'
+                disabled={loading}
               >
                 {activeTab === 'login' ? 'Log In' : 'Register'}
               </motion.button>

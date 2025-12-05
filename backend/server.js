@@ -5,6 +5,9 @@ const connectDB = require('./utlities/bd');
 const authRoute = require('./routes/auth_route');
 const errorHandler = require('./middleware/error_middleware');
 const port = 3000;
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 app.use('/api/auth', authRoute);
