@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-black text-white">
-      <div className="container py-12 w-full">
+    <footer className="w-full  bg-black text-white">
+      <div className="container py-24 w-full flex flex-col justify-center" style={{ minHeight: '380px' }}>
         <motion.div
           className="w-full"
           initial={{ opacity: 0, y: 12 }}
