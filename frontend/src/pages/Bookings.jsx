@@ -49,8 +49,8 @@ export default function Bookings() {
     <section className="relative w-full min-h-screen py-12">
       <div className="container">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Your Bookings</h1>
-          <p className="text-gray-600 mt-2">{currentUser ? `Logged in as ${currentUser.username}` : 'Not logged in'}</p>
+          <h1 className="heading-2">Your Bookings</h1>
+          <p className="paragraph mt-2">{currentUser ? `Logged in as ${currentUser.username}` : 'Not logged in'}</p>
         </div>
 
         {loading && <Alert type='info' className='mb-4'>Loading bookings…</Alert>}

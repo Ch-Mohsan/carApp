@@ -17,7 +17,7 @@ export default function Landing() {
   })), [storeCars])
 
   return (
-    <div className='min-h-screen w-full flex flex-col bg-black text-white'>
+    <div className='min-h-screen w-full flex flex-col bg-white text-black'>
       {/* Poster / Hero */}
       <motion.section
         initial={{ opacity: 0, scale: 0.98 }}
@@ -36,7 +36,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className='text-4xl md:text-6xl font-extrabold tracking-tight'
+            className='heading-1'
           >
             Drive Your Next <span className='text-[#1089ff]'>Experience</span>
           </motion.h1>
@@ -44,7 +44,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.1 }}
-            className='text-lg md:text-xl text-gray-200 max-w-2xl mx-auto'
+            className='lead max-w-2xl mx-auto'
           >
             Premium, sport, and eco-friendly cars ready when you are. Seamless booking, honest pricing, flexible plans.
           </motion.p>
@@ -54,24 +54,15 @@ export default function Landing() {
             transition={{ duration: 0.3, delay: 0.18 }}
             className='flex flex-col sm:flex-row items-center justify-center gap-4 pt-2'
           >
-            <Link
-              to='/login'
-              className='w-full sm:w-auto px-8 py-3 rounded-full bg-[#1089ff] hover:bg-[#0d75db] transition-colors font-semibold shadow-lg shadow-[#1089ff]/30'
-            >Login</Link>
-            <Link
-              to='/login?mode=register'
-              className='w-full sm:w-auto px-8 py-3 rounded-full bg-[#01d28e] hover:bg-[#00b37a] transition-colors font-semibold shadow-lg shadow-[#01d28e]/30'
-            >Register</Link>
+            <Link to='/login' className='btn btn-primary rounded-full px-8 py-3 w-full sm:w-auto shadow-lg shadow-[#1089ff]/30'>Login</Link>
+            <Link to='/login?mode=register' className='btn btn-secondary rounded-full px-8 py-3 w-full sm:w-auto shadow-lg shadow-[#01d28e]/30'>Register</Link>
           </motion.div>
         </div>
       </motion.section>
-
-      {/* Car highlight grid */}
-      <section className='w-full px-6 md:px-10 py-12 md:py-16 bg-white text-gray-900'>
         <div className='max-w-7xl mx-auto'>
           <div className='flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10'>
             <div>
-              <h2 className='text-3xl md:text-4xl font-bold tracking-tight'>Popular Choices</h2>
+              <h2 className='text-3xl md:text-4xl font-bold tracking-tight mt-5'>Popular Choices</h2>
               <p className='text-gray-600 mt-2 max-w-md'>Hand‑picked vehicles balancing performance, comfort, and value.</p>
             </div>
             <Link to='/cars' className='inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#1089ff] text-white font-medium hover:bg-[#0d75db] transition-colors shadow-md'>
@@ -112,14 +103,13 @@ export default function Landing() {
             ))}
           </motion.div>
         </div>
-      </section>
 
       {/* Compact CTA footer substitute */}
       <section className='px-6 md:px-10 py-10 bg-gradient-to-r from-[#1089ff] to-[#01d28e] text-white'>
         <div className='max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6'>
           <div className='text-center lg:text-left'>
-            <h3 className='text-2xl md:text-3xl font-bold'>Ready to start your journey?</h3>
-            <p className='text-white/90 mt-2 max-w-lg'>Join and unlock flexible pricing, priority support, and curated recommendations tailored to how you drive.</p>
+            <h3 className='heading-3'>Ready to start your journey?</h3>
+            <p className='paragraph mt-2 max-w-lg'>Join and unlock flexible pricing, priority support, and curated recommendations tailored to how you drive.</p>
           </div>
           <div className='flex flex-col sm:flex-row gap-4'>
             <Link to='/login' className='px-7 py-3 rounded-full bg-white text-[#1089ff] font-semibold hover:bg-white/90 transition-colors'>Login</Link>

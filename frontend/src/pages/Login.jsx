@@ -94,7 +94,7 @@ export default function Login() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.25 }}
-                  className='text-2xl md:text-3xl font-bold tracking-tight'
+                  className='heading-2'
                 >
                   {activeTab === 'login' ? 'Welcome Back' : 'Create Your Account'}
                 </motion.h1>
@@ -105,7 +105,7 @@ export default function Login() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.22 }}
-                  className='text-sm md:text-base text-gray-600'
+                  className='paragraph'
                 >
                   {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
                 </motion.p>

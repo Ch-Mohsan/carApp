@@ -210,6 +210,21 @@ body, input, button, select, textarea {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+/* Typography scale */
+.heading-1 { font-size: 2.5rem; line-height: 1.2; font-weight: 800; color: var(--color-text); }
+.heading-2 { font-size: 2rem; line-height: 1.25; font-weight: 700; color: var(--color-text); }
+.heading-3 { font-size: 1.5rem; line-height: 1.3; font-weight: 700; color: var(--color-text); }
+.subheading { font-size: 1.125rem; line-height: 1.6; font-weight: 600; color: var(--color-text); }
+.lead { font-size: 1.125rem; line-height: 1.8; color: var(--color-muted); }
+.paragraph { font-size: 1rem; line-height: 1.8; color: var(--color-muted); }
+.muted { color: var(--color-muted); }
+
+@media (min-width: 768px) {
+	.heading-1 { font-size: 3rem; }
+	.heading-2 { font-size: 2.25rem; }
+	.heading-3 { font-size: 1.75rem; }
+}
+
 /* Global container */
 .container{
   max-width: var(--max-width);
