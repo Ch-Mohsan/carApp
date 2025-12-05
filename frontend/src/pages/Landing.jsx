@@ -65,10 +65,10 @@ export default function Landing() {
               <h2 className='text-3xl md:text-4xl font-bold tracking-tight mt-5'>Popular Choices</h2>
               <p className='text-gray-600 mt-2 max-w-md'>Hand‑picked vehicles balancing performance, comfort, and value.</p>
             </div>
-            <Link to='/cars' className='inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#1089ff] text-white font-medium hover:bg-[#0d75db] transition-colors shadow-md'>
+            {/* <Link to='/cars' className='inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#1089ff] text-white font-medium hover:bg-[#0d75db] transition-colors shadow-md'>
               Explore Fleet
               <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='h-5 w-5'><path d='M5 12h14'/><path d='M13 5l7 7-7 7'/></svg>
-            </Link>
+            </Link> */}
           </div>
           <motion.div
             initial='hidden'
