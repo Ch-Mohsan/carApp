@@ -182,5 +182,72 @@ body.nav-scrolled .mobile-menu.open { background: #fff; color: #000; }
 body.nav-scrolled .navbar-custom a::after{background: #1089ff}
 .navbar-custom a::after{background: rgba(255,255,255,0.9)}
 
+/* Global design tokens */
+:root{
+  --color-primary: #1089ff;
+  --color-secondary: #01d28e;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-bg: #ffffff;
+  --max-width: 1200px;
+  --radius: 8px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+body{
+  margin:0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body, input, button, select, textarea {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Global container */
+.container{
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: #f9fafb;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+  text-decoration: none;
+}
+.btn:hover { background: #eef2f7; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.btn-primary:hover { background: #0e78db; }
+.btn-secondary { background: var(--color-secondary); color: #083b2b; border-color: var(--color-secondary); }
+.btn-secondary:hover { filter: brightness(0.95); }
+
+/* Navbar baseline wrapper */
+.navbar { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid #e5e7eb; }
+.navbar-inner { display:flex; align-items:center; justify-content:space-between; height:64px; }
+
+/* Dashboard layout */
+.dashboard { min-height: 100vh; display: grid; grid-template-columns: 280px 1fr; }
+.dashboard-sidebar { border-right: 1px solid #e5e7eb; background: #f8fafc; padding: var(--space-5) var(--space-4); }
+.dashboard-content { padding: var(--space-5); }
+
 
 

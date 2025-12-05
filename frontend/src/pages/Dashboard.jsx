@@ -58,8 +58,11 @@ export default function Dashboard() {
   }, [bookings, byId])
   return (
     <PageTransition>
-      <section className='w-full px-4 md:px-8 py-12'>
-        <div className='max-w-7xl mx-auto'>
+      <section className='dashboard'>
+        <aside className='dashboard-sidebar hidden lg:block'>
+          <AdminSidebar />
+        </aside>
+        <div className='dashboard-content'>
           {!isAdmin && (
             <div className='rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-3'>
               Access denied. Admins only.
@@ -159,18 +162,13 @@ export default function Dashboard() {
                   })()}
                 </motion.div>
 
-              {/* Current Rentals + Admin Sidebar */}
-              <motion.div className='grid grid-cols-1 lg:grid-cols-4 gap-6'
+              {/* Current Rentals */}
+              <motion.div className='grid grid-cols-1 lg:grid-cols-3 gap-6'
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 26 }}
               >
-                {/* Left: Admin sidebar (only for admins) */}
-                <div className='hidden lg:block lg:col-span-1'>
-                  <AdminSidebar />
-                </div>
-
                 <motion.div className='lg:col-span-2 rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-6'
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
