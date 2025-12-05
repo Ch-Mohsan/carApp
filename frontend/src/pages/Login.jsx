@@ -99,7 +99,17 @@ export default function Login() {
                   {activeTab === 'login' ? 'Welcome Back' : 'Create Account'}
                 </motion.h1>
               </AnimatePresence>
-             
+              {/* <AnimatePresence mode='wait'>
+                <motion.p key={`subtitle-${activeTab}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.22 }}
+                  className=''
+                >
+                  {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
+                </motion.p>
+              </AnimatePresence> */}
             </div>
           </motion.div>
 

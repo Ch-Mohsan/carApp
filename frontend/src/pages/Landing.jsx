@@ -38,7 +38,7 @@ export default function Landing() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className='heading-1'
           >
-            Drive Your Next <span className='text-[#1089ff]'>Experience</span>
+          <span className='text-[#01d28e]'>  Drive Your Next</span> <span className='text-[#1089ff]'>Experience</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -54,8 +54,8 @@ export default function Landing() {
             transition={{ duration: 0.3, delay: 0.18 }}
             className='flex flex-col sm:flex-row items-center justify-center gap-4 pt-2'
           >
-            <Link to='/login' className='btn btn-primary rounded-full px-8 py-3 w-full sm:w-auto shadow-lg shadow-[#1089ff]/30'>Login</Link>
-            <Link to='/login?mode=register' className='btn btn-secondary rounded-full px-8 py-3 w-full sm:w-auto shadow-lg shadow-[#01d28e]/30'>Register</Link>
+            <Link to='/login' className='btn btn-primary rounded-lg px-8 py-3 w-full sm:w-auto '>Login</Link>
+            <Link to='/login?mode=register' className='btn btn-secondary rounded-lg px-8 py-3 w-full sm:w-auto '>Register</Link>
           </motion.div>
         </div>
       </motion.section>
@@ -105,7 +105,7 @@ export default function Landing() {
         </div>
 
       {/* Compact CTA footer substitute */}
-      <section className='px-6 md:px-10 py-10 bg-gradient-to-r from-[#1089ff] to-[#01d28e] text-white'>
+      {/* <section className='px-6 md:px-10 py-10 bg-gradient-to-r from-[#1089ff] to-[#01d28e] text-white'>
         <div className='max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6'>
           <div className='text-center lg:text-left'>
             <h3 className='heading-3'>Ready to start your journey?</h3>
@@ -116,7 +116,7 @@ export default function Landing() {
             <Link to='/login?mode=register' className='px-7 py-3 rounded-full bg-black/30 backdrop-blur-sm text-white font-semibold hover:bg-black/40 transition-colors'>Register</Link>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }
