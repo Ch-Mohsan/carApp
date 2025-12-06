@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-// In Vite, env vars are exposed via import.meta.env
-// Define a sane default that matches backend server.js
+
 const baseURL = import.meta.env?.BASE_URL ;
 
-// Axios instance with Authorization header from localStorage
 export const api = axios.create({ baseURL });
 api.interceptors.request.use((config) => {
     try {
