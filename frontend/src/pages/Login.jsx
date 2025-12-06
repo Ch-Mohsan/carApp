@@ -28,7 +28,13 @@ export default function Login() {
       if (!validatePhone(form.phone)) { toast.warn('Please enter a valid phone number'); return }
       dispatch(signupThunk({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
         .unwrap()
-        .then(() => { toast.success('Account created successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/login') })
+        .then(() => {
+          toast.success('Account created successfully');
+          // Switch to login mode and keep username/password for convenience
+          setActiveTab('login');
+          setForm({ username: form.username, phone: '', password: form.password });
+          navigate('/login?mode=login');
+        })
         .catch((err) => {
           if (err && Array.isArray(err.issues)) {
             err.issues.forEach((i) => toast.error(i.message))
@@ -77,41 +83,44 @@ export default function Login() {
           transition={{ duration: 0.35, ease: 'easeOut' }}
           className='rounded-2xl bg-transparent backdrop-blur-md shadow-xl ring-1 ring-white/20 p-6 md:p-7 min-h-[520px] flex flex-col'
         >
-          <motion.div className='flex items-center gap-3 mb-6'
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <span className='inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1089ff] text-white shadow-md'>
-              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>
-                <path d='M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v2h16v-2c0-2.761-3.582-5-8-5z' />
-              </svg>
-            </span>
-            <div>
-              <AnimatePresence mode='wait'>
-                <motion.h1 key={`title-${activeTab}`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                  className='heading-2'
-                >
-                  {activeTab === 'login' ? 'Welcome Back' : 'Create Account'}
-                </motion.h1>
-              </AnimatePresence>
-              {/* <AnimatePresence mode='wait'>
-                <motion.p key={`subtitle-${activeTab}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.22 }}
-                  className=''
-                >
-                  {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
-                </motion.p>
-              </AnimatePresence> */}
-            </div>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className='flex items-center gap-3 mb-6'
+        >
+          <span className='inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1089ff] text-white shadow-md'>
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>
+              <path d='M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v2h16v-2c0-2.761-3.582-5-8-5z' />
+            </svg>
+          </span>
+          <div>
+            <AnimatePresence mode='wait'>
+              <motion.h1
+                key={`title-${activeTab}`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className='heading-2'
+              >
+                {activeTab === 'login' ? 'Welcome Back' : 'Create  Account'}
+              </motion.h1>
+            </AnimatePresence>
+            {/* <AnimatePresence mode='wait'>
+              <motion.p
+                key={`subtitle-${activeTab}`}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22 }}
+                className='paragraph text-white drop-shadow'
+              >
+                {activeTab === 'login' ? 'Sign in to manage bookings and explore more.' : 'Register to start booking your favorite cars.'}
+              </motion.p>
+            </AnimatePresence> */}
+          </div>
+        </motion.div>
 
        
 
@@ -205,7 +214,7 @@ export default function Login() {
                   whileTap={{ scale: 0.98 }}
                   type='button'
                   className='btn w-full'
-                  onClick={() => setActiveTab('register')}
+                  onClick={() => { setActiveTab('register'); navigate('/login?mode=register', { replace: true }) }}
                 >
                   Register
                 </motion.button>
@@ -213,8 +222,8 @@ export default function Login() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type='button'
-                  className='btn w-full bg-[#01d28e] text-white hover:bg-[#0d75db]'
-                  onClick={() => setActiveTab('login')}
+                  className='btn w-full'
+                  onClick={() => { setActiveTab('login'); navigate('/login?mode=login', { replace: true }) }}
                 >
                   Log In
                 </motion.button>
