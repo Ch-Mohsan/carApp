@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import carsReducer from '../src/feetures/carsSlices.js'
-import userReducer from '../src/feetures/UserSlices.js'
-import bookingsReducer from '../src/feetures/bookingSlice.js'
+import carsReducer from '../feetures/carsSlices.js'
+import userReducer from '../feetures/UserSlices.js'
+import bookingsReducer from '../feetures/bookingSlice.js'
 
 const store = configureStore({
     reducer: {
