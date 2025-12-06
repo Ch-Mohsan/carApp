@@ -188,30 +188,30 @@ function PricePage() {
             </div>
             {bookingTarget && (
               <div className="fixed inset-0 z-50 flex items-center justify-center">
-                {/* Backdrop with blur */}
+                {/* Backdrop with lighter white blur */}
                 <div
-                  className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                  className="absolute inset-0 bg-white/70 backdrop-blur-sm"
                   onClick={() => { setBookingTarget(null); setCnic(''); }}
                 />
-                {/* Modal Card */}
+                {/* Modal Card - white design */}
                 <div
                   role="dialog"
                   aria-modal="true"
-                  className="relative z-10 w-full max-w-lg mx-4 rounded-2xl bg-white/10 backdrop-blur-lg ring-1 ring-white/20 shadow-2xl text-white"
+                  className="relative z-10 w-full max-w-lg mx-4 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black"
                 >
                   <div className="flex items-center justify-between px-5 pt-5">
                     <h3 className="text-xl font-bold">Quick Booking</h3>
                     <button
                       onClick={() => { setBookingTarget(null); setCnic(''); }}
-                      className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 shadow"
+                      className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 shadow"
                       aria-label="Close"
                     >
                       ✕
                     </button>
                   </div>
                   <div className="px-5 pb-5 space-y-4">
-                    {error && <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">{error}</div>}
-                    <div className="text-sm text-white/90 flex flex-col gap-1">
+                    {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+                    <div className="text-sm text-gray-700 flex flex-col gap-1">
                       <span>Car: {cars.find(c => c.id === bookingTarget.carId)?.title}</span>
                       <span>Package: {bookingTarget.package === 'lease' ? 'Monthly (30 days)' : 'Single Day'}</span>
                       {currentUser && (
@@ -222,66 +222,66 @@ function PricePage() {
                       <span>Fare: <strong className="text-[#1089ff]">{format(fareFor(cars.find(c=>c.id===bookingTarget.carId), bookingTarget.package))}</strong></span>
                     </div>
                     {!currentUser && (
-                      <div className="text-sm text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 rounded px-3 py-2">Login required before booking.</div>
+                      <div className="text-sm text-yellow-800 bg-yellow-50 border border-yellow-200 rounded px-3 py-2">Login required before booking.</div>
                     )}
                     {currentUser && (
                       <div className="flex flex-col gap-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-sm font-medium text-white/90">Customer Name</label>
+                            <label className="block text-sm font-medium text-gray-700">Customer Name</label>
                             <input
                               value={currentUser.username}
                               readOnly
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                              className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-white/90">Phone</label>
+                            <label className="block text-sm font-medium text-gray-700">Phone</label>
                             <input
                               value={currentUser.phone}
                               readOnly
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                              className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                             />
                           </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-sm font-medium text-white/90">Pickup Location</label>
+                            <label className="block text-sm font-medium text-gray-700">Pickup Location</label>
                             <input
                               value={pickup}
                               onChange={e=>setPickup(e.target.value)}
                               placeholder="City / Address"
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                              className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-white/90">Dropoff Location</label>
+                            <label className="block text-sm font-medium text-gray-700">Dropoff Location</label>
                             <input
                               value={dropoff}
                               onChange={e=>setDropoff(e.target.value)}
                               placeholder="City / Address"
-                              className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                              className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-white/90">CNIC</label>
+                          <label className="block text-sm font-medium text-gray-700">CNIC</label>
                           <input
                             value={cnic}
                             onChange={e=>setCnic(e.target.value)}
                             placeholder="XXXXX-XXXXXXX-X"
-                            className="mt-1 w-full rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 px-3 py-2 outline-none focus:outline-none"
+                            className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                           />
                         </div>
                         <div className="flex items-center justify-end gap-3">
                           <button
                             onClick={() => { setBookingTarget(null); setCnic(''); }}
-                            className="btn btn-primary"
+                            className="px-5 py-2 rounded-md bg-[#1089ff] text-white font-semibold hover:bg-[#0d75db]"
                           >Cancel</button>
                           <button
                             onClick={confirmQuickBooking}
                             disabled={!cnic.trim() || !pickup.trim() || !dropoff.trim()}
-                            className="btn btn-secondary"
+                            className={`px-5 py-2 rounded-md font-semibold ${(!cnic.trim() || !pickup.trim() || !dropoff.trim()) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#01d28e] text-black hover:brightness-95'}`}
                           >Confirm</button>
                         </div>
                       </div>

@@ -100,13 +100,20 @@ function Navbar() {
             )}
           </ul>
 
-          <div className={`md:hidden flex ml-auto ${navLight ? 'text-black' : 'text-white'}`}>
-            <button aria-expanded={Menu} aria-label="Toggle menu" onClick={hendleMenuClick} className={`px-2 py-1 font-thin ${navLight ? 'text-black/80' : 'text-[#ffffff80]'}`}><FaBars size={20} /></button>
+          <div className={`md:hidden flex ml-auto`}>
+            <button
+              aria-expanded={Menu}
+              aria-label="Toggle menu"
+              onClick={hendleMenuClick}
+              className="px-2 py-1 rounded-md bg-white/85 text-black shadow"
+            >
+              <FaBars size={20} />
+            </button>
           </div>
         </div>
       </motion.div>
 
-      <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-evenly items-start ${Menu ? 'open' : ''} ${navLight ? 'bg-white text-black' : 'bg-black text-white'}`}>
+      <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-evenly items-start ${Menu ? 'open' : ''} bg-white text-black`}>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
         <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>

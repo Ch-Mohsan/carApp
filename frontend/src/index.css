@@ -170,8 +170,8 @@ body .mobile-menu{transition:background-color 280ms cubic-bezier(.2,.9,.2,1), co
 	.navbar-custom .flex-shrink-0 { transform: translateY(2px); }
 }
 
-/* When mobile menu is open, keep it white if nav-scrolled, otherwise semi-transparent dark overlay */
-.mobile-menu.open { background: rgba(0,0,0,0.85); }
+/* When mobile menu is open, keep it white if nav-scrolled, otherwise lighter white blur overlay */
+.mobile-menu.open { background: var(--overlay-bg); backdrop-filter: blur(3px); }
 body.nav-scrolled .mobile-menu.open { background: #fff; color: #000; }
 
 /* Link underline animation */
@@ -197,6 +197,8 @@ body.nav-scrolled .navbar-custom a::after{background: #1089ff}
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+	/* lighter white overlay for blur effects */
+	--overlay-bg: rgba(255,255,255,0.7);
 }
 
 body{
@@ -205,6 +207,8 @@ body{
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+	font-size: 16px;
+	line-height: 1.6;
 }
 body, input, button, select, textarea {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -246,6 +250,7 @@ body, input, button, select, textarea {
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
   text-decoration: none;
+	line-height: 1.25;
 }
 .btn:hover { background: #eef2f7; }
 .btn:active { transform: translateY(1px); }
@@ -263,6 +268,9 @@ body, input, button, select, textarea {
 .dashboard { min-height: 100vh; display: grid; grid-template-columns: 280px 1fr; }
 .dashboard-sidebar { border-right: 1px solid #e5e7eb; background: #f8fafc; padding: var(--space-5) var(--space-4); }
 .dashboard-content { padding: var(--space-5); }
+
+/* Shared blur overlay helper */
+.blur-overlay{ background: var(--overlay-bg); backdrop-filter: blur(6px); }
 
 
 

@@ -69,7 +69,7 @@ export default function AdminSidebar() {
   return (
     <aside
       className="rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-4 sticky top-[calc(var(--header-height)+16px)]"
-      style={{ maxHeight: '70vh' }}
+      style={{ height: 'calc(100vh - var(--header-height) - 16px)' }}
       aria-label="Admin Navigation"
     >
       <div className="mb-3">
