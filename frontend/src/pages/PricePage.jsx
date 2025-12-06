@@ -164,23 +164,23 @@ function PricePage() {
               {cars.map((c) => (
                 <div key={`row-${c.id}`} className="grid grid-cols-1 md:grid-cols-2 gap-1">
                   {/* Day column */}
-                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors md:hover:bg-[#01d28e]/90 md:active:bg-[#01d28e]/90 min-h-36">
                     <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay)}<span className="text-gray-500 font-normal">/per day</span></div>
                     <div className="text-gray-600 text-sm">One-day package</div>
                     <button
                       onClick={() => beginBooking(c.id,'day')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 btn btn-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
+                      className={`mt-3 btn btn-primary opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Day'}</button>
                   </div>
                   {/* Month column */}
-                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors hover:bg-[#01d28e]/90 min-h-36">
+                  <div className="group px-4 py-4 rounded-md shadow-sm bg-gray-50 transition-colors md:hover:bg-[#01d28e]/90 md:active:bg-[#01d28e]/90 min-h-36">
                     <div className="text-[#1089ff] text-xl font-bold flex items-baseline gap-2">{format(c.rentPerDay * 30)}<span className="text-gray-500 font-normal">/per month</span></div>
                     <div className="text-gray-600 text-sm">30-day package</div>
                     <button
                       onClick={() => beginBooking(c.id,'lease')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 btn btn-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
+                      className={`mt-3 btn btn-primary opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
@@ -197,9 +197,9 @@ function PricePage() {
                 <div
                   role="dialog"
                   aria-modal="true"
-                  className="relative z-10 w-full max-w-lg mx-4 md:mx-6 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black max-h-[80vh] overflow-auto"
+                  className="relative z-10 w-[90vw] md:w-auto max-w-xl md:max-w-2xl mx-4 md:mx-6 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black max-h-[80vh] overflow-auto md:max-h-none md:overflow-visible"
                 >
-                  <div className="flex items-center justify-between px-4 md:px-5 pt-4 md:pt-5">
+                  <div className="flex items-center justify-between px-4 md:px-6 pt-4 md:pt-6">
                     <h3 className="text-xl font-bold">Quick Booking</h3>
                     <button
                       onClick={() => { setBookingTarget(null); setCnic(''); }}
@@ -209,7 +209,7 @@ function PricePage() {
                       ✕
                     </button>
                   </div>
-                  <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-4">
+                  <div className="px-4 md:px-6 pb-4 md:pb-6 space-y-4">
                     {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
                     <div className="text-sm text-gray-700 flex flex-col gap-1">
                       <span>Car: {cars.find(c => c.id === bookingTarget.carId)?.title}</span>
