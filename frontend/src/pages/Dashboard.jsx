@@ -184,25 +184,25 @@ export default function Dashboard() {
                       <div className='text-sm text-gray-500'>No active rentals.</div>
                     )}
                     {currentRentals.map((r) => (
-                      <motion.div key={r.id} className='flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-3'
+                      <motion.div key={r.id} className='flex flex-col md:flex-row md:items-start md:justify-between gap-4 rounded-xl border border-gray-100 p-3 md:p-4'
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ type: 'spring', stiffness: 220, damping: 24 }}
                       >
-                        <div className='flex items-center gap-4'>
-                          <div className='w-16 h-16 rounded-md overflow-hidden bg-gray-100'>
+                        <div className='flex items-center gap-4 flex-1 min-w-0'>
+                          <div className='w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0'>
                             {r.car?.imageUrl ? (
                               <img src={r.car.imageUrl} alt={r.car.name} className='w-full h-full object-cover' />
                             ) : (
                               <div className='w-full h-full' />
                             )}
                           </div>
-                          <div>
-                            <div className='font-semibold text-gray-800'>{r.car?.name || 'Unknown Car'}</div>
-                            <div className='text-sm text-gray-500'>{r.period}</div>
+                          <div className='min-w-0'>
+                            <div className='font-semibold text-gray-800 whitespace-normal break-words'>{r.car?.name || 'Unknown Car'}</div>
+                            <div className='text-sm md:text-base text-gray-500 whitespace-normal break-words'>{r.period}</div>
                           </div>
                         </div>
-                        <div className='text-right'>
+                        <div className='text-right md:text-right flex-shrink-0 md:self-start md:mt-0 mt-2'>
                           <div className='font-semibold text-gray-800'>${r.fare || r.car?.pricePerDay || 0}</div>
                           <div className='text-xs text-gray-500 capitalize'>{r.status}</div>
                           <button onClick={() => setSelected(r.id)} className='text-sm text-[#1089ff] hover:underline'>View Details</button>
