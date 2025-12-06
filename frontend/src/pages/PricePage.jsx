@@ -170,7 +170,7 @@ function PricePage() {
                     <button
                       onClick={() => beginBooking(c.id,'day')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 btn btn-primary opacity-0 group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
+                      className={`mt-3 btn btn-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Day'}</button>
                   </div>
                   {/* Month column */}
@@ -180,7 +180,7 @@ function PricePage() {
                     <button
                       onClick={() => beginBooking(c.id,'lease')}
                       disabled={isBooked(c.id)}
-                      className={`mt-3 btn btn-primary opacity-0 group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
+                      className={`mt-3 btn btn-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 ${isBooked(c.id) ? '!bg-gray-300 !text-gray-500 cursor-not-allowed !border-gray-300' : ''}`}
                     >{isBooked(c.id) ? 'Unavailable' : 'Book Month'}</button>
                   </div>
                 </div>
@@ -197,9 +197,9 @@ function PricePage() {
                 <div
                   role="dialog"
                   aria-modal="true"
-                  className="relative z-10 w-full max-w-lg mx-4 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black"
+                  className="relative z-10 w-full max-w-lg mx-4 md:mx-6 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black max-h-[80vh] overflow-auto"
                 >
-                  <div className="flex items-center justify-between px-5 pt-5">
+                  <div className="flex items-center justify-between px-4 md:px-5 pt-4 md:pt-5">
                     <h3 className="text-xl font-bold">Quick Booking</h3>
                     <button
                       onClick={() => { setBookingTarget(null); setCnic(''); }}
@@ -209,7 +209,7 @@ function PricePage() {
                       ✕
                     </button>
                   </div>
-                  <div className="px-5 pb-5 space-y-4">
+                  <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-4">
                     {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
                     <div className="text-sm text-gray-700 flex flex-col gap-1">
                       <span>Car: {cars.find(c => c.id === bookingTarget.carId)?.title}</span>
@@ -273,7 +273,7 @@ function PricePage() {
                             className="mt-1 w-full rounded-lg border border-gray-300 bg-white text-black placeholder-gray-400 px-3 py-2 outline-none"
                           />
                         </div>
-                        <div className="flex items-center justify-end gap-3">
+                        <div className="flex flex-col-reverse md:flex-row md:items-center md:justify-end gap-2 md:gap-3">
                           <button
                             onClick={() => { setBookingTarget(null); setCnic(''); }}
                             className="px-5 py-2 rounded-md bg-[#1089ff] text-white font-semibold hover:bg-[#0d75db]"
