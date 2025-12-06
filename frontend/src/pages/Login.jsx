@@ -28,7 +28,7 @@ export default function Login() {
       if (!validatePhone(form.phone)) { toast.warn('Please enter a valid phone number'); return }
       dispatch(signupThunk({ username: form.username.trim(), phone: form.phone.trim(), password: form.password }))
         .unwrap()
-        .then(() => { toast.success('Account created successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
+        .then(() => { toast.success('Account created successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/login') })
         .catch((err) => {
           if (err && Array.isArray(err.issues)) {
             err.issues.forEach((i) => toast.error(i.message))

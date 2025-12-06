@@ -86,13 +86,8 @@ const userSlice = createSlice({
       .addCase(signupThunk.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(signupThunk.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload;
-        const user = payload.user || payload.userData || null;
-        if (user) {
-          const normalized = normalizeUser(user);
-          state.currentUser = { id: normalized.id, username: normalized.username, phone: normalized.phone || null };
-          try { localStorage.setItem('authUser', JSON.stringify(state.currentUser)) } catch {}
-        }
+        // Do NOT set currentUser or token on signup; require login to obtain JWT
+        // Optionally, could store a message in error/success, but leave state unchanged here
       })
       .addCase(signupThunk.rejected, (state, action) => {
         state.loading = false;

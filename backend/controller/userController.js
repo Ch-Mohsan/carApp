@@ -148,5 +148,39 @@ const updateByID= async(req,res,)=>{
     
     }
 }
+const googleAuth= async(req,res,next)=>{
+    try {
+        const { id_token } = req.body;  
+        // Verify the token with Google
+        const ticket = await client.verifyIdToken({
+            idToken: id_token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const userid = payload['sub'];
+        let user
+        user = await User.findOne({
+            email: payload.email
+        });
+        if (!user) {
+            user = new User({
+                username: payload.name,
+                email: payload.email,
+                googleId: payload.sub,
+                isVerified: payload.email_verified
+            });
+            await user.save();
+        }
+        const token = jwt.sign({
+            id: user._id,
+            username: user.username,
+            isAdmin: !!user.isAdmin,
+            isDriver: !!user.isDriver,
+        }, jwt_key, { expiresIn: '5d' });
+        res.status(200).json({ message: "user logged in", userData: { id: user._id, username: user.username, phone: user.phone, isAdmin: user.isAdmin, isDriver: user.isDriver }, token });
+    } catch (error) {
+        next(error);
+    }
+}
 
-module.exports = { signup, login, logout, getAllUsers, getUserBYID, deleteByID, deletAllUsers, updateByID };
+module.exports = { signup, login, logout, getAllUsers, getUserBYID, deleteByID, deletAllUsers, updateByID, googleAuth };

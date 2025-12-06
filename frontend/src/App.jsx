@@ -1,6 +1,6 @@
 
-import React from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Home from './pages/Home'
 import About from './pages/About'
@@ -20,6 +20,24 @@ import Dashboard from './pages/Dashboard'
 
 function App() {
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // On app load, if a valid JWT exists, redirect root to /home
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) return
+      const parts = token.split('.')
+      if (parts.length !== 3) return
+      const payloadJson = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
+      const expSec = payloadJson?.exp
+      const nowSec = Math.floor(Date.now() / 1000)
+      const isValid = typeof expSec === 'number' && expSec > nowSec
+      if (isValid && location.pathname === '/') {
+        navigate('/home', { replace: true })
+      }
+    } catch {}
+  }, [location.pathname, navigate])
   return (
     <AnimatePresence mode="wait">
     <Routes location={location} key={location.pathname}>
