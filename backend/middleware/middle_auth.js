@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const jwt_key = process.env.JWT_SECRET || 'dev_secret_change_me';
+// Prefer JWT_SECRET, but support legacy jwt_key for compatibility
+const JWT_SECRET =  process.env.jwt_key ;
 
 const isAurthenticated= async(req,res,next)=>{
     try {
@@ -11,7 +12,7 @@ const isAurthenticated= async(req,res,next)=>{
         }
 
         const token= authHeader.split(' ')[1];
-        const decoded= jwt.verify(token,jwt_key);
+        const decoded= jwt.verify(token, JWT_SECRET);
         // Support both payload shapes: { id, username } or { userData: { ... } }
         const payload = decoded.userData || decoded;
         req.user={

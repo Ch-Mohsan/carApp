@@ -1,7 +1,8 @@
 const User=require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const jwt_key=process.env.jwt_key;
+// Standardize on JWT_SECRET, keep fallback to legacy jwt_key for safety
+const JWT_SECRET = process.env.jwt_key;
 const signup = async (req, res, next) => {
     try {
         const { username, password, phone, isAdmin, isDriver } = req.body;
@@ -69,7 +70,7 @@ const login= async(req,res,next)=>{
             username: user.username,
             isAdmin: !!user.isAdmin,
             isDriver: !!user.isDriver,
-        },jwt_key,{expiresIn:'5d'});
+        }, JWT_SECRET, {expiresIn:'5d'});
         res.status(200).json({ message:"user logged in", userData, token } );
     } catch (error) {
         next(error);
