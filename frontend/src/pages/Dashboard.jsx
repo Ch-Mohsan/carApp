@@ -6,13 +6,26 @@ import { selectCurrentUserWithRoles } from '../feetures/UserSlices.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
+import AdminUsersTable from '../components/AdminUsersTable'
 import AdminSidebar from '../components/AdminSidebar'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const user = useSelector(selectCurrentUserWithRoles)
   const isAdmin = !!(user && user.isAdmin)
   const bookings = useSelector(selectAllBookings)
   const cars = useSelector(selectAllCars)
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const section = searchParams.get('section') || null
+  const [isMobile, setIsMobile] = useState(false)
+
+  React.useEffect(() => {
+    const compute = () => setIsMobile(window.innerWidth < 768)
+    compute()
+    window.addEventListener('resize', compute)
+    return () => window.removeEventListener('resize', compute)
+  }, [])
 
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const byId = useMemo(() => Object.fromEntries((cars||[]).map(c => [c.id, c])), [cars])
@@ -74,6 +87,7 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: 'spring', stiffness: 220, damping: 24 }}
               >
+                {!section && (
                 <div>
                   <motion.h1 className='text-3xl md:text-4xl font-bold text-gray-800'
                     initial={{ opacity: 0, y: 12 }}
@@ -86,8 +100,10 @@ export default function Dashboard() {
                     transition={{ delay: 0.08, type: 'spring', stiffness: 180, damping: 26 }}
                   >Here’s what’s happening with your rentals.</motion.p>
                 </div>
+                )}
 
-                {/* Dynamic summary cards */}
+                {/* Dynamic summary cards (hidden when section overlay is active) */}
+                {!section && (
                 <motion.div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
                   initial="hidden" animate="visible"
                   variants={{
@@ -161,8 +177,10 @@ export default function Dashboard() {
                     ))
                   })()}
                 </motion.div>
+                )}
 
-              {/* Current Rentals */}
+              {/* Current Rentals (hidden when section overlay is active) */}
+              {!section && (
               <motion.div className='grid grid-cols-1 lg:grid-cols-3 gap-6'
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -253,8 +271,10 @@ export default function Dashboard() {
                   </div>
                 </motion.div>
               </motion.div>
+              )}
 
-              {/* Lower: two columns side-by-side */}
+              {/* Lower: two columns side-by-side (hidden when section overlay is active) */}
+              {!section && (
               <motion.div className='grid grid-cols-1 lg:grid-cols-2 gap-6'
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -291,30 +311,45 @@ export default function Dashboard() {
                   viewport={{ once: true }}
                   transition={{ type: 'spring', stiffness: 220, damping: 24 }}
                 >
-                  <h2 className='text-xl font-bold text-gray-900 mb-4'>Upcoming Bookings</h2>
-                  <div className='space-y-4'>
-                    {upcoming.length === 0 && (
-                      <div className='text-sm text-gray-500'>No upcoming bookings.</div>
-                    )}
-                    {upcoming.map((u) => (
-                      <motion.div key={u.id} className='flex items-center justify-between'
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ type: 'spring', stiffness: 220, damping: 24 }}
-                      >
-                        <div>
-                          <div className='font-semibold text-gray-800'>{u.car?.name || 'Unknown Car'}</div>
-                          <div className='text-sm text-gray-500'>{u.car?.brand || ''}</div>
-                        </div>
-                        <div className='text-right'>
-                          <div className='font-semibold text-gray-800'>{u.date}</div>
-                          <div className='text-[#1089ff]'>${u.fare || u.car?.pricePerDay || 0}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                  {/* Placeholder panel; users table is shown via overlay when section is active */}
+                  <div className='text-sm text-gray-500'>Use sidebar to open admin sections.</div>
                 </motion.div>
               </motion.div>
+              )}
+
+              {/* Section panel: inline on mobile, overlay on desktop */}
+              {section && (
+                isMobile ? (
+                  <motion.div className='rounded-2xl bg-white ring-1 ring-black/10 shadow-2xl p-4 md:p-6' initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+                    <div className='flex items-center justify-between mb-3'>
+                      <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : 'Admin Section'}</h2>
+                      <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
+                    </div>
+                    {section === 'users' && <AdminUsersTable />}
+                    {section === 'cars' && (<div className='text-sm text-gray-500'>Cars management coming soon.</div>)}
+                    {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
+                  </motion.div>
+                ) : (
+                  <motion.div className='fixed inset-0 z-40' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <div className='absolute inset-0 blur-overlay' onClick={() => navigate('/dashboard', { replace: true })} />
+                    <motion.div className='absolute left-1/2 top-[calc(var(--header-height)+24px)] -translate-x-1/2 w-[95%] max-w-6xl rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 z-50'
+                      initial={{ y: 18, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.22, ease: "easeOut" }}
+                    >
+                      <div className='p-4 md:p-6'>
+                        <div className='flex items-center justify-between mb-3'>
+                          <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : 'Admin Section'}</h2>
+                          <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
+                        </div>
+                        {section === 'users' && <AdminUsersTable />}
+                        {section === 'cars' && (<div className='text-sm text-gray-500'>Cars management coming soon.</div>)}
+                        {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )
+              )}
             </motion.div>
           )}
         </div>

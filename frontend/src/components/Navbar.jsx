@@ -172,16 +172,16 @@ function Navbar() {
                       <a href='/admin/cars/new' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
-                      <a href='/admin/cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
+                      <a href='/dashboard?section=cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
-                      <a href='/admin/bookings' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Booking Records</a>
+                      <a href='/dashboard?section=bookings' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Booking Records</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
-                      <a href='/admin/users' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>User Records</a>
+                      <a href='/dashboard?section=users' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>User Records</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
-                      <a href='/admin/drivers' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Driver Status</a>
+                      <a href='/dashboard?section=drivers' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Driver Status</a>
                     </li>
                   </>
                 )}

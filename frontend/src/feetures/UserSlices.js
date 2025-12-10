@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import usersData from '../data/user.json'
-import { signup as apiSignup, login as apiLogin } from '../data/api.js'
+import { signup as apiSignup, login as apiLogin, getAllUsers as apiGetAllUsers, updateUserById as apiUpdateUserById } from '../data/api.js'
 function normalizeUser(raw) {
   if (!raw) return raw
   const id = raw.id || raw._id
@@ -43,6 +43,32 @@ export const loginThunk = createAsyncThunk('users/login', async (payload, { reje
     const message = data?.message || 'Login failed';
     const issues = Array.isArray(data?.issues) ? data.issues : undefined;
     return rejectWithValue({ message, issues });
+  }
+});
+
+// Admin: fetch all users
+export const fetchUsersThunk = createAsyncThunk('users/fetchAll', async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiGetAllUsers();
+    // Backend returns { users }
+    return Array.isArray(res?.users) ? res.users : [];
+  } catch (err) {
+    const data = err?.response?.data;
+    const message = data?.message || 'Failed to fetch users';
+    return rejectWithValue({ message });
+  }
+});
+
+// Admin: update user by id (e.g., toggle isDriver)
+export const updateUserByIdThunk = createAsyncThunk('users/updateById', async ({ id, updates }, { rejectWithValue }) => {
+  try {
+    const res = await apiUpdateUserById(id, updates);
+    // Backend returns { updatedUser }
+    return res?.updatedUser || { id, ...updates };
+  } catch (err) {
+    const data = err?.response?.data;
+    const message = data?.message || 'Failed to update user';
+    return rejectWithValue({ message });
   }
 });
 
@@ -112,6 +138,33 @@ const userSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload && action.payload.message) || 'Login failed';
+      })
+      // Fetch users
+      .addCase(fetchUsersThunk.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(fetchUsersThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = (Array.isArray(action.payload) ? action.payload : []).map(normalizeUser)
+      })
+      .addCase(fetchUsersThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload && action.payload.message) || 'Failed to fetch users';
+      })
+      // Update user
+      .addCase(updateUserByIdThunk.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(updateUserByIdThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const upd = normalizeUser(action.payload || {})
+        const idx = state.users.findIndex(u => u.id === upd.id)
+        if (idx !== -1) state.users[idx] = { ...state.users[idx], ...upd }
+        // If the updated user is the currentUser, reflect role changes
+        if (state.currentUser && state.currentUser.id === upd.id) {
+          state.currentUser = { ...state.currentUser, isAdmin: !!upd.isAdmin, isDriver: !!upd.isDriver }
+          try { localStorage.setItem('authUser', JSON.stringify(state.currentUser)) } catch {}
+        }
+      })
+      .addCase(updateUserByIdThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload && action.payload.message) || 'Failed to update user';
       })
   }
 })

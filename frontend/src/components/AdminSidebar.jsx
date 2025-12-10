@@ -54,7 +54,7 @@ export default function AdminSidebar() {
   }
 
   const Item = ({ to, label, icon }) => {
-    const active = pathname === to
+    const active = (pathname + (window.location.search||'')) === to
     return (
       <Link
         to={to}
@@ -79,10 +79,10 @@ export default function AdminSidebar() {
       <nav className="flex flex-col gap-2">
         <Item to="/dashboard" label="Overview" icon="home" />
         <Item to="/admin/cars/new" label="Add New Car" icon="plus" />
-        <Item to="/admin/cars" label="Cars Listing" icon="car" />
-        <Item to="/admin/bookings" label="Booking Records" icon="calendar" />
-        <Item to="/admin/users" label="User Records" icon="user" />
-        <Item to="/admin/drivers" label="Driver Status" icon="driver" />
+        <Item to="/dashboard?section=cars" label="Cars Listing" icon="car" />
+        <Item to="/dashboard?section=bookings" label="Booking Records" icon="calendar" />
+        <Item to="/dashboard?section=users" label="User Records" icon="user" />
+        <Item to="/dashboard?section=drivers" label="Driver Status" icon="driver" />
       </nav>
     </aside>
   )

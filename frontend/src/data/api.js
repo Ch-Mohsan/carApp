@@ -24,3 +24,15 @@ export const login = async (credentials) => {
     return data;
 };
 
+// Admin: get all users
+export const getAllUsers = async () => {
+    const { data } = await api.get('/auth/getAll/users');
+    return data;
+}
+
+// Admin: update user by id
+export const updateUserById = async (id, updates) => {
+    const { data } = await api.put(`/auth/updatebyid/users/${id}`, updates);
+    return data;
+}
+
