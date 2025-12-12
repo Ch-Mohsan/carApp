@@ -7,6 +7,7 @@ import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import AdminUsersTable from '../components/AdminUsersTable'
+import AdminAddCarForm from '../components/AdminAddCarForm.jsx'
 import AdminSidebar from '../components/AdminSidebar'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
@@ -320,29 +321,31 @@ export default function Dashboard() {
               {/* Section panel: inline on mobile, overlay on desktop */}
               {section && (
                 isMobile ? (
-                  <motion.div className='rounded-2xl bg-white ring-1 ring-black/10 shadow-2xl p-4 md:p-6' initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+                  <motion.div className='rounded-2xl bg-white ring-1 ring-black/10 shadow-2xl p-4 md:p-6 max-h-[calc(100vh-var(--header-height)-48px)] overflow-auto' initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                     <div className='flex items-center justify-between mb-3'>
-                      <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : 'Admin Section'}</h2>
+                      <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
                       <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
                     </div>
                     {section === 'users' && <AdminUsersTable />}
+                    {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                     {section === 'cars' && (<div className='text-sm text-gray-500'>Cars management coming soon.</div>)}
                     {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
                   </motion.div>
                 ) : (
                   <motion.div className='fixed inset-0 z-40' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <div className='absolute inset-0 blur-overlay' onClick={() => navigate('/dashboard', { replace: true })} />
-                    <motion.div className='absolute left-1/2 top-[calc(var(--header-height)+24px)] -translate-x-1/2 w-[95%] max-w-6xl rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 z-50'
+                    <motion.div className='absolute left-1/2 top-[calc(var(--header-height)+24px)] -translate-x-1/2 w-[95%] max-w-6xl rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 z-50 max-h-[calc(100vh-var(--header-height)-48px)] overflow-auto'
                       initial={{ y: 18, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.22, ease: "easeOut" }}
                     >
                       <div className='p-4 md:p-6'>
                         <div className='flex items-center justify-between mb-3'>
-                          <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : 'Admin Section'}</h2>
+                          <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
                           <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
                         </div>
                         {section === 'users' && <AdminUsersTable />}
+                        {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                         {section === 'cars' && (<div className='text-sm text-gray-500'>Cars management coming soon.</div>)}
                         {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
                       </div>

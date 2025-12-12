@@ -78,7 +78,7 @@ export default function AdminSidebar() {
       </div>
       <nav className="flex flex-col gap-2">
         <Item to="/dashboard" label="Overview" icon="home" />
-        <Item to="/admin/cars/new" label="Add New Car" icon="plus" />
+        <Item to="/dashboard?section=addcar" label="Add New Car" icon="plus" />
         <Item to="/dashboard?section=cars" label="Cars Listing" icon="car" />
         <Item to="/dashboard?section=bookings" label="Booking Records" icon="calendar" />
         <Item to="/dashboard?section=users" label="User Records" icon="user" />

@@ -169,7 +169,7 @@ function Navbar() {
                       <a href='/dashboard' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Overview</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
-                      <a href='/admin/cars/new' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
+                      <a href='/dashboard?section=addcar' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
                     </li>
                     <li className='w-full pl-6 pr-4'>
                       <a href='/dashboard?section=cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
