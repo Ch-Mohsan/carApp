@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import AdminUserDetails from './AdminUserDetails'
+import AdminUserDetails from '../AdminComponents/AdminUserDetails.jsx'
 import { selectAllUsers, selectUsersLoading, selectUsersError, fetchUsersThunk, updateUserByIdThunk } from '../feetures/UserSlices.js'
 
 export default function AdminUsersTable() {

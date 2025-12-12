@@ -7,9 +7,9 @@ import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import AdminUsersTable from '../components/AdminUsersTable'
-import AdminCarsTable from '../components/AdminCarsTable.jsx'
-import AdminAddCarForm from '../components/AdminAddCarForm.jsx'
-import AdminSidebar from '../components/AdminSidebar'
+import AdminCarsTable from '../AdminComponents/AdminCarsTable.jsx'
+import AdminAddCarForm from '../AdminComponents/AdminAddCarForm.jsx'
+import AdminSidebar from '../AdminComponents/AdminSidebar.jsx'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
