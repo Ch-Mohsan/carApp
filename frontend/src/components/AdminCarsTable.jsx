@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { fetchCarsThunk, selectAllCars, selectCarsError, selectCarsLoading } from '../feetures/carsSlices.js'
+import { fetchCarsThunk, selectAllCars, selectCarsError, selectCarsLoading, deleteCarByIdThunk } from '../feetures/carsSlices.js'
+import AdminCarEditModal from './AdminCarEditModal.jsx'
+let toast
+try { toast = require('react-toastify').toast } catch {}
 
 export default function AdminCarsTable() {
   const dispatch = useDispatch()
   const cars = useSelector(selectAllCars)
   const loading = useSelector(selectCarsLoading)
   const error = useSelector(selectCarsError)
+  const [editing, setEditing] = useState(null)
 
   useEffect(() => { dispatch(fetchCarsThunk()) }, [dispatch])
 
@@ -22,7 +26,7 @@ export default function AdminCarsTable() {
               <th className='text-left px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-700 whitespace-nowrap'>Brand</th>
               <th className='text-left px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-700 whitespace-nowrap'>Rent/Day</th>
               <th className='text-left px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-700 whitespace-nowrap'>Status</th>
-              <th className='px-3 sm:px-4 py-2 sm:py-3' />
+              <th className='px-3 sm:px-4 py-2 sm:py-3 text-right'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -50,12 +54,28 @@ export default function AdminCarsTable() {
                 <td className='px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap'>{c.brand || '—'}</td>
                 <td className='px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap'>${Number(c.rentPerDay || c.pricePerDay || 0)}</td>
                 <td className='px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap capitalize'>{c.status || 'available'}</td>
-                <td className='px-3 sm:px-4 py-2 sm:py-3 text-right'></td>
+                <td className='px-3 sm:px-4 py-2 sm:py-3 text-right'>
+                  <div className='flex gap-2 justify-end'>
+                    <button className='btn btn-secondary' onClick={() => setEditing(c)}>Edit</button>
+                    <button className='btn btn-primary' onClick={async () => {
+                      const ok = window.confirm('Delete this car? This cannot be undone.')
+                      if (!ok) return
+                      try {
+                        await dispatch(deleteCarByIdThunk(c.id || c._id)).unwrap()
+                        if (toast) try { toast.success('Car deleted') } catch {}
+                      } catch (e) {
+                        if (toast) try { toast.error('Failed to delete car') } catch {}
+                        else alert('Failed to delete car')
+                      }
+                    }}>Delete</button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <AdminCarEditModal car={editing} onClose={() => setEditing(null)} />
     </div>
   )
 }
