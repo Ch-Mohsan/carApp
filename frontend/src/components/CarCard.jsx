@@ -30,9 +30,11 @@ export default function CarCard({ cars }) {
         return start <= today && today <= end
       })
       const booked = statusBooked || bookedByRange
+      // prefer normalized imageURL; fallback to original fields
+      const img = c.imageURL || c.imageUrl || c.img
       return {
         id: c.id,
-        img: c.imageUrl || c.img,
+        img,
         title: c.name || c.title,
         brand: c.brand,
         price: `$${c.pricePerDay ?? (c.price ? String(c.price).replace(/\$/,'') : '0')}`,

@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useDispatch } from 'react-redux'
+import { addCarThunk, fetchCarsThunk } from '../feetures/carsSlices.js'
+// Optional toast; guarded if not available
+let toast
+try { toast = require('react-toastify').toast } catch {}
 
 export default function AdminAddCarForm({ onSuccess }) {
+  const dispatch = useDispatch()
   const [form, setForm] = useState({
     name: '',
     brand: '',
@@ -52,24 +58,17 @@ export default function AdminAddCarForm({ onSuccess }) {
       if (form.rating) fd.append('rating', String(form.rating))
       fd.append('status', form.status || 'available')
       if (imageFile) fd.append('image', imageFile)
-      // If no file selected but preview path is desired, you could append imageURL
-      // else backend will default to ''
-
-      const token = localStorage.getItem('token')
-      const res = await fetch(import.meta.env.VITE_BASE_URL + '/api/cars/add/car', {
-        method: 'POST',
-        headers: {
-          Authorization: token ? `Bearer ${token}` : undefined,
-        },
-        body: fd,
-      })
-      if (!res.ok) throw new Error('Failed to add car')
-      const json = await res.json()
-      onSuccess?.(json?.car)
+      // Use Redux thunk to add car via api.js (multipart)
+      const added = await dispatch(addCarThunk(fd)).unwrap()
+      // Refresh list (optional)
+      dispatch(fetchCarsThunk())
+      if (toast) try { toast.success('Car added successfully') } catch {}
+      onSuccess?.(added)
       reset()
     } catch (err) {
       console.error(err)
-      alert('Failed to add car. Please check fields and try again.')
+      if (toast) { try { toast.error('Failed to add car') } catch {} }
+      else { alert('Failed to add car. Please check fields and try again.') }
     } finally {
       setSubmitting(false)
     }

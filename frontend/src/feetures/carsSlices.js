@@ -1,11 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { getAllCars as apiGetAllCars, addCarApi, updateCarById as apiUpdateCarById, deleteCarById as apiDeleteCarById } from '../data/api.js'
 import carsData from '../data/car.json'
 
 function normalizeCar(raw) {
   if (!raw) return raw
   const id = raw.id || raw._id
   const rent = typeof raw.rentPerDay === 'number' ? raw.rentPerDay : (typeof raw.pricePerDay === 'number' ? raw.pricePerDay : 0)
-  return { ...raw, id, rentPerDay: rent, pricePerDay: rent }
+  // Normalize image URL across various possible fields and sanitize Windows paths
+  const pick = raw.imageURL || raw.imageUrl || raw.img || raw.image || ''
+  let imageURL = typeof pick === 'string' ? pick : ''
+  if (imageURL) {
+    imageURL = imageURL.replace(/\\/g, '/')
+    if (/^file:/i.test(imageURL)) {
+      imageURL = imageURL.replace(/^file:\/\//i, '/')
+    }
+    // Trim Windows drive prefix and map /public/... to site-root
+    const lower = imageURL.toLowerCase()
+    const pubIdx = lower.indexOf('/public/')
+    if (pubIdx !== -1) {
+      imageURL = imageURL.slice(pubIdx + '/public'.length)
+    } else if (/^[a-z]:\//i.test(imageURL)) {
+      imageURL = imageURL.replace(/^[a-z]:\//i, '/')
+    }
+  }
+  return { ...raw, id, rentPerDay: rent, pricePerDay: rent, imageURL }
 }
 
 const initialState = {
@@ -13,6 +31,43 @@ const initialState = {
   loading: false,
   error: null
 }
+
+// Thunks
+export const fetchCarsThunk = createAsyncThunk('cars/fetchAll', async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiGetAllCars()
+    return Array.isArray(res?.cars) ? res.cars.map(normalizeCar) : []
+  } catch (e) {
+    return rejectWithValue(e?.message || 'Failed to fetch cars')
+  }
+})
+
+export const addCarThunk = createAsyncThunk('cars/add', async (formData, { rejectWithValue }) => {
+  try {
+    const res = await addCarApi(formData)
+    return normalizeCar(res?.car)
+  } catch (e) {
+    return rejectWithValue(e?.message || 'Failed to add car')
+  }
+})
+
+export const updateCarByIdThunk = createAsyncThunk('cars/updateById', async ({ id, updates }, { rejectWithValue }) => {
+  try {
+    const res = await apiUpdateCarById(id, updates)
+    return normalizeCar(res?.car || { _id: id, ...updates })
+  } catch (e) {
+    return rejectWithValue(e?.message || 'Failed to update car')
+  }
+})
+
+export const deleteCarByIdThunk = createAsyncThunk('cars/deleteById', async (id, { rejectWithValue }) => {
+  try {
+    const res = await apiDeleteCarById(id)
+    return res?.car?._id || id
+  } catch (e) {
+    return rejectWithValue(e?.message || 'Failed to delete car')
+  }
+})
 
 const carsSlice = createSlice({
   name: 'cars',
@@ -58,6 +113,28 @@ const carsSlice = createSlice({
       state.error = action.payload || null
       state.loading = false
     }
+  }
+  ,
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCarsThunk.pending, (state) => { state.loading = true; state.error = null })
+      .addCase(fetchCarsThunk.fulfilled, (state, action) => { state.cars = action.payload; state.loading = false })
+      .addCase(fetchCarsThunk.rejected, (state, action) => { state.error = action.payload; state.loading = false })
+
+      .addCase(addCarThunk.pending, (state) => { state.loading = true; state.error = null })
+      .addCase(addCarThunk.fulfilled, (state, action) => { if (action.payload) state.cars.push(action.payload); state.loading = false })
+      .addCase(addCarThunk.rejected, (state, action) => { state.error = action.payload; state.loading = false })
+
+      .addCase(updateCarByIdThunk.fulfilled, (state, action) => {
+        const updated = action.payload
+        if (!updated) return
+        const idx = state.cars.findIndex(c => c.id === (updated.id || updated._id))
+        if (idx !== -1) state.cars[idx] = { ...state.cars[idx], ...updated }
+      })
+      .addCase(deleteCarByIdThunk.fulfilled, (state, action) => {
+        const id = action.payload
+        state.cars = state.cars.filter(c => c.id !== id && c._id !== id)
+      })
   }
 })
 

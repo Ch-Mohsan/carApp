@@ -36,3 +36,26 @@ export const updateUserById = async (id, updates) => {
     return data;
 }
 
+// Cars API
+export const getAllCars = async () => {
+    const { data } = await api.get('/cars/getall/cars');
+    return data; // { cars }
+}
+
+export const addCarApi = async (formData) => {
+    const { data } = await api.post('/cars/add/car', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data; // { message, car }
+}
+
+export const updateCarById = async (id, updates) => {
+    const { data } = await api.put(`/cars/updatebyid/car/${id}`, updates);
+    return data; // { message, car }
+}
+
+export const deleteCarById = async (id) => {
+    const { data } = await api.delete(`/cars/deletebyid/car/${id}`);
+    return data; // { message, car }
+}
+
