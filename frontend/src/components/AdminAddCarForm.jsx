@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { addCarThunk, fetchCarsThunk } from '../feetures/carsSlices.js'
-// Optional toast; guarded if not available
-let toast
-try { toast = require('react-toastify').toast } catch {}
+import { toast } from 'react-toastify'
 
 export default function AdminAddCarForm({ onSuccess }) {
   const dispatch = useDispatch()

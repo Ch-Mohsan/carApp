@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { fetchCarsThunk, selectAllCars, selectCarsError, selectCarsLoading, deleteCarByIdThunk } from '../feetures/carsSlices.js'
 import AdminCarEditModal from './AdminCarEditModal.jsx'
-let toast
-try { toast = require('react-toastify').toast } catch {}
+import { toast } from 'react-toastify'
 
 export default function AdminCarsTable() {
   const dispatch = useDispatch()

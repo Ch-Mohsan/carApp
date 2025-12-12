@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { getAllCars as apiGetAllCars, addCarApi, updateCarById as apiUpdateCarById, deleteCarById as apiDeleteCarById } from '../data/api.js'
-import carsData from '../data/car.json'
 
 function normalizeCar(raw) {
   if (!raw) return raw
@@ -27,7 +26,7 @@ function normalizeCar(raw) {
 }
 
 const initialState = {
-  cars: (Array.isArray(carsData) ? carsData : []).map(normalizeCar),
+  cars: [],
   loading: false,
   error: null
 }

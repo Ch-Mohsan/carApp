@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch } from 'react-redux'
 import { updateCarByIdThunk } from '../feetures/carsSlices.js'
-let toast
-try { toast = require('react-toastify').toast } catch {}
+import { toast } from 'react-toastify'
 
 export default function AdminCarEditModal({ car, onClose }) {
   const dispatch = useDispatch()

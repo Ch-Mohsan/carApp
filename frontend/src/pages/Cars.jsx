@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PageTransition from '../components/PageTransition'
 import CarCard from '../components/CarCard'
 import Alert from '../components/Alert'
-import { useSelector } from 'react-redux'
-import { selectAllCars, selectCarsLoading, selectCarsError } from '../feetures/carsSlices.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAllCars, selectCarsLoading, selectCarsError, fetchCarsThunk } from '../feetures/carsSlices.js'
 
 function Cars() {
+  const dispatch = useDispatch()
   const cars = useSelector(selectAllCars)
   const loading = useSelector(selectCarsLoading)
   const error = useSelector(selectCarsError)
+  useEffect(() => { if (!cars || cars.length === 0) dispatch(fetchCarsThunk()) }, [])
   return (
     <PageTransition>
       <section className='w-full px-4 md:px-8 py-12'>
