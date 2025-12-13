@@ -7,6 +7,7 @@ const connectDB = require('./utlities/bd');
 const authRoute = require('./routes/auth_route');
 const errorHandler = require('./middleware/error_middleware');
 const carsRoute = require('./routes/car_route');
+const bookingRoute = require('./routes/booking_auth');
 const port = 3000;
 const cors = require('cors');
 
@@ -23,6 +24,7 @@ try {
 }
 app.use('/api/auth', authRoute);
 app.use('/api/cars', carsRoute);
+app.use('/api/bookings', bookingRoute);
 
 // Register error handler AFTER routes so it can catch errors
 app.use(errorHandler);
