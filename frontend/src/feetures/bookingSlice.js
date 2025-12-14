@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { addBookingApi, cancelBookingApi, getAllBookingsApi } from '../data/api'
 import bookingsData from '../data/booking.json'
 
 function normalizeBooking(raw) {
@@ -14,6 +15,34 @@ const initialState = {
   loading: false,
   error: null
 }
+
+// Thunks
+export const addBookingThunk = createAsyncThunk('bookings/add', async (payload, { rejectWithValue }) => {
+  try {
+    const data = await addBookingApi(payload)
+    return normalizeBooking(data)
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to add booking')
+  }
+})
+
+export const cancelBookingThunk = createAsyncThunk('bookings/cancel', async (id, { rejectWithValue }) => {
+  try {
+    const data = await cancelBookingApi(id)
+    return normalizeBooking(data)
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to cancel booking')
+  }
+})
+
+export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async (_, { rejectWithValue }) => {
+  try {
+    const data = await getAllBookingsApi()
+    return Array.isArray(data) ? data.map(normalizeBooking) : []
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to fetch bookings')
+  }
+})
 
 const bookingSlice = createSlice({
   name: 'bookings',
@@ -52,6 +81,42 @@ const bookingSlice = createSlice({
       state.error = action.payload || null
       state.loading = false
     }
+  },
+  extraReducers: (builder) => {
+    // add booking
+    builder.addCase(addBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(addBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      state.bookings.push(action.payload)
+    })
+    builder.addCase(addBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error adding booking'
+    })
+
+    // cancel booking
+    builder.addCase(cancelBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(cancelBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      const updated = action.payload
+      const i = state.bookings.findIndex(b => b.id === updated.id)
+      if (i !== -1) state.bookings[i] = { ...state.bookings[i], ...updated }
+    })
+    builder.addCase(cancelBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error cancelling booking'
+    })
+
+    // fetch all
+    builder.addCase(fetchAllBookingsThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(fetchAllBookingsThunk.fulfilled, (state, action) => {
+      state.loading = false
+      state.bookings = action.payload
+    })
+    builder.addCase(fetchAllBookingsThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error fetching bookings'
+    })
   }
 })
 

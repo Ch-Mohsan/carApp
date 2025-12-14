@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
-import { addBooking } from '../feetures/bookingSlice.js'
+import { addBookingThunk } from '../feetures/bookingSlice.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
 
 function AddBoocking() {
@@ -94,10 +94,18 @@ function AddBoocking() {
       fare: computedFare
     }
     if (isBookedNow) { toast.warn('This car is currently unavailable.'); return }
-    dispatch(addBooking(payload))
-    setError('')
-    toast.success('Booking confirmed')
-    navigate('/bookings')
+    dispatch(addBookingThunk(payload))
+      .unwrap()
+      .then(() => {
+        setError('')
+        toast.success('Booking confirmed')
+        navigate('/bookings')
+      })
+      .catch((e) => {
+        const msg = typeof e === 'string' ? e : (e?.message || 'Failed to add booking')
+        setError(msg)
+        toast.error(msg)
+      })
   }
 
   return (

@@ -59,3 +59,21 @@ export const deleteCarById = async (id) => {
     return data; // { message, car }
 }
 
+// Bookings API
+export const addBookingApi = async (payload) => {
+    // backend mounted at /api/bookings
+    const { data } = await api.post('/bookings/add', payload);
+    return data; // booking document
+}
+
+export const cancelBookingApi = async (id) => {
+    // update status to cancelled
+    const { data } = await api.put(`/bookings/updateById/${id}`, { status: 'cancelled' });
+    return data; // updated booking
+}
+
+export const getAllBookingsApi = async () => {
+    const { data } = await api.get('/bookings/getall');
+    return data; // array of bookings
+}
+
