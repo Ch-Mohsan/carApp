@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectAllBookings, updateBookingStatus, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice.js'
+import { selectAllBookings, selectBookingsLoading, selectBookingsError, fetchAllBookingsThunk, cancelBookingThunk } from '../feetures/bookingSlice.js'
 import { selectAllCars } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 import Alert from '../components/Alert'
@@ -29,10 +29,16 @@ export default function Bookings() {
 
   const onCancel = (booking) => {
     if (booking.status !== 'pending') return
-    dispatch(updateBookingStatus({ id: booking.id, status: 'cancelled' }))
-    toast.success('Booking cancelled')
+    dispatch(cancelBookingThunk(booking.id))
+      .unwrap()
+      .then(() => toast.success('Booking cancelled'))
+      .catch((e) => toast.error(typeof e === 'string' ? e : (e?.message || 'Failed to cancel booking')))
 
   }
+
+  useEffect(() => {
+    dispatch(fetchAllBookingsThunk())
+  }, [dispatch])
 
   const statusChipClass = (b) => {
     if (b.expired) return 'bg-red-600 text-white'

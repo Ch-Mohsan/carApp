@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { addBookingApi, cancelBookingApi, getAllBookingsApi } from '../data/api'
-import bookingsData from '../data/booking.json'
 
 function normalizeBooking(raw) {
   if (!raw) return raw
@@ -11,7 +10,7 @@ function normalizeBooking(raw) {
 // Booking model
 // { id, userId, carId, name, phone, cnic, pickup, dropoff, startDate, endDate, instructions, status, fare }
 const initialState = {
-  bookings: (Array.isArray(bookingsData) ? bookingsData : []).map(normalizeBooking),
+  bookings: [],
   loading: false,
   error: null
 }
