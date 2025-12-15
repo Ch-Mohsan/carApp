@@ -84,7 +84,7 @@ export default function Bookings() {
             <div key={b.id} className="group relative rounded-2xl bg-white/50 backdrop-blur-md border border-white/40 shadow hover:shadow-xl transition-shadow overflow-hidden">
               {b.car && (
                 <div className="h-40 w-full overflow-hidden">
-                  <img src={b.car.imageURL} alt={b.car.name} className="h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500" />
+                  <img src={b.car.imageURL} alt={b.car.name} className="h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500" onError={(e)=>{e.currentTarget.style.display='none'}} />
                 </div>
               )}
               <div className="p-5 space-y-3">

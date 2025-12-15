@@ -2,6 +2,16 @@ import axios from 'axios';
 
 
 const baseURL = import.meta.env?.VITE_BASE_URL ;
+// Compute API origin (without trailing /api) for static assets like /uploads
+let API_ORIGIN = ''
+try {
+    const u = new URL(baseURL, window.location.origin)
+    API_ORIGIN = (u.origin + u.pathname).replace(/\/?api\/?$/, '') || u.origin
+} catch {
+    API_ORIGIN = ''
+}
+
+export { baseURL as API_BASE_URL, API_ORIGIN }
 
 export const api = axios.create({ baseURL });
 api.interceptors.request.use((config) => {

@@ -61,7 +61,7 @@ export default function BookingDetailsModal({ booking, car, onClose }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="rounded-lg overflow-hidden ring-1 ring-gray-200 bg-white">
               <div className="w-full h-28 md:h-32">
-                {car?.imageURL && <img src={car.imageURL} alt={car?.name} className="w-full h-full object-cover" />}
+                {car?.imageURL && <img src={car.imageURL} alt={car?.name} className="w-full h-full object-cover" onError={(e)=>{e.currentTarget.style.display='none'}} />}
               </div>
               <div className="p-3">
                 <div className="font-semibold">{car?.name || 'Unknown Car'}</div>

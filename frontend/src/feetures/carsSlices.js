@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getAllCars as apiGetAllCars, addCarApi, updateCarById as apiUpdateCarById, deleteCarById as apiDeleteCarById } from '../data/api.js'
+import { getAllCars as apiGetAllCars, addCarApi, updateCarById as apiUpdateCarById, deleteCarById as apiDeleteCarById, API_ORIGIN } from '../data/api.js'
 
 function normalizeCar(raw) {
   if (!raw) return raw
@@ -20,6 +20,11 @@ function normalizeCar(raw) {
       imageURL = imageURL.slice(pubIdx + '/public'.length)
     } else if (/^[a-z]:\//i.test(imageURL)) {
       imageURL = imageURL.replace(/^[a-z]:\//i, '/')
+    }
+    // If image is in /uploads, prefix with API_ORIGIN so it loads from backend
+    if (API_ORIGIN && (/^\/uploads\//i.test(imageURL) || /^uploads\//i.test(imageURL))) {
+      if (!imageURL.startsWith('/')) imageURL = '/' + imageURL
+      imageURL = API_ORIGIN.replace(/\/$/, '') + imageURL
     }
   }
   return { ...raw, id, rentPerDay: rent, pricePerDay: rent, imageURL }
