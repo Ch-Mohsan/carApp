@@ -10,6 +10,7 @@ import AdminUsersTable from '../AdminComponents/AdminUsersTable.jsx'
 import AdminCarsTable from '../AdminComponents/AdminCarsTable.jsx'
 import AdminBookingsTable from '../AdminComponents/AdminBookingsTable.jsx'
 import AdminAddCarForm from '../AdminComponents/AdminAddCarForm.jsx'
+import AdminDriversTable from '../AdminComponents/AdminDriversTable.jsx'
 import AdminSidebar from '../AdminComponents/AdminSidebar.jsx'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
@@ -359,13 +360,14 @@ export default function Dashboard() {
                 isMobile ? (
                   <motion.div className='rounded-2xl bg-white ring-1 ring-black/10 shadow-2xl p-4 md:p-6 max-h-[calc(100vh-var(--header-height)-48px)] overflow-auto' initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                     <div className='flex items-center justify-between mb-3'>
-                      <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
+                      <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'drivers' ? 'Driver Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
                       <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
                     </div>
                     {section === 'users' && <AdminUsersTable />}
                     {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                     {section === 'cars' && <AdminCarsTable />}
                     {section === 'bookings' && (<AdminBookingsTable />)}
+                    {section === 'drivers' && (<AdminDriversTable />)}
                   </motion.div>
                 ) : (
                   <motion.div className='fixed inset-0 z-40' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -377,13 +379,14 @@ export default function Dashboard() {
                     >
                       <div className='p-4 md:p-6'>
                         <div className='flex items-center justify-between mb-3'>
-                          <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
+                          <h2 className='heading-3'>{section === 'users' ? 'User Records' : section === 'cars' ? 'Cars Listing' : section === 'bookings' ? 'Booking Records' : section === 'drivers' ? 'Driver Records' : section === 'addcar' ? 'Add New Car' : 'Admin Section'}</h2>
                           <button className='btn' onClick={() => navigate('/dashboard', { replace: true })}>Close</button>
                         </div>
                         {section === 'users' && <AdminUsersTable />}
                         {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                         {section === 'cars' && <AdminCarsTable />}
                         {section === 'bookings' && (<AdminBookingsTable />)}
+                        {section === 'drivers' && (<AdminDriversTable />)}
                       </div>
                     </motion.div>
                   </motion.div>
