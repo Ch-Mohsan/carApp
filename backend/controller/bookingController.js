@@ -84,7 +84,16 @@ const updateBookingStatus = async (req, res, next) => {
             err.status = 404;
             return next(err);
         }
-        booking.status = status;
+        // Update allowed fields when provided
+        if (typeof req.body.name !== 'undefined') booking.name = req.body.name
+        if (typeof req.body.phone !== 'undefined') booking.phone = req.body.phone
+        if (typeof req.body.pickup !== 'undefined') booking.pickup = req.body.pickup
+        if (typeof req.body.dropoff !== 'undefined') booking.dropoff = req.body.dropoff
+        if (typeof req.body.startDate !== 'undefined') booking.startDate = req.body.startDate
+        if (typeof req.body.endDate !== 'undefined') booking.endDate = req.body.endDate
+        if (typeof req.body.instructions !== 'undefined') booking.instructions = req.body.instructions
+        if (typeof req.body.fare !== 'undefined') booking.fare = req.body.fare
+        if (typeof status !== 'undefined') booking.status = status
         // If driverId provided, assign to booking and update availability
         if (driverId) {
             const driver = await User.findById(driverId);

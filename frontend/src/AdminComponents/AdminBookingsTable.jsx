@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAllBookingsThunk, confirmBookingThunk, selectAllBookings, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice'
+import { fetchAllBookingsThunk, confirmBookingThunk, updateBookingThunk, deleteBookingThunk, selectAllBookings, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice'
 import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import { getAllUsers, updateUserById, getUserById } from '../data/api'
+import { toast } from 'react-toastify'
 
 export default function AdminBookingsTable() {
   const dispatch = useDispatch()
@@ -17,6 +18,9 @@ export default function AdminBookingsTable() {
   const [selectedDriverId, setSelectedDriverId] = useState('')
   const [drivers, setDrivers] = useState([])
   const menuRef = useRef(null)
+  const [editTarget, setEditTarget] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null)
+  const [openMenuId, setOpenMenuId] = useState(null)
 
   const fmt = (d) => {
     if (!d) return '—'
@@ -123,9 +127,24 @@ export default function AdminBookingsTable() {
                       })()}
                     </td>
                     <td className='px-4 py-3 text-right'>
-                      <div className='inline-flex items-center gap-2'>
+                      {/* Desktop actions */}
+                      <div className='hidden md:inline-flex items-center gap-2'>
                         <button className='btn btn-secondary' onClick={() => setViewTarget(b.id)}>View</button>
+                        <button className='btn' onClick={() => setEditTarget(b)}>Edit</button>
+                        <button className='btn btn-danger' onClick={() => setConfirmDelete(b)}>Delete</button>
                         <button className='btn btn-primary' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => setConfirmTarget(b.id)}>Confirm</button>
+                      </div>
+                      {/* Mobile kebab */}
+                      <div className='md:hidden relative inline-block'>
+                        <button className='btn' onClick={() => setOpenMenuId(p => p === b.id ? null : b.id)} aria-haspopup='menu' aria-expanded={openMenuId===b.id}>⋮</button>
+                        {openMenuId === b.id && (
+                          <div className='absolute right-0 mt-2 z-20 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2' role='menu'>
+                            <button className='w-full btn btn-secondary !justify-start' onClick={() => { setViewTarget(b.id); setOpenMenuId(null) }}>View</button>
+                            <button className='w-full btn !justify-start' onClick={() => { setEditTarget(b); setOpenMenuId(null) }}>Edit</button>
+                            <button className='w-full btn btn-danger !justify-start' onClick={() => { setConfirmDelete(b); setOpenMenuId(null) }}>Delete</button>
+                            <button className='w-full btn btn-primary !justify-start' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => { setConfirmTarget(b.id); setOpenMenuId(null) }}>Confirm</button>
+                          </div>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -188,6 +207,95 @@ export default function AdminBookingsTable() {
             </div>
             </div>
           </div>
+      )}
+
+      {/* Edit booking modal */}
+      {editTarget && (() => {
+        const b = editTarget
+        const [form, setForm] = [editTarget._form || { name: b.name||'', phone: b.phone||'', pickup: b.pickup||'', dropoff: b.dropoff||'', startDate: (b.startDate||b.date||'').slice(0,16), endDate: (b.endDate||b.date||'').slice(0,16), instructions: b.instructions||'', fare: b.fare||'' }, null]
+        // We'll implement as component inline for brevity
+        return (
+          <div className='fixed inset-0 z-50 flex items-center justify-center'>
+            <div className='absolute inset-0 bg-black/30' onClick={() => setEditTarget(null)} />
+            <div className='relative z-10 w-full max-w-xl mx-4 md:mx-6 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl text-black max-h-[85vh] overflow-auto p-5 md:p-6'>
+              <div className='flex items-center justify-between mb-3'>
+                <h3 className='heading-4'>Edit Booking</h3>
+                <button className='btn' onClick={() => setEditTarget(null)}>Close</button>
+              </div>
+              <form onSubmit={(e)=>{e.preventDefault();}} className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Customer</span>
+                  <input className='input w-full' defaultValue={b.name||''} onChange={(e)=> b._form = { ...(b._form||{}), name: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Phone</span>
+                  <input className='input w-full' defaultValue={b.phone||''} onChange={(e)=> b._form = { ...(b._form||{}), phone: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Pickup</span>
+                  <input className='input w-full' defaultValue={b.pickup||''} onChange={(e)=> b._form = { ...(b._form||{}), pickup: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Dropoff</span>
+                  <input className='input w-full' defaultValue={b.dropoff||''} onChange={(e)=> b._form = { ...(b._form||{}), dropoff: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Start</span>
+                  <input type='datetime-local' className='input w-full' defaultValue={(b.startDate||'').slice(0,16)} onChange={(e)=> b._form = { ...(b._form||{}), startDate: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>End</span>
+                  <input type='datetime-local' className='input w-full' defaultValue={(b.endDate||'').slice(0,16)} onChange={(e)=> b._form = { ...(b._form||{}), endDate: e.target.value }} />
+                </label>
+                <label className='block text-sm md:col-span-2'>
+                  <span className='text-gray-600'>Instructions</span>
+                  <textarea className='input w-full' rows={3} defaultValue={b.instructions||''} onChange={(e)=> b._form = { ...(b._form||{}), instructions: e.target.value }} />
+                </label>
+                <label className='block text-sm'>
+                  <span className='text-gray-600'>Fare</span>
+                  <input type='number' className='input w-full' defaultValue={b.fare||''} onChange={(e)=> b._form = { ...(b._form||{}), fare: Number(e.target.value) }} />
+                </label>
+              </form>
+              <div className='mt-4 flex justify-end gap-2'>
+                <button className='btn' onClick={()=> setEditTarget(null)}>Cancel</button>
+                <button className='btn btn-primary' onClick={async ()=>{
+                  const updates = b._form || {}
+                  try {
+                    await dispatch(updateBookingThunk({ id: b.id, updates })).unwrap()
+                    toast.success('Booking updated')
+                    setEditTarget(null)
+                  } catch(e) {
+                    toast.error(typeof e === 'string' ? e : (e?.message || e?.payload?.message || 'Failed to update booking'))
+                  }
+                }}>Save</button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Delete confirm modal */}
+      {confirmDelete && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='absolute inset-0 bg-black/30' onClick={()=> setConfirmDelete(null)} />
+          <div className='relative z-10 w-full max-w-md mx-4 rounded-2xl bg-white ring-1 ring-gray-200 shadow-2xl p-5'>
+            <div className='flex items-center justify-between mb-2'>
+              <h3 className='heading-4'>Delete Booking</h3>
+              <button className='btn' onClick={()=> setConfirmDelete(null)}>Close</button>
+            </div>
+            <p className='text-sm text-gray-600 mb-4'>Are you sure you want to delete this booking for <span className='font-semibold'>{confirmDelete.name}</span>?</p>
+            <div className='flex justify-end gap-2'>
+              <button className='btn' onClick={()=> setConfirmDelete(null)}>Cancel</button>
+              <button className='btn btn-danger' onClick={async ()=>{
+                try {
+                  await dispatch(deleteBookingThunk(confirmDelete.id)).unwrap()
+                  toast.success('Booking deleted')
+                  setConfirmDelete(null)
+                } catch(e) { toast.error(typeof e === 'string' ? e : (e?.message || e?.payload?.message || 'Failed to delete booking')) }
+              }}>Delete</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

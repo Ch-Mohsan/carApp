@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { addBookingApi, cancelBookingApi, getAllBookingsApi, updateBookingByIdApi } from '../data/api'
+import { addBookingApi, cancelBookingApi, getAllBookingsApi, updateBookingByIdApi, deleteBookingByIdApi } from '../data/api'
 import { fetchCarsThunk } from './carsSlices'
 
 function normalizeBooking(raw) {
@@ -55,6 +55,30 @@ export const confirmBookingThunk = createAsyncThunk('bookings/confirm', async ({
     return normalizeBooking(data)
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to confirm booking')
+  }
+})
+
+// Update booking (generic edit)
+export const updateBookingThunk = createAsyncThunk('bookings/update', async ({ id, updates }, { rejectWithValue, dispatch }) => {
+  try {
+    const data = await updateBookingByIdApi(id, updates)
+    // If status changed, refresh cars for availability
+    if (typeof updates?.status !== 'undefined') dispatch(fetchCarsThunk())
+    return normalizeBooking(data)
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to update booking')
+  }
+})
+
+// Delete booking
+export const deleteBookingThunk = createAsyncThunk('bookings/delete', async (id, { rejectWithValue, dispatch }) => {
+  try {
+    await deleteBookingByIdApi(id)
+    // Deletion may free cars, refresh list
+    dispatch(fetchCarsThunk())
+    return { id }
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to delete booking')
   }
 })
 
@@ -143,6 +167,31 @@ const bookingSlice = createSlice({
     builder.addCase(confirmBookingThunk.rejected, (state, action) => {
       state.loading = false
       state.error = action.payload || 'Error confirming booking'
+    })
+
+    // update booking (edit)
+    builder.addCase(updateBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(updateBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      const updated = action.payload
+      const i = state.bookings.findIndex(b => b.id === updated.id)
+      if (i !== -1) state.bookings[i] = { ...state.bookings[i], ...updated }
+    })
+    builder.addCase(updateBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error updating booking'
+    })
+
+    // delete booking
+    builder.addCase(deleteBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(deleteBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      const id = action.payload?.id
+      if (id) state.bookings = state.bookings.filter(b => String(b.id) !== String(id))
+    })
+    builder.addCase(deleteBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error deleting booking'
     })
   }
 })

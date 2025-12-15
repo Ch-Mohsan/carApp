@@ -98,6 +98,11 @@ export const updateBookingByIdApi = async (id, updates) => {
     return data; // updated booking document
 }
 
+export const deleteBookingByIdApi = async (id) => {
+    const { data } = await api.delete(`/bookings/deleteById/${id}`);
+    return data; // { message }
+}
+
 // Users API helpers
 export const getUserById = async (id) => {
     const { data } = await api.get(`/auth/getbyid/users/${id}`);
