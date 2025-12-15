@@ -1,4 +1,5 @@
 const Car=require('../models/carModel');
+const Booking = require('../models/bookingModel');
 const path = require('path');
 
 const addCar= async(req,res,next)=>{
@@ -31,7 +32,23 @@ const addCar= async(req,res,next)=>{
 }
 const getAllCars= async(req,res,next)=>{
     try {
-        const cars= await Car.find({}); 
+        // Compute active bookings and sync car statuses before returning
+        const now = new Date()
+        const activeBookings = await Booking.find({ status: 'confirmed', endDate: { $gte: now } }).select('carId').lean()
+        const activeSet = new Set(activeBookings.map(b => String(b.carId)))
+        const cars = await Car.find({})
+
+        // Optionally persist any status drift
+        const bulk = []
+        for (const c of cars) {
+            const shouldBe = activeSet.has(String(c._id)) ? 'booked' : 'available'
+            if (c.status !== shouldBe) {
+                bulk.push({ updateOne: { filter: { _id: c._id }, update: { $set: { status: shouldBe } } } })
+                c.status = shouldBe
+            }
+        }
+        if (bulk.length) await Car.bulkWrite(bulk)
+
         res.status(200).json({cars});
     } catch (error) {
         next(error);

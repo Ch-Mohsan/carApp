@@ -21,13 +21,14 @@ export default function CarCard({ cars }) {
     return list.map(c => {
       const statusBooked = ((c.status || '').trim().toLowerCase() === 'booked')
       const bookedByRange = (bookings || []).some(b => {
-        if (b.carId !== c.id) return false
+        if (String(b.carId) !== String(c.id)) return false
         const statusHolds = b.status === 'confirmed' || b.status === 'pending'
         if (!statusHolds) return false
         const start = (b.startDate || b.date || '').slice(0,10)
         const end = (b.endDate || b.date || '').slice(0,10)
-        if (!start || !end) return false
-        return start <= today && today <= end
+        if (!end) return false
+        // Consider car unavailable if there is any current or upcoming booking (end >= today)
+        return end >= today
       })
       const booked = statusBooked || bookedByRange
       // prefer normalized imageURL; fallback to original fields

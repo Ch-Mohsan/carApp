@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { addBookingApi, cancelBookingApi, getAllBookingsApi, updateBookingByIdApi } from '../data/api'
+import { fetchCarsThunk } from './carsSlices'
 
 function normalizeBooking(raw) {
   if (!raw) return raw
@@ -25,9 +26,11 @@ export const addBookingThunk = createAsyncThunk('bookings/add', async (payload, 
   }
 })
 
-export const cancelBookingThunk = createAsyncThunk('bookings/cancel', async (id, { rejectWithValue }) => {
+export const cancelBookingThunk = createAsyncThunk('bookings/cancel', async (id, { rejectWithValue, dispatch }) => {
   try {
     const data = await cancelBookingApi(id)
+    // Refresh cars to reflect release of availability
+    dispatch(fetchCarsThunk())
     return normalizeBooking(data)
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to cancel booking')
@@ -44,9 +47,11 @@ export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async
 })
 
 // Confirm booking with optional driver assignment
-export const confirmBookingThunk = createAsyncThunk('bookings/confirm', async ({ id, driverId }, { rejectWithValue }) => {
+export const confirmBookingThunk = createAsyncThunk('bookings/confirm', async ({ id, driverId }, { rejectWithValue, dispatch }) => {
   try {
     const data = await updateBookingByIdApi(id, { status: 'confirmed', driverId })
+    // Refresh cars to reflect booked status
+    dispatch(fetchCarsThunk())
     return normalizeBooking(data)
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to confirm booking')

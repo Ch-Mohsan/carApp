@@ -1,5 +1,6 @@
 const Booking = require('../models/bookingModel');
 const User = require('../models/userModel');
+const Car = require('../models/carModel');
 
 const createBooking = async (req, res, next) => {
     const {
@@ -107,6 +108,18 @@ const updateBookingStatus = async (req, res, next) => {
                 await d.save();
             }
         }
+        // Sync car status based on booking state
+        if (status === 'confirmed') {
+            // mark car booked
+            await Car.findByIdAndUpdate(booking.carId, { status: 'booked' }).catch(() => {})
+        } else if (status === 'cancelled') {
+            // release car if there is no other active confirmed booking for this car
+            const now = new Date()
+            const active = await Booking.find({ carId: booking.carId, status: 'confirmed', endDate: { $gte: now } }).limit(1)
+            if (!active || active.length === 0) {
+                await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
+            }
+        }
         await booking.save();
         res.status(200).json(booking);
     }   catch (error) {
@@ -121,6 +134,16 @@ const deleteBookingById = async (req, res, next) => {
             const err = new Error('Booking not found');
             err.status = 404;
             return next(err);
+        }
+        // If the deleted booking was confirmed and still active, release the car
+        if (booking.status === 'confirmed') {
+            const now = new Date()
+            if (booking.endDate && new Date(booking.endDate) >= now) {
+                const active = await Booking.find({ carId: booking.carId, status: 'confirmed', endDate: { $gte: now } }).limit(1)
+                if (!active || active.length === 0) {
+                    await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
+                }
+            }
         }
         res.status(200).json({ message: 'Booking deleted successfully' });
     } catch (error) {
