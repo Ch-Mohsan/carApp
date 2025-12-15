@@ -46,6 +46,12 @@ export const updateUserById = async (id, updates) => {
     return data;
 }
 
+// Admin: delete user by id
+export const deleteUserById = async (id) => {
+    const { data } = await api.delete(`/auth/deletebyid/users/${id}`);
+    return data; // { message, deletedUser }
+}
+
 // Cars API
 export const getAllCars = async () => {
     const { data } = await api.get('/cars/getall/cars');

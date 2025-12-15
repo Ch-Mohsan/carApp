@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import AdminUserDetails from '../AdminComponents/AdminUserDetails.jsx'
-import { selectAllUsers, selectUsersLoading, selectUsersError, fetchUsersThunk, updateUserByIdThunk } from '../feetures/UserSlices.js'
+import { selectAllUsers, selectUsersLoading, selectUsersError, fetchUsersThunk, updateUserByIdThunk, deleteUserByIdThunk } from '../feetures/UserSlices.js'
 
 export default function AdminUsersTable() {
   const dispatch = useDispatch()
@@ -10,6 +10,8 @@ export default function AdminUsersTable() {
   const loading = useSelector(selectUsersLoading)
   const error = useSelector(selectUsersError)
   const [selected, setSelected] = useState(null)
+  const [editTarget, setEditTarget] = useState(null)
+  const [openMenuId, setOpenMenuId] = useState(null)
 
   useEffect(() => { dispatch(fetchUsersThunk()) }, [dispatch])
 
@@ -48,12 +50,45 @@ export default function AdminUsersTable() {
                 <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">{u.username}</td>
                 <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">{u.phone || '—'}</td>
                 <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">{u.isDriver ? 'Active' : 'Inactive'}</td>
-                <td className="px-3 sm:px-4 py-2 sm:py-3">
-                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                    <button className="btn btn-secondary w-full sm:w-auto" onClick={() => setSelected(u)}>View</button>
-                    <button className="btn btn-primary w-full sm:w-auto" onClick={() => onToggleDriver(u)} disabled={loading}>
+                <td className="px-3 sm:px-4 py-2 sm:py-3 relative">
+                  {/* Desktop / tablet: inline buttons */}
+                  <div className="hidden sm:flex flex-wrap gap-2 items-center">
+                    <button className="btn btn-secondary" onClick={() => setSelected(u)}>View</button>
+                    <button className="btn" onClick={() => setEditTarget(u)}>Edit</button>
+                    <button className="btn btn-danger" onClick={() => {
+                      const id = u.id || u._id
+                      if (window.confirm('Delete this user?')) dispatch(deleteUserByIdThunk(id))
+                    }} disabled={loading}>Delete</button>
+                    <button className="btn btn-primary" onClick={() => onToggleDriver(u)} disabled={loading}>
                       {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
                     </button>
+                  </div>
+                  {/* Mobile: kebab menu */}
+                  <div className="sm:hidden">
+                    <button
+                      className="btn"
+                      aria-haspopup="menu"
+                      aria-expanded={openMenuId === (u.id || u._id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const id = u.id || u._id
+                        setOpenMenuId(prev => prev === id ? null : id)
+                      }}
+                    >⋮</button>
+                    {openMenuId === (u.id || u._id) && (
+                      <div className="absolute right-2 top-full mt-2 z-20 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2"
+                           role="menu" onMouseLeave={() => setOpenMenuId(null)}>
+                        <button className="w-full btn btn-secondary !justify-start" onClick={() => { setSelected(u); setOpenMenuId(null) }}>View</button>
+                        <button className="w-full btn !justify-start" onClick={() => { setEditTarget(u); setOpenMenuId(null) }}>Edit</button>
+                        <button className="w-full btn btn-danger !justify-start" onClick={() => {
+                          const id = u.id || u._id; setOpenMenuId(null);
+                          if (window.confirm('Delete this user?')) dispatch(deleteUserByIdThunk(id))
+                        }} disabled={loading}>Delete</button>
+                        <button className="w-full btn btn-primary !justify-start" onClick={() => { onToggleDriver(u); setOpenMenuId(null) }} disabled={loading}>
+                          {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -63,6 +98,60 @@ export default function AdminUsersTable() {
       </div>
 
       <AdminUserDetails user={selected} onClose={() => setSelected(null)} />
+
+      {/* Edit modal */}
+      {editTarget && (
+        <div className="fixed inset-0 z-[1000] grid place-items-center">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setEditTarget(null)} />
+          <div className="relative z-[1001] w-[95%] max-w-lg rounded-2xl bg-white text-gray-900 shadow-2xl ring-1 ring-black/10 p-5 md:p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="heading-3">Edit User</h3>
+              <button className="btn" onClick={() => setEditTarget(null)}>Close</button>
+            </div>
+            <EditUserForm user={editTarget} onSubmit={async (vals) => {
+              const id = editTarget.id || editTarget._id
+              await dispatch(updateUserByIdThunk({ id, updates: vals }))
+              setEditTarget(null)
+            }} />
+          </div>
+        </div>
+      )}
     </div>
+  )
+}
+
+function EditUserForm({ user, onSubmit }) {
+  const [form, setForm] = useState({
+    username: user?.username || '',
+    phone: user?.phone || '',
+    isDriver: !!user?.isDriver,
+    isAdmin: !!user?.isAdmin,
+  })
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSubmit(form) }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label className="block">
+          <div className="text-sm text-gray-600">Username</div>
+          <input className="input w-full" value={form.username} onChange={(e)=>setForm({ ...form, username: e.target.value })} />
+        </label>
+        <label className="block">
+          <div className="text-sm text-gray-600">Phone</div>
+          <input className="input w-full" value={form.phone} onChange={(e)=>setForm({ ...form, phone: e.target.value })} />
+        </label>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label className="inline-flex items-center gap-2">
+          <input type="checkbox" checked={form.isDriver} onChange={(e)=>setForm({ ...form, isDriver: e.target.checked })} />
+          <span>Driver</span>
+        </label>
+        <label className="inline-flex items-center gap-2">
+          <input type="checkbox" checked={form.isAdmin} onChange={(e)=>setForm({ ...form, isAdmin: e.target.checked })} />
+          <span>Admin</span>
+        </label>
+      </div>
+      <div className="flex justify-end gap-2">
+        <button type="button" className="btn" onClick={()=>onSubmit(form)}>Save</button>
+      </div>
+    </form>
   )
 }

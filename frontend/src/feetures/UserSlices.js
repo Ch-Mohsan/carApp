@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import usersData from '../data/user.json'
 import { signup as apiSignup, login as apiLogin, getAllUsers as apiGetAllUsers, updateUserById as apiUpdateUserById } from '../data/api.js'
+import { deleteUserById as apiDeleteUserById } from '../data/api.js'
 function normalizeUser(raw) {
   if (!raw) return raw
   const id = raw.id || raw._id
@@ -71,6 +72,19 @@ export const updateUserByIdThunk = createAsyncThunk('users/updateById', async ({
     return rejectWithValue({ message });
   }
 });
+
+// Admin: delete user by id
+export const deleteUserByIdThunk = createAsyncThunk('users/deleteById', async (id, { rejectWithValue }) => {
+  try {
+    const res = await apiDeleteUserById(id)
+    // Backend returns { message, deletedUser }
+    return { id: id || res?.deletedUser?._id }
+  } catch (err) {
+    const data = err?.response?.data
+    const message = data?.message || 'Failed to delete user'
+    return rejectWithValue({ message })
+  }
+})
 
 const initialState = {
 
@@ -165,6 +179,25 @@ const userSlice = createSlice({
       .addCase(updateUserByIdThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload && action.payload.message) || 'Failed to update user';
+      })
+      // Delete user
+      .addCase(deleteUserByIdThunk.pending, (state) => { state.loading = true; state.error = null })
+      .addCase(deleteUserByIdThunk.fulfilled, (state, action) => {
+        state.loading = false
+        const id = action.payload?.id
+        if (!id) return
+        state.users = state.users.filter(u => String(u.id) !== String(id))
+        // If deleting current user, clear session
+        if (state.currentUser && String(state.currentUser.id) === String(id)) {
+          state.currentUser = null
+          state.token = null
+          try { localStorage.removeItem('authUser') } catch {}
+          try { localStorage.removeItem('authToken') } catch {}
+        }
+      })
+      .addCase(deleteUserByIdThunk.rejected, (state, action) => {
+        state.loading = false
+        state.error = (action.payload && action.payload.message) || 'Failed to delete user'
       })
   }
 })
