@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
+import { toast } from 'react-toastify'
 import AdminUserDetails from '../AdminComponents/AdminUserDetails.jsx'
 import { selectAllUsers, selectUsersLoading, selectUsersError, fetchUsersThunk, updateUserByIdThunk, deleteUserByIdThunk } from '../feetures/UserSlices.js'
 
@@ -12,6 +13,7 @@ export default function AdminUsersTable() {
   const [selected, setSelected] = useState(null)
   const [editTarget, setEditTarget] = useState(null)
   const [openMenuId, setOpenMenuId] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null) // user object
 
   useEffect(() => { dispatch(fetchUsersThunk()) }, [dispatch])
 
@@ -19,8 +21,13 @@ export default function AdminUsersTable() {
     const id = u.id || u._id
     dispatch(updateUserByIdThunk({ id, updates: { isDriver: !u.isDriver } }))
       .unwrap()
-      .then((updated) => { /* optimistic UI handled in slice */ })
-      .catch(() => {})
+      .then((updated) => {
+        toast.success(`${updated?.username || u.username}: Driver ${!u.isDriver ? 'enabled' : 'disabled'}`)
+      })
+      .catch((e) => {
+        const msg = e?.message || e?.payload?.message || 'Failed to update driver status'
+        toast.error(msg)
+      })
   }
 
   const columns = useMemo(() => [
@@ -55,10 +62,7 @@ export default function AdminUsersTable() {
                   <div className="hidden sm:flex flex-wrap gap-2 items-center">
                     <button className="btn btn-secondary" onClick={() => setSelected(u)}>View</button>
                     <button className="btn" onClick={() => setEditTarget(u)}>Edit</button>
-                    <button className="btn btn-danger" onClick={() => {
-                      const id = u.id || u._id
-                      if (window.confirm('Delete this user?')) dispatch(deleteUserByIdThunk(id))
-                    }} disabled={loading}>Delete</button>
+                    <button className="btn btn-danger" onClick={() => setConfirmDelete(u)} disabled={loading}>Delete</button>
                     <button className="btn btn-primary" onClick={() => onToggleDriver(u)} disabled={loading}>
                       {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
                     </button>
@@ -80,10 +84,7 @@ export default function AdminUsersTable() {
                            role="menu" onMouseLeave={() => setOpenMenuId(null)}>
                         <button className="w-full btn btn-secondary !justify-start" onClick={() => { setSelected(u); setOpenMenuId(null) }}>View</button>
                         <button className="w-full btn !justify-start" onClick={() => { setEditTarget(u); setOpenMenuId(null) }}>Edit</button>
-                        <button className="w-full btn btn-danger !justify-start" onClick={() => {
-                          const id = u.id || u._id; setOpenMenuId(null);
-                          if (window.confirm('Delete this user?')) dispatch(deleteUserByIdThunk(id))
-                        }} disabled={loading}>Delete</button>
+                        <button className="w-full btn btn-danger !justify-start" onClick={() => { setOpenMenuId(null); setConfirmDelete(u) }} disabled={loading}>Delete</button>
                         <button className="w-full btn btn-primary !justify-start" onClick={() => { onToggleDriver(u); setOpenMenuId(null) }} disabled={loading}>
                           {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
                         </button>
@@ -110,9 +111,35 @@ export default function AdminUsersTable() {
             </div>
             <EditUserForm user={editTarget} onSubmit={async (vals) => {
               const id = editTarget.id || editTarget._id
-              await dispatch(updateUserByIdThunk({ id, updates: vals }))
-              setEditTarget(null)
+              dispatch(updateUserByIdThunk({ id, updates: vals }))
+                .unwrap()
+                .then((res) => { setEditTarget(null); toast.success('User updated') })
+                .catch((e) => toast.error(e?.message || e?.payload?.message || 'Failed to update user'))
             }} />
+          </div>
+        </div>
+      )}
+
+      {/* Confirm delete modal */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-[1000] grid place-items-center">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setConfirmDelete(null)} />
+          <div className="relative z-[1001] w-[95%] max-w-md rounded-2xl bg-white text-gray-900 shadow-2xl ring-1 ring-black/10 p-5 md:p-6">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="heading-3">Delete User</h3>
+              <button className="btn" onClick={() => setConfirmDelete(null)}>Close</button>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">Are you sure you want to delete <span className="font-semibold">{confirmDelete.username}</span>? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
+              <button className="btn" onClick={() => setConfirmDelete(null)}>Cancel</button>
+              <button className="btn btn-danger" onClick={() => {
+                const id = confirmDelete.id || confirmDelete._id
+                dispatch(deleteUserByIdThunk(id))
+                  .unwrap()
+                  .then(() => { toast.success('User deleted'); setConfirmDelete(null) })
+                  .catch((e) => toast.error(e?.message || e?.payload?.message || 'Failed to delete user'))
+              }}>Delete</button>
+            </div>
           </div>
         </div>
       )}
