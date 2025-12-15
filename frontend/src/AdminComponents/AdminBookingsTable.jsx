@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllBookingsThunk, confirmBookingThunk, selectAllBookings, selectBookingsLoading, selectBookingsError } from '../feetures/bookingSlice'
-import { selectAllCars } from '../feetures/carsSlices'
+import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import { getAllUsers, updateUserById, getUserById } from '../data/api'
 
@@ -45,6 +45,9 @@ export default function AdminBookingsTable() {
   }
 
   useEffect(() => { dispatch(fetchAllBookingsThunk()) }, [dispatch])
+  useEffect(() => {
+    if (!cars || cars.length === 0) dispatch(fetchCarsThunk())
+  }, [dispatch])
   useEffect(() => { refreshDrivers() }, [])
   // Fallback: ensure assigned drivers are loaded even if not in the initial drivers list
   useEffect(() => {

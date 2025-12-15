@@ -3,7 +3,7 @@ import PageTransition from '../components/PageTransition'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectAllBookings, selectBookingsLoading, selectBookingsError, fetchAllBookingsThunk, cancelBookingThunk } from '../feetures/bookingSlice.js'
-import { selectAllCars } from '../feetures/carsSlices.js'
+import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 import Alert from '../components/Alert'
 
@@ -17,13 +17,26 @@ export default function Bookings() {
   const currentUser = useSelector(selectCurrentUser)
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
 
+  const fmt = React.useCallback((d) => {
+    if (!d) return '—'
+    try {
+      const dt = new Date(d)
+      const y = dt.getFullYear()
+      const m = String(dt.getMonth()+1).padStart(2,'0')
+      const dd = String(dt.getDate()).padStart(2,'0')
+      const hh = String(dt.getHours()).padStart(2,'0')
+      const mm = String(dt.getMinutes()).padStart(2,'0')
+      return `${y}-${m}-${dd} ${hh}:${mm}`
+    } catch { return String(d) }
+  }, [])
+
   const enriched = useMemo(() => {
     return bookings.map(b => {
       const car = cars.find(c => c.id === b.carId)
       const end = b.endDate || b.date
       const expired = b.status === 'pending' && end < today
        console.log(currentUser,"..................user.........")
-      return { ...b, car, expired }
+      return { ...b, car, expired, _period: `${fmt(b.startDate || b.date)} → ${fmt(b.endDate || b.date)}` }
     })
   }, [bookings, cars, today])
 
@@ -38,6 +51,7 @@ export default function Bookings() {
 
   useEffect(() => {
     dispatch(fetchAllBookingsThunk())
+    dispatch(fetchCarsThunk())
   }, [dispatch])
 
   const statusChipClass = (b) => {
@@ -70,7 +84,7 @@ export default function Bookings() {
             <div key={b.id} className="group relative rounded-2xl bg-white/50 backdrop-blur-md border border-white/40 shadow hover:shadow-xl transition-shadow overflow-hidden">
               {b.car && (
                 <div className="h-40 w-full overflow-hidden">
-                  <img src={b.car.imageUrl} alt={b.car.name} className="h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500" />
+                  <img src={b.car.imageURL} alt={b.car.name} className="h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500" />
                 </div>
               )}
               <div className="p-5 space-y-3">
@@ -80,14 +94,14 @@ export default function Bookings() {
                 </div>
                 <p className="text-sm text-gray-500">Brand: {b.car ? b.car.brand : 'N/A'}</p>
                 <div className="text-sm text-gray-700 flex flex-col gap-1">
-                  <span>Period: {b.startDate || b.date} → {b.endDate || b.date}</span>
+                  <span>Period: {b._period}</span>
                   <span>Pickup: {b.pickup}</span>
                   <span>Dropoff: {b.dropoff}</span>
                 </div>
                 {b.instructions && (
                   <p className="text-xs text-gray-500 italic">“{b.instructions}”</p>
                 )}
-                <div className="text-xs text-gray-500">CNIC: {b.cnic}</div>
+                <div className="text-xs text-gray-500">CNIC: {b.Cnic || b.cnic}</div>
                 <div className="text-xs text-gray-500">Customer: {b.name} ({b.phone})</div>
                 {b.car && (
                   <div className="pt-2 text-sm font-medium text-[#1089ff] flex items-center gap-2">
