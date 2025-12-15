@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/PageTransition'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUserWithRoles } from '../feetures/UserSlices.js'
-import { selectAllBookings } from '../feetures/bookingSlice.js'
-import { selectAllCars } from '../feetures/carsSlices.js'
+import { selectAllBookings, selectBookingsLoading, fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
+import { selectAllCars, selectCarsLoading, fetchCarsThunk } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import AdminUsersTable from '../AdminComponents/AdminUsersTable.jsx'
 import AdminCarsTable from '../AdminComponents/AdminCarsTable.jsx'
@@ -14,10 +14,13 @@ import AdminSidebar from '../AdminComponents/AdminSidebar.jsx'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
+  const dispatch = useDispatch()
   const user = useSelector(selectCurrentUserWithRoles)
   const isAdmin = !!(user && user.isAdmin)
   const bookings = useSelector(selectAllBookings)
   const cars = useSelector(selectAllCars)
+  const bookingsLoading = useSelector(selectBookingsLoading)
+  const carsLoading = useSelector(selectCarsLoading)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const section = searchParams.get('section') || null
@@ -29,6 +32,14 @@ export default function Dashboard() {
     window.addEventListener('resize', compute)
     return () => window.removeEventListener('resize', compute)
   }, [])
+
+  // Ensure data is loaded when dashboard opens to avoid zeroed stats
+  React.useEffect(() => {
+    if (isAdmin) {
+      dispatch(fetchCarsThunk())
+      dispatch(fetchAllBookingsThunk())
+    }
+  }, [dispatch, isAdmin])
 
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const fmt = React.useCallback((d) => {
@@ -118,7 +129,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Dynamic summary cards (hidden when section overlay is active) */}
-                {!section && (
+                {!section && !(bookingsLoading || carsLoading) && (
                 <motion.div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
                   initial="hidden" animate="visible"
                   variants={{
@@ -193,6 +204,17 @@ export default function Dashboard() {
                   })()}
                 </motion.div>
                 )}
+                {!section && (bookingsLoading || carsLoading) && (
+                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className='rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-6 animate-pulse'>
+                        <div className='h-4 w-32 bg-gray-200 rounded' />
+                        <div className='mt-3 h-8 w-24 bg-gray-200 rounded' />
+                        <div className='mt-2 h-3 w-20 bg-gray-200 rounded' />
+                      </div>
+                    ))}
+                  </div>
+                )}
 
               {/* Current Rentals (hidden when section overlay is active) */}
               {!section && (
@@ -224,8 +246,8 @@ export default function Dashboard() {
                       >
                         <div className='flex items-center gap-4 flex-1 min-w-0'>
                           <div className='w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0'>
-                            {r.car?.imageUrl ? (
-                              <img src={r.car.imageUrl} alt={r.car.name} className='w-full h-full object-cover' />
+                            {r.car?.imageURL ? (
+                              <img src={r.car.imageURL} alt={r.car.name} className='w-full h-full object-cover' />
                             ) : (
                               <div className='w-full h-full' />
                             )}
