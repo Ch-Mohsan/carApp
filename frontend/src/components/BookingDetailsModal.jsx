@@ -19,7 +19,20 @@ export default function BookingDetailsModal({ booking, car, onClose }) {
     )
   }
   const dispatch = useDispatch()
-  const period = `${booking.startDate || booking.date} → ${booking.endDate || booking.date}`
+  const fmt = (d) => {
+    if (!d) return '—'
+    try {
+      const dt = new Date(d)
+      // Show YYYY-MM-DD HH:mm (24h)
+      const y = dt.getFullYear()
+      const m = String(dt.getMonth()+1).padStart(2,'0')
+      const d2 = String(dt.getDate()).padStart(2,'0')
+      const hh = String(dt.getHours()).padStart(2,'0')
+      const mm = String(dt.getMinutes()).padStart(2,'0')
+      return `${y}-${m}-${d2} ${hh}:${mm}`
+    } catch { return String(d) }
+  }
+  const period = `${fmt(booking.startDate || booking.date)} → ${fmt(booking.endDate || booking.date)}`
   const canConfirm = booking.status === 'pending'
   const canCancel = booking.status === 'pending'
 
@@ -91,11 +104,6 @@ export default function BookingDetailsModal({ booking, car, onClose }) {
               disabled={!canCancel}
               className={`px-5 py-2 rounded-md font-semibold ${canCancel ? 'bg-gray-300 text-gray-700 hover:bg-gray-400' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >Cancel</button>
-            <button
-              onClick={handleConfirm}
-              disabled={!canConfirm}
-              className={`px-5 py-2 rounded-md font-semibold ${canConfirm ? 'bg-[#01d28e] text-black hover:brightness-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-            >Confirm</button>
             <button onClick={onClose} className="px-5 py-2 rounded-md bg-[#1089ff] text-white font-semibold hover:bg-[#0d75db]">Close</button>
           </div>
         </div>

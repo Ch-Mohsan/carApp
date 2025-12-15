@@ -31,6 +31,18 @@ export default function Dashboard() {
   }, [])
 
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
+  const fmt = React.useCallback((d) => {
+    if (!d) return '—'
+    try {
+      const dt = new Date(d)
+      const y = dt.getFullYear()
+      const m = String(dt.getMonth()+1).padStart(2,'0')
+      const dd = String(dt.getDate()).padStart(2,'0')
+      const hh = String(dt.getHours()).padStart(2,'0')
+      const mm = String(dt.getMinutes()).padStart(2,'0')
+      return `${y}-${m}-${dd} ${hh}:${mm}`
+    } catch { return String(d) }
+  }, [])
   const byId = useMemo(() => Object.fromEntries((cars||[]).map(c => [c.id, c])), [cars])
   const [selected, setSelected] = useState(null) // booking id
   const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'confirmed' | 'pending'
@@ -42,7 +54,7 @@ export default function Dashboard() {
       .map(b => ({
         ...b,
         car: byId[b.carId] || null,
-        period: `${b.startDate || b.date} → ${b.endDate || b.date}`
+        period: `${fmt(b.startDate || b.date)} → ${fmt(b.endDate || b.date)}`
       }))
     if (statusFilter === 'all') return base
     return base.filter(b => b.status === statusFilter)
@@ -55,7 +67,7 @@ export default function Dashboard() {
       .map(b => ({
         ...b,
         car: byId[b.carId] || null,
-        date: `${b.startDate || b.date} - ${b.endDate || b.date}`
+        date: `${fmt(b.startDate || b.date)} - ${fmt(b.endDate || b.date)}`
       }))
   }, [bookings, byId, today])
 
@@ -67,7 +79,7 @@ export default function Dashboard() {
       .slice(0,5)
       .map(b => ({
         title: b.status === 'confirmed' ? 'Booking Confirmed' : b.status === 'cancelled' ? 'Booking Cancelled' : 'Booking Created',
-        subtitle: `${byId[b.carId]?.name || 'Car'} - ${b.startDate || b.date}`,
+        subtitle: `${byId[b.carId]?.name || 'Car'} - ${fmt(b.startDate || b.date)}`,
         when: byId[b.carId] ? byId[b.carId].brand : '',
       }))
     return items
@@ -123,7 +135,7 @@ export default function Dashboard() {
                     const next = upcoming
                       .slice()
                       .sort((a,b) => String(a.startDate||a.date).localeCompare(String(b.startDate||b.date)))[0]
-                    const nextLabel = next ? (next.startDate || next.date) : '—'
+                    const nextLabel = next ? fmt(next.startDate || next.date) : '—'
 
                     const Icon = ({ name }) => {
                       const base = 'h-5 w-5'
