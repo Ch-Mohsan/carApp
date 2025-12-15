@@ -60,12 +60,18 @@ const bookingSchema = new mongoose.Schema({
     isDriver:{
         type: mongoose.Schema.Types.Boolean,
         ref: 'Driver',
-        required: false,
+        required: false,}
     
+    ,
+    driverId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false
+    }
     }
 
    
-});
+);
 const Booking = mongoose.model('Booking', bookingSchema);
 
 module.exports = Booking;

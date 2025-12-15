@@ -8,6 +8,7 @@ import { selectAllCars } from '../feetures/carsSlices.js'
 import BookingDetailsModal from '../components/BookingDetailsModal'
 import AdminUsersTable from '../AdminComponents/AdminUsersTable.jsx'
 import AdminCarsTable from '../AdminComponents/AdminCarsTable.jsx'
+import AdminBookingsTable from '../AdminComponents/AdminBookingsTable.jsx'
 import AdminAddCarForm from '../AdminComponents/AdminAddCarForm.jsx'
 import AdminSidebar from '../AdminComponents/AdminSidebar.jsx'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -330,7 +331,7 @@ export default function Dashboard() {
                     {section === 'users' && <AdminUsersTable />}
                     {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                     {section === 'cars' && <AdminCarsTable />}
-                    {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
+                    {section === 'bookings' && (<AdminBookingsTable />)}
                   </motion.div>
                 ) : (
                   <motion.div className='fixed inset-0 z-40' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -348,7 +349,7 @@ export default function Dashboard() {
                         {section === 'users' && <AdminUsersTable />}
                         {section === 'addcar' && <AdminAddCarForm onSuccess={() => navigate('/dashboard', { replace: true })} />}
                         {section === 'cars' && <AdminCarsTable />}
-                        {section === 'bookings' && (<div className='text-sm text-gray-500'>Bookings management coming soon.</div>)}
+                        {section === 'bookings' && (<AdminBookingsTable />)}
                       </div>
                     </motion.div>
                   </motion.div>

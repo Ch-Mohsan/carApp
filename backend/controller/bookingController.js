@@ -1,4 +1,5 @@
 const Booking = require('../models/bookingModel');
+const User = require('../models/userModel');
 
 const createBooking = async (req, res, next) => {
     const {
@@ -74,7 +75,7 @@ const getBookingById = async (req, res, next) => {
 };
 const updateBookingStatus = async (req, res, next) => {
     const { id: bookingId } = req.params;
-    const { status } = req.body;
+    const { status, driverId } = req.body;
     try {
         const booking = await Booking.findById(bookingId);
         if (!booking) {
@@ -83,6 +84,29 @@ const updateBookingStatus = async (req, res, next) => {
             return next(err);
         }
         booking.status = status;
+        // If driverId provided, assign to booking and update availability
+        if (driverId) {
+            const driver = await User.findById(driverId);
+            if (!driver || !driver.isDriver) {
+                const err = new Error('Selected user is not a driver');
+                err.status = 400;
+                return next(err);
+            }
+            booking.driverId = driverId;
+            // Mark driver unavailable when confirming
+            if (status === 'confirmed' && driver.isAvailable) {
+                driver.isAvailable = false;
+                await driver.save();
+            }
+        }
+        // If cancelling a booking that had a driver, free them
+        if (status === 'cancelled' && booking.driverId) {
+            const d = await User.findById(booking.driverId);
+            if (d && d.isDriver) {
+                d.isAvailable = true;
+                await d.save();
+            }
+        }
         await booking.save();
         res.status(200).json(booking);
     }   catch (error) {

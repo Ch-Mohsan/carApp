@@ -77,3 +77,14 @@ export const getAllBookingsApi = async () => {
     return data; // array of bookings
 }
 
+export const updateBookingByIdApi = async (id, updates) => {
+    const { data } = await api.put(`/bookings/updateById/${id}`, updates);
+    return data; // updated booking document
+}
+
+// Users API helpers
+export const getUserById = async (id) => {
+    const { data } = await api.get(`/auth/getbyid/users/${id}`);
+    return data; // { user }
+}
+

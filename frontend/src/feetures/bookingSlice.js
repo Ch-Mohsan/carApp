@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { addBookingApi, cancelBookingApi, getAllBookingsApi } from '../data/api'
+import { addBookingApi, cancelBookingApi, getAllBookingsApi, updateBookingByIdApi } from '../data/api'
 
 function normalizeBooking(raw) {
   if (!raw) return raw
@@ -40,6 +40,16 @@ export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async
     return Array.isArray(data) ? data.map(normalizeBooking) : []
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to fetch bookings')
+  }
+})
+
+// Confirm booking with optional driver assignment
+export const confirmBookingThunk = createAsyncThunk('bookings/confirm', async ({ id, driverId }, { rejectWithValue }) => {
+  try {
+    const data = await updateBookingByIdApi(id, { status: 'confirmed', driverId })
+    return normalizeBooking(data)
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to confirm booking')
   }
 })
 
@@ -115,6 +125,19 @@ const bookingSlice = createSlice({
     builder.addCase(fetchAllBookingsThunk.rejected, (state, action) => {
       state.loading = false
       state.error = action.payload || 'Error fetching bookings'
+    })
+
+    // confirm booking
+    builder.addCase(confirmBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(confirmBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      const updated = action.payload
+      const i = state.bookings.findIndex(b => b.id === updated.id)
+      if (i !== -1) state.bookings[i] = { ...state.bookings[i], ...updated }
+    })
+    builder.addCase(confirmBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error confirming booking'
     })
   }
 })
