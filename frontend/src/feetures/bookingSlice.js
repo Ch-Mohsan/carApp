@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { addBookingApi, cancelBookingApi, getAllBookingsApi, updateBookingByIdApi, deleteBookingByIdApi } from '../data/api'
+import { addBookingApi, cancelBookingApi, getAllBookingsApi, getMyBookingsApi, updateBookingByIdApi, deleteBookingByIdApi } from '../data/api'
 import { fetchCarsThunk } from './carsSlices'
 
 function normalizeBooking(raw) {
@@ -37,9 +37,11 @@ export const cancelBookingThunk = createAsyncThunk('bookings/cancel', async (id,
   }
 })
 
-export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async (_, { rejectWithValue }) => {
+export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async (_, { rejectWithValue, getState }) => {
   try {
-    const data = await getAllBookingsApi()
+    const state = getState()
+    const isAdmin = !!state?.users?.currentUser?.isAdmin
+    const data = isAdmin ? await getAllBookingsApi() : await getMyBookingsApi()
     return Array.isArray(data) ? data.map(normalizeBooking) : []
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to fetch bookings')

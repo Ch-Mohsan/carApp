@@ -127,7 +127,7 @@ function AddBoocking() {
               {selectedCar ? (
                 <>
                   <div className="relative w-full h-56 md:h-72">
-                    <img src={selectedCar.imageUrl} alt={selectedCar.name} className="w-full h-full object-cover" />
+                    <img src={selectedCar.imageURL || selectedCar.imageUrl || selectedCar.img || selectedCar.image} alt={selectedCar.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   </div>
                   <div className="p-5">

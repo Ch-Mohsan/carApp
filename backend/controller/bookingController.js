@@ -45,6 +45,10 @@ const createBooking = async (req, res, next) => {
     try {
         const newBooking = new Booking(payload);
         const saved = await newBooking.save();
+        // Mark the car as booked as soon as a booking is created (pending holds the car)
+        try {
+            await Car.findByIdAndUpdate(saved.carId, { status: 'booked' });
+        } catch {}
         return res.status(201).json(saved);
     } catch (error) {
         return next(error);
@@ -55,6 +59,22 @@ const getAllBookings = async (req, res, next) => {
     try {
         const bookings = await Booking.find();  
         res.status(200).json(bookings);
+    } catch (error) {
+        return next(error);
+    }
+};
+
+// Return only bookings for the authenticated user
+const getMyBookings = async (req, res, next) => {
+    try {
+        const uid = req.user && req.user.id
+        if (!uid) {
+            const err = new Error('Unauthorized');
+            err.status = 401;
+            return next(err);
+        }
+        const bookings = await Booking.find({ userId: uid });
+        return res.status(200).json(bookings);
     } catch (error) {
         return next(error);
     }
@@ -122,9 +142,9 @@ const updateBookingStatus = async (req, res, next) => {
             // mark car booked
             await Car.findByIdAndUpdate(booking.carId, { status: 'booked' }).catch(() => {})
         } else if (status === 'cancelled') {
-            // release car if there is no other active confirmed booking for this car
+            // release car if there is no other active booking (pending or confirmed) for this car
             const now = new Date()
-            const active = await Booking.find({ carId: booking.carId, status: 'confirmed', endDate: { $gte: now } }).limit(1)
+            const active = await Booking.find({ carId: booking.carId, status: { $in: ['confirmed','pending'] }, endDate: { $gte: now } }).limit(1)
             if (!active || active.length === 0) {
                 await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
             }
@@ -144,14 +164,12 @@ const deleteBookingById = async (req, res, next) => {
             err.status = 404;
             return next(err);
         }
-        // If the deleted booking was confirmed and still active, release the car
-        if (booking.status === 'confirmed') {
-            const now = new Date()
-            if (booking.endDate && new Date(booking.endDate) >= now) {
-                const active = await Booking.find({ carId: booking.carId, status: 'confirmed', endDate: { $gte: now } }).limit(1)
-                if (!active || active.length === 0) {
-                    await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
-                }
+        // If the deleted booking was still active, release the car when no other active booking remains
+        const now = new Date()
+        if (booking.endDate && new Date(booking.endDate) >= now) {
+            const active = await Booking.find({ carId: booking.carId, status: { $in: ['confirmed','pending'] }, endDate: { $gte: now } }).limit(1)
+            if (!active || active.length === 0) {
+                await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
             }
         }
         res.status(200).json({ message: 'Booking deleted successfully' });
@@ -164,4 +182,4 @@ const deleteBookingById = async (req, res, next) => {
 
 
 
-module.exports = { createBooking, getAllBookings, getBookingById, updateBookingStatus, deleteBookingById };
+module.exports = { createBooking, getAllBookings, getMyBookings, getBookingById, updateBookingStatus, deleteBookingById };
