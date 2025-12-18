@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { selectAllCars, selectCarsLoading, selectCarsError, fetchCarsThunk } from '../feetures/carsSlices.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
 import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
-import { addBooking } from '../feetures/bookingSlice.js'
+import { addBookingThunk } from '../feetures/bookingSlice.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 
 
@@ -90,7 +90,8 @@ function PricePage() {
     setBookingTarget({ carId, package: pkg })
     setActive(pkg === 'lease' ? 'lease' : 'day')
   }
-  const confirmQuickBooking = () => {
+  const [saving, setSaving] = useState(false)
+  const confirmQuickBooking = async () => {
     if (!bookingTarget) return
     const car = cars.find(c => c.id === bookingTarget.carId)
     if (!car) { setError('Car not found.'); return }
@@ -109,13 +110,23 @@ function PricePage() {
       instructions: bookingTarget.package === 'lease' ? 'Monthly package' : 'Daily package',
       fare: fareFor(car, bookingTarget.package)
     }
-    dispatch(addBooking(payload))
-    toast.success('Booking confirmed')
-    setBookingTarget(null)
-    setCnic('')
-    setPickup('')
-    setDropoff('')
-    navigate('/bookings')
+    try {
+      setSaving(true)
+      const action = await dispatch(addBookingThunk(payload))
+      if (action.meta.requestStatus === 'fulfilled') {
+        toast.success('Booking created')
+        setBookingTarget(null)
+        setCnic('')
+        setPickup('')
+        setDropoff('')
+        navigate('/bookings')
+      } else {
+        const msg = action.payload || 'Failed to create booking'
+        toast.error(String(msg))
+      }
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -287,9 +298,9 @@ function PricePage() {
                           >Cancel</button>
                           <button
                             onClick={confirmQuickBooking}
-                            disabled={!cnic.trim() || !pickup.trim() || !dropoff.trim()}
-                            className={`px-5 py-2 rounded-md font-semibold ${(!cnic.trim() || !pickup.trim() || !dropoff.trim()) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#01d28e] text-black hover:brightness-95'}`}
-                          >Confirm</button>
+                            disabled={saving || !cnic.trim() || !pickup.trim() || !dropoff.trim()}
+                            className={`px-5 py-2 rounded-md font-semibold ${(saving || !cnic.trim() || !pickup.trim() || !dropoff.trim()) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#01d28e] text-black hover:brightness-95'}`}
+                          >{saving ? 'Saving…' : 'Confirm'}</button>
                         </div>
                       </div>
                     )}
