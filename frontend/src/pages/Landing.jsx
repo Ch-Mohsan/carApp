@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices.js'
 import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
+import ServicesSection from '../components/Services.jsx'
+import Client from '../components/Client.jsx'
 
 // Lightweight landing page without global layout (no Navbar/Footer/Hero from MainLayout)
 // Theme: primary #1089ff, accent #01d28e, dark overlays, glass touches.
@@ -113,6 +115,9 @@ export default function Landing() {
             ))}
           </motion.div>
         </div>
+        <ServicesSection/>
+        <Client/>
+
 
       {/* Compact CTA footer substitute */}
       {/* <section className='px-6 md:px-10 py-10 bg-gradient-to-r from-[#1089ff] to-[#01d28e] text-white'>
