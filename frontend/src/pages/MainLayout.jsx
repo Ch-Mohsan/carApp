@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, Outlet } from "react-router-dom";
+import { useDispatch } from 'react-redux'
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Text from "../components/Text";
 import AvailabilitySync from "../components/AvailabilitySync";
+import { fetchCarsThunk } from '../feetures/carsSlices.js'
+import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
 
 
 export default function Layout({ children, overlay }) {
   const { pathname } = useLocation();
   const showHero = pathname !== "/dashboard";
+  const dispatch = useDispatch()
+
+  // Periodically refresh cars (and bookings if authenticated) to keep availability fresh
+  useEffect(() => {
+    const tick = () => {
+      dispatch(fetchCarsThunk())
+      try {
+        if (localStorage.getItem('authToken')) {
+          dispatch(fetchAllBookingsThunk())
+        }
+      } catch {}
+    }
+    // initial fetch and then every 60s
+    tick()
+    const id = setInterval(tick, 60000)
+    return () => clearInterval(id)
+  }, [dispatch])
 
   const getBg = () => {
     if (pathname === "/home") return "/images/bg_1.jpg"; // keep home

@@ -32,10 +32,16 @@ const addCar= async(req,res,next)=>{
 }
 const getAllCars= async(req,res,next)=>{
     try {
-        // Compute active bookings and sync car statuses before returning
-        const now = new Date()
-        const activeBookings = await Booking.find({ status: 'confirmed', endDate: { $gte: now } }).select('carId').lean()
+        // Compute active bookings (pending or confirmed) overlapping today
+        const startOfToday = new Date(); startOfToday.setHours(0,0,0,0)
+        const endOfToday = new Date(); endOfToday.setHours(23,59,59,999)
+        const activeBookings = await Booking.find({
+            status: { $in: ['confirmed', 'pending'] },
+            startDate: { $lte: endOfToday },
+            endDate: { $gte: startOfToday }
+        }).select('carId').lean()
         const activeSet = new Set(activeBookings.map(b => String(b.carId)))
+        console.log('[GET /api/cars/getall/cars] activeBookings(overlap today)=', activeBookings.length)
         const cars = await Car.find({})
 
         // Optionally persist any status drift
@@ -46,6 +52,7 @@ const getAllCars= async(req,res,next)=>{
                 bulk.push({ updateOne: { filter: { _id: c._id }, update: { $set: { status: shouldBe } } } })
                 c.status = shouldBe
             }
+            console.log('  car', String(c._id), c.name, 'status:', c.status, 'activeSet:', activeSet.has(String(c._id)))
         }
         if (bulk.length) await Car.bulkWrite(bulk)
 

@@ -19,18 +19,7 @@ export default function CarCard({ cars }) {
   const data = useMemo(() => {
     const list = (storeCars && storeCars.length) ? storeCars : (cars || [])
     return list.map(c => {
-      const statusBooked = ((c.status || '').trim().toLowerCase() === 'booked')
-      const bookedByRange = (bookings || []).some(b => {
-        if (String(b.carId) !== String(c.id)) return false
-        const statusHolds = b.status === 'confirmed' || b.status === 'pending'
-        if (!statusHolds) return false
-        const start = (b.startDate || b.date || '').slice(0,10)
-        const end = (b.endDate || b.date || '').slice(0,10)
-        if (!end) return false
-        // Consider car unavailable if there is any current or upcoming booking (end >= today)
-        return end >= today
-      })
-      const booked = statusBooked || bookedByRange
+      const booked = ((c.status || '').trim().toLowerCase() === 'booked')
       // prefer normalized imageURL; fallback to original fields
       const img = c.imageURL || c.imageUrl || c.img
       return {
@@ -42,7 +31,7 @@ export default function CarCard({ cars }) {
         booked
       }
     })
-  }, [storeCars, cars, bookings, today])
+  }, [storeCars, cars])
 
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE))
@@ -50,6 +39,13 @@ export default function CarCard({ cars }) {
     const start = (page - 1) * PAGE_SIZE;
     return data.slice(start, start + PAGE_SIZE);
   }, [data, page]);
+
+  // Debug: log what UI sees for car statuses
+  React.useEffect(() => {
+    try {
+      console.log('[CarCard] data statuses:', data.map(d => ({ id: d.id, title: d.title, booked: d.booked })))
+    } catch {}
+  }, [data])
 
   return (
     <section className="w-full py-12 px-4 md:px-8">

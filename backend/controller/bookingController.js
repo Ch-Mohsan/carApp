@@ -45,9 +45,14 @@ const createBooking = async (req, res, next) => {
     try {
         const newBooking = new Booking(payload);
         const saved = await newBooking.save();
+        console.log('[POST /api/bookings/add] new booking saved:', {
+            id: String(saved._id), carId: String(saved.carId), userId: String(saved.userId),
+            startDate: saved.startDate, endDate: saved.endDate, status: saved.status
+        })
         // Mark the car as booked as soon as a booking is created (pending holds the car)
         try {
             await Car.findByIdAndUpdate(saved.carId, { status: 'booked' });
+            console.log('  -> car marked booked:', String(saved.carId))
         } catch {}
         return res.status(201).json(saved);
     } catch (error) {
@@ -141,12 +146,14 @@ const updateBookingStatus = async (req, res, next) => {
         if (status === 'confirmed') {
             // mark car booked
             await Car.findByIdAndUpdate(booking.carId, { status: 'booked' }).catch(() => {})
+            console.log('[PUT /api/bookings/updateById] confirmed -> car booked:', String(booking.carId))
         } else if (status === 'cancelled') {
             // release car if there is no other active booking (pending or confirmed) for this car
             const now = new Date()
             const active = await Booking.find({ carId: booking.carId, status: { $in: ['confirmed','pending'] }, endDate: { $gte: now } }).limit(1)
             if (!active || active.length === 0) {
                 await Car.findByIdAndUpdate(booking.carId, { status: 'available' }).catch(() => {})
+                console.log('[PUT /api/bookings/updateById] cancelled -> car available:', String(booking.carId))
             }
         }
         await booking.save();

@@ -12,17 +12,7 @@ function Feeatured() {
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const slides = useMemo(() => (
     (storeCars || []).map(c => {
-      const statusBooked = ((c.status || '').trim().toLowerCase() === 'booked')
-      const bookedByRange = (bookings || []).some(b => {
-        if (b.carId !== c.id) return false
-        const statusHolds = b.status === 'confirmed' || b.status === 'pending'
-        if (!statusHolds) return false
-        const start = (b.startDate || b.date || '').slice(0,10)
-        const end = (b.endDate || b.date || '').slice(0,10)
-        if (!start || !end) return false
-        return start <= today && today <= end
-      })
-      const booked = statusBooked || bookedByRange
+      const booked = ((c.status || '').trim().toLowerCase() === 'booked')
       return {
         id: c.id,
         img: c.imageURL || c.imageUrl || c.img,
@@ -32,7 +22,7 @@ function Feeatured() {
         booked
       }
     })
-  ), [storeCars, bookings, today])
+  ), [storeCars])
   const [index, setIndex] = useState(slides.length)
   
   // start in the middle for seamless loop

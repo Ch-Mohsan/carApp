@@ -40,7 +40,11 @@ const initialState = {
 export const fetchCarsThunk = createAsyncThunk('cars/fetchAll', async (_, { rejectWithValue }) => {
   try {
     const res = await apiGetAllCars()
-    return Array.isArray(res?.cars) ? res.cars.map(normalizeCar) : []
+    const list = Array.isArray(res?.cars) ? res.cars : []
+    try {
+      console.log('[fetchCarsThunk] server cars:', list.map(c => ({ id: c._id || c.id, name: c.name, status: c.status })))
+    } catch {}
+    return list.map(normalizeCar)
   } catch (e) {
     return rejectWithValue(e?.message || 'Failed to fetch cars')
   }

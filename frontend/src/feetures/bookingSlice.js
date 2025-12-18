@@ -17,9 +17,11 @@ const initialState = {
 }
 
 // Thunks
-export const addBookingThunk = createAsyncThunk('bookings/add', async (payload, { rejectWithValue }) => {
+export const addBookingThunk = createAsyncThunk('bookings/add', async (payload, { rejectWithValue, dispatch }) => {
   try {
     const data = await addBookingApi(payload)
+    // Refresh cars so server-updated availability reflects immediately
+    dispatch(fetchCarsThunk())
     return normalizeBooking(data)
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to add booking')

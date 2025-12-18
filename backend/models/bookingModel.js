@@ -22,7 +22,7 @@ const bookingSchema = new mongoose.Schema({
         required: true
     },
     Cnic:{
-        type: Number,
+        type: String,
         required: true
     },
     pickup:{

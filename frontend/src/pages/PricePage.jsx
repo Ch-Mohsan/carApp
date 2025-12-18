@@ -35,6 +35,9 @@ function PricePage() {
   useEffect(() => {
     if (!storeCars || storeCars.length === 0) dispatch(fetchCarsThunk())
     dispatch(fetchAllBookingsThunk())
+    try {
+      console.log('[PricePage] storeCars statuses:', (storeCars||[]).map(c=>({id:c.id,title:c.name,status:c.status})))
+    } catch {}
   }, [])
 
   const tabs = [
@@ -47,17 +50,7 @@ function PricePage() {
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
   const isBooked = (carId) => {
     const car = (storeCars || []).find(x => x.id === carId)
-    const statusBooked = ((car?.status || '').trim().toLowerCase() === 'booked')
-    if (statusBooked) return true
-    return (bookings || []).some(b => {
-      if (b.carId !== carId) return false
-      const statusHolds = b.status === 'confirmed' || b.status === 'pending'
-      if (!statusHolds) return false
-      const start = (b.startDate || b.date || '').slice(0,10)
-      const end = (b.endDate || b.date || '').slice(0,10)
-      if (!start || !end) return false
-      return start <= today && today <= end
-    })
+    return ((car?.status || '').trim().toLowerCase() === 'booked')
   }
 
   const [bookingTarget, setBookingTarget] = useState(null) // {carId, package}
@@ -112,6 +105,7 @@ function PricePage() {
     }
     try {
       setSaving(true)
+      console.log('[PricePage] add booking payload:', payload)
       const action = await dispatch(addBookingThunk(payload))
       if (action.meta.requestStatus === 'fulfilled') {
         toast.success('Booking created')
