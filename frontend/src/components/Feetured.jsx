@@ -25,7 +25,7 @@ function Feeatured() {
       const booked = statusBooked || bookedByRange
       return {
         id: c.id,
-        img: c.imageUrl,
+        img: c.imageURL || c.imageUrl || c.img,
         title: c.name,
         brand: c.brand,
         price: `$${c.pricePerDay}`,

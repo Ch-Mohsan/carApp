@@ -1,20 +1,30 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { selectAllCars } from '../feetures/carsSlices.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices.js'
+import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
 
 // Lightweight landing page without global layout (no Navbar/Footer/Hero from MainLayout)
 // Theme: primary #1089ff, accent #01d28e, dark overlays, glass touches.
 export default function Landing() {
+  const dispatch = useDispatch()
   const storeCars = useSelector(selectAllCars)
   const cars = useMemo(() => (storeCars || []).slice(0, 6).map(c => ({
     id: c.id,
-    img: c.imageUrl,
+    img: c.imageURL || c.imageUrl || c.img,
     title: c.name,
     brand: c.brand,
     price: `$${c.pricePerDay}`
   })), [storeCars])
+
+  // Ensure cars/bookings are available for this page (no layout here)
+  useEffect(() => {
+    if (!storeCars || storeCars.length === 0) {
+      dispatch(fetchCarsThunk())
+    }
+    dispatch(fetchAllBookingsThunk())
+  }, [])
 
   return (
     <div className='min-h-screen w-full flex flex-col bg-white text-black'>

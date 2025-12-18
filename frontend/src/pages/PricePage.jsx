@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PageTransition from '../components/PageTransition'
 import Alert from '../components/Alert'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { selectAllCars, selectCarsLoading, selectCarsError } from '../feetures/carsSlices.js'
+import { selectAllCars, selectCarsLoading, selectCarsError, fetchCarsThunk } from '../feetures/carsSlices.js'
 import { selectAllBookings } from '../feetures/bookingSlice.js'
+import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
 import { addBooking } from '../feetures/bookingSlice.js'
 import { selectCurrentUser } from '../feetures/UserSlices.js'
 
@@ -20,7 +21,7 @@ function PricePage() {
   const cars = useMemo(() => (
     (storeCars || []).map(c => ({
       id: c.id,
-      img: c.imageUrl,
+      img: c.imageURL || c.imageUrl || c.img,
       title: c.name,
       rating: Math.round((c.rating ?? 4)),
       rentPerDay: Number(c.rentPerDay ?? c.pricePerDay ?? 0),
@@ -29,6 +30,12 @@ function PricePage() {
   ), [storeCars]);
   const carsLoading = useSelector(selectCarsLoading)
   const carsError = useSelector(selectCarsError)
+
+  // Ensure cars and bookings are loaded for pricing view
+  useEffect(() => {
+    if (!storeCars || storeCars.length === 0) dispatch(fetchCarsThunk())
+    dispatch(fetchAllBookingsThunk())
+  }, [])
 
   const tabs = [
     { key: 'day', label: 'Per Day Package', color: 'bg-[#1089ff] text-white' },

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { staggerContainer, viewFadeUp, fadeUp } from '../components/animations'
 import PageTransition from '../components/PageTransition'
@@ -9,8 +9,19 @@ import ServicesSection from '../components/Services'
 import ClientCarousel from '../components/Client'
 import BlogSection from '../components/Blog'
 import Feeatured from '../components/Feetured'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAllCars, fetchCarsThunk } from '../feetures/carsSlices.js'
+import { fetchAllBookingsThunk } from '../feetures/bookingSlice.js'
 
 function Home() {
+  const dispatch = useDispatch()
+  const cars = useSelector(selectAllCars)
+
+  // Bootstrap data for Home sections (Featured depends on cars/bookings)
+  useEffect(() => {
+    if (!cars || cars.length === 0) dispatch(fetchCarsThunk())
+    dispatch(fetchAllBookingsThunk())
+  }, [])
   return (
     <PageTransition>
       <>
