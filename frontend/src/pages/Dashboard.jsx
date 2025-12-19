@@ -343,15 +343,15 @@ export default function Dashboard() {
                     ))}
                   </ul>
                 </motion.div>
-                <motion.div className='rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-6'
+                {/* <motion.div className='rounded-2xl bg-white ring-1 ring-gray-100 shadow-sm p-6'
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ type: 'spring', stiffness: 220, damping: 24 }}
                 >
-                  {/* Placeholder panel; users table is shown via overlay when section is active */}
+                 
                   <div className='text-sm text-gray-500'>Use sidebar to open admin sections.</div>
-                </motion.div>
+                </motion.div> */}
               </motion.div>
               )}
 
