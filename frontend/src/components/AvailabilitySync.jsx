@@ -14,6 +14,7 @@ export default function AvailabilitySync() {
   const today = useMemo(() => new Date().toISOString().slice(0,10), [])
 
   useEffect(() => {
+    console.log(cars,".......cars data in Availablity ")
     // Only admins (who can view all bookings) should sync car.status client-side
     if (!currentUser || !currentUser.isAdmin) return
     if (!cars || !bookings) return
