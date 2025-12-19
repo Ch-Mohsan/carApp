@@ -136,14 +136,18 @@ export default function AdminBookingsTable() {
                       </div>
                       {/* Mobile kebab */}
                       <div className='md:hidden relative inline-block'>
-                        <button className='btn' onClick={() => setOpenMenuId(p => p === b.id ? null : b.id)} aria-haspopup='menu' aria-expanded={openMenuId===b.id}>⋮</button>
+                        <button className='btn' onClick={() => setOpenMenuId(p => p === b.id ? null : b.id)} onTouchStart={() => setOpenMenuId(p => p === b.id ? null : b.id)} aria-haspopup='menu' aria-expanded={openMenuId===b.id}>⋮</button>
                         {openMenuId === b.id && (
-                          <div className='absolute right-0 mt-2 z-20 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2' role='menu'>
+                          <>
+                          {/* screen overlay to ensure clicks close menu and avoid clipping issues */}
+                          <div className='fixed inset-0 z-40' onClick={() => setOpenMenuId(null)} aria-hidden='true' />
+                          <div className='absolute right-0 mt-2 z-50 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2' role='menu'>
                             <button className='w-full btn btn-secondary !justify-start' onClick={() => { setViewTarget(b.id); setOpenMenuId(null) }}>View</button>
                             <button className='w-full btn !justify-start' onClick={() => { setEditTarget(b); setOpenMenuId(null) }}>Edit</button>
                             <button className='w-full btn btn-danger !justify-start' onClick={() => { setConfirmDelete(b); setOpenMenuId(null) }}>Delete</button>
                             <button className='w-full btn btn-primary !justify-start' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => { setConfirmTarget(b.id); setOpenMenuId(null) }}>Confirm</button>
                           </div>
+                          </>
                         )}
                       </div>
                     </td>

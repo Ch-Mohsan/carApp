@@ -68,7 +68,7 @@ export default function AdminUsersTable() {
                     </button>
                   </div>
                   {/* Mobile: kebab menu */}
-                  <div className="sm:hidden">
+                  <div className="sm:hidden relative inline-block">
                     <button
                       className="btn"
                       aria-haspopup="menu"
@@ -78,9 +78,16 @@ export default function AdminUsersTable() {
                         const id = u.id || u._id
                         setOpenMenuId(prev => prev === id ? null : id)
                       }}
+                      onTouchStart={(e) => {
+                        e.stopPropagation()
+                        const id = u.id || u._id
+                        setOpenMenuId(prev => prev === id ? null : id)
+                      }}
                     >⋮</button>
                     {openMenuId === (u.id || u._id) && (
-                      <div className="absolute right-2 top-full mt-2 z-20 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2"
+                      <>
+                      <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} aria-hidden="true" />
+                      <div className="absolute right-2 top-full mt-2 z-50 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2"
                            role="menu" onMouseLeave={() => setOpenMenuId(null)}>
                         <button className="w-full btn btn-secondary !justify-start" onClick={() => { setSelected(u); setOpenMenuId(null) }}>View</button>
                         <button className="w-full btn !justify-start" onClick={() => { setEditTarget(u); setOpenMenuId(null) }}>Edit</button>
@@ -89,6 +96,7 @@ export default function AdminUsersTable() {
                           {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
                         </button>
                       </div>
+                      </>
                     )}
                   </div>
                 </td>

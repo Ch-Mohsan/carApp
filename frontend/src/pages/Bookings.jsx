@@ -101,7 +101,7 @@ export default function Bookings() {
                 {b.instructions && (
                   <p className="text-xs text-gray-500 italic">“{b.instructions}”</p>
                 )}
-                <div className="text-xs text-gray-500">CNIC: {b.Cnic || b.cnic}</div>
+                <div className="text-xs text-gray-500">CNIC: {b.Cnic || b.cnic || '—'}</div>
                 <div className="text-xs text-gray-500">Customer: {b.name} ({b.phone})</div>
                 {b.car && (
                   <div className="pt-2 text-sm font-medium text-[#1089ff] flex items-center gap-2">
@@ -117,7 +117,7 @@ export default function Bookings() {
                     <div className="text-xs text-blue-600 bg-blue-50 border border-blue-200 rounded px-2 py-1">Admin confirmed your booking. You cannot cancel.</div>
                   )}
                   {b.status === 'cancelled' && (
-                    <div className="text-xs text-gray-600 bg-gray-100 border border-gray-200 rounded px-2 py-1">Booking cancelled.</div>
+                    <div className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded px-2 py-1">Your booking canceled by Owner.</div>
                   )}
                   {b.expired && (
                     <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1">Booking expired.</div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { updateBookingStatus } from '../feetures/bookingSlice.js'
+import { confirmBookingThunk, cancelBookingThunk } from '../feetures/bookingSlice.js'
 import { toast } from 'react-toastify'
 
 export default function BookingDetailsModal({ booking, car, onClose }) {
@@ -36,17 +36,25 @@ export default function BookingDetailsModal({ booking, car, onClose }) {
   const canConfirm = booking.status === 'pending'
   const canCancel = booking.status === 'pending'
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!canConfirm) return
-    dispatch(updateBookingStatus({ id: booking.id, status: 'confirmed' }))
-    toast.success('Booking confirmed')
+    try {
+      await dispatch(confirmBookingThunk({ id: booking.id, driverId: booking.driverId })).unwrap()
+      toast.success('Booking confirmed')
+    } catch (e) {
+      toast.error(typeof e === 'string' ? e : (e?.message || 'Failed to confirm booking'))
+    }
     onClose()
   }
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (!canCancel) return
-    dispatch(updateBookingStatus({ id: booking.id, status: 'cancelled' }))
-    toast.success('Booking cancelled')
+    try {
+      await dispatch(cancelBookingThunk(booking.id)).unwrap()
+      toast.warn('Your booking canceled by Owner')
+    } catch (e) {
+      toast.error(typeof e === 'string' ? e : (e?.message || 'Failed to cancel booking'))
+    }
     onClose()
   }
   return (
@@ -81,8 +89,8 @@ export default function BookingDetailsModal({ booking, car, onClose }) {
               <div className="font-medium break-words">{booking.name} ({booking.phone})</div>
             </div>
             <div>
-              <div className="text.sm text-gray-600">CNIC</div>
-              <div className="font-medium break-words">{booking.cnic || '—'}</div>
+              <div className="text-sm text-gray-600">CNIC</div>
+              <div className="font-medium break-words">{booking.Cnic || booking.cnic || '—'}</div>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
