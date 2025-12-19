@@ -73,26 +73,22 @@ export default function AdminUsersTable() {
                       className="btn"
                       aria-haspopup="menu"
                       aria-expanded={openMenuId === (u.id || u._id)}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        const id = u.id || u._id
-                        setOpenMenuId(prev => prev === id ? null : id)
-                      }}
-                      onTouchStart={(e) => {
-                        e.stopPropagation()
+                      onPointerDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         const id = u.id || u._id
                         setOpenMenuId(prev => prev === id ? null : id)
                       }}
                     >⋮</button>
                     {openMenuId === (u.id || u._id) && (
                       <>
-                      <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} aria-hidden="true" />
-                      <div className="absolute right-2 top-full mt-2 z-50 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2"
+                      <div className="fixed inset-0 z-40" onPointerDown={() => setOpenMenuId(null)} aria-hidden="true" />
+                      <div className="absolute right-2 top-full mt-2 z-50 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2 flex flex-col gap-2"
                            role="menu" onMouseLeave={() => setOpenMenuId(null)}>
-                        <button className="w-full btn btn-secondary !justify-start" onClick={() => { setSelected(u); setOpenMenuId(null) }}>View</button>
-                        <button className="w-full btn !justify-start" onClick={() => { setEditTarget(u); setOpenMenuId(null) }}>Edit</button>
-                        <button className="w-full btn btn-danger !justify-start" onClick={() => { setOpenMenuId(null); setConfirmDelete(u) }} disabled={loading}>Delete</button>
-                        <button className="w-full btn btn-primary !justify-start" onClick={() => { onToggleDriver(u); setOpenMenuId(null) }} disabled={loading}>
+                        <button className="w-full btn btn-secondary !justify-start !py-2 !px-3" onClick={() => { setSelected(u); setOpenMenuId(null) }}>View</button>
+                        <button className="w-full btn !justify-start !py-2 !px-3" onClick={() => { setEditTarget(u); setOpenMenuId(null) }}>Edit</button>
+                        <button className="w-full btn btn-danger !justify-start !py-2 !px-3" onClick={() => { setOpenMenuId(null); setConfirmDelete(u) }} disabled={loading}>Delete</button>
+                        <button className="w-full btn btn-primary !justify-start !py-2 !px-3" onClick={() => { onToggleDriver(u); setOpenMenuId(null) }} disabled={loading}>
                           {u.isDriver ? 'Set Driver: Off' : 'Set Driver: On'}
                         </button>
                       </div>

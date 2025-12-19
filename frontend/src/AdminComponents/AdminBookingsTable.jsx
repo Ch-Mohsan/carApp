@@ -21,6 +21,18 @@ export default function AdminBookingsTable() {
   const [editTarget, setEditTarget] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
   const [openMenuId, setOpenMenuId] = useState(null)
+  const [menuPos, setMenuPos] = useState(null) // { top, left }
+
+  const openDropdown = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect()
+    const MENU_W = 176
+    const left = Math.max(8, Math.min(rect.right - MENU_W, window.innerWidth - MENU_W - 8))
+    const top = Math.min(window.innerHeight - 200, rect.bottom + 6)
+    setMenuPos({ top, left })
+    setOpenMenuId(prev => prev === id ? null : id)
+  }
 
   const fmt = (d) => {
     if (!d) return '—'
@@ -135,18 +147,26 @@ export default function AdminBookingsTable() {
                         <button className='btn btn-primary' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => setConfirmTarget(b.id)}>Confirm</button>
                       </div>
                       {/* Mobile kebab */}
-                      <div className='md:hidden relative inline-block'>
-                        <button className='btn' onClick={() => setOpenMenuId(p => p === b.id ? null : b.id)} onTouchStart={() => setOpenMenuId(p => p === b.id ? null : b.id)} aria-haspopup='menu' aria-expanded={openMenuId===b.id}>⋮</button>
+                      <div className='md:hidden inline-block'>
+                        <button
+                          className='btn'
+                          onPointerDown={(e) => openDropdown(e, b.id)}
+                          aria-haspopup='menu' aria-expanded={openMenuId===b.id}
+                        >⋮</button>
                         {openMenuId === b.id && (
                           <>
-                          {/* screen overlay to ensure clicks close menu and avoid clipping issues */}
-                          <div className='fixed inset-0 z-40' onClick={() => setOpenMenuId(null)} aria-hidden='true' />
-                          <div className='absolute right-0 mt-2 z-50 w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2' role='menu'>
-                            <button className='w-full btn btn-secondary !justify-start' onClick={() => { setViewTarget(b.id); setOpenMenuId(null) }}>View</button>
-                            <button className='w-full btn !justify-start' onClick={() => { setEditTarget(b); setOpenMenuId(null) }}>Edit</button>
-                            <button className='w-full btn btn-danger !justify-start' onClick={() => { setConfirmDelete(b); setOpenMenuId(null) }}>Delete</button>
-                            <button className='w-full btn btn-primary !justify-start' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => { setConfirmTarget(b.id); setOpenMenuId(null) }}>Confirm</button>
-                          </div>
+                            {/* overlay to close on outside click */}
+                            <div className='fixed inset-0 z-[1000]' onPointerDown={() => setOpenMenuId(null)} aria-hidden='true' />
+                            <div
+                              className='fixed z-[1001] w-44 rounded-lg border border-gray-200 bg-white shadow-lg p-2 flex flex-col gap-2'
+                              role='menu'
+                              style={{ top: (menuPos?.top ?? 60), left: (menuPos?.left ?? 60) }}
+                            >
+                              <button className='w-full btn btn-secondary !justify-start !py-2 !px-3' onClick={() => { setViewTarget(b.id); setOpenMenuId(null) }}>View</button>
+                              <button className='w-full btn !justify-start !py-2 !px-3' onClick={() => { setEditTarget(b); setOpenMenuId(null) }}>Edit</button>
+                              <button className='w-full btn btn-danger !justify-start !py-2 !px-3' onClick={() => { setConfirmDelete(b); setOpenMenuId(null) }}>Delete</button>
+                              <button className='w-full btn btn-primary !justify-start !py-2 !px-3' disabled={b.status !== 'pending' || !!b.driverId} onClick={() => { setConfirmTarget(b.id); setOpenMenuId(null) }}>Confirm</button>
+                            </div>
                           </>
                         )}
                       </div>
