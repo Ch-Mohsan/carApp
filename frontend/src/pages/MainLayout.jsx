@@ -43,6 +43,7 @@ export default function Layout({ children, overlay }) {
       "/bookings": "/images/hero_bookings.avif",
       "/add-booking": "/images/hero_addbookings.jpg",
       "/price": "/images/hero_pricing.jpeg",
+      "/rides": "/images/hero_rides.jpg"
 
     };
     return map[pathname] || "/images/exta.avif";

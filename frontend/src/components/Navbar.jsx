@@ -150,19 +150,20 @@ function Navbar() {
           <div className={`flex ml-auto items-center gap-3`}>
             {currentUser && (
               <button
-                className={`hidden md:inline px-3 py-1.5 rounded-md ${ (forceLight || navLight) ? 'bg-gray-100 text-black' : 'bg-white/85 text-black'} shadow`}
+                className={`${isDriver ? 'inline' : 'hidden md:inline'} px-3 py-1.5 rounded-md ${ (forceLight || navLight) ? 'bg-gray-100 text-black' : 'bg-white/85 text-black'} shadow`}
                 onClick={onLogout}
               >Logout</button>
             )}
-            <div className={`md:hidden flex`}>
-            <button
-              aria-expanded={Menu}
-              aria-label="Toggle menu"
-              onClick={hendleMenuClick}
-              className="px-2 py-1 rounded-md bg-white/85 text-black shadow"
-            >
-              <FaBars size={20} />
-            </button>
+            {/* Hide hamburger for drivers (no mobile links) */}
+            <div className={`md:hidden ${isDriver ? 'hidden' : 'flex'}`}>
+              <button
+                aria-expanded={Menu}
+                aria-label="Toggle menu"
+                onClick={hendleMenuClick}
+                className="px-2 py-1 rounded-md bg-white/85 text-black shadow"
+              >
+                <FaBars size={20} />
+              </button>
             </div>
           </div>
         </div>
@@ -173,50 +174,49 @@ function Navbar() {
         <div className='fixed inset-0 z-40' onClick={() => setMenu(false)}>
           <div className='absolute inset-0 bg-white/60 backdrop-blur-sm' />
           <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-start items-start gap-1 ${Menu ? 'open' : ''} bg-white text-black relative z-50`} style={{ maxHeight: '80vh', overflowY: 'auto' }} onClick={(e)=>e.stopPropagation()}>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>
-            {!(isAdmin || isDriver) && (
-              <>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/cars'? "text-[#1089ff]" : ""}`}><a href="/cars" onClick={() => setMenu(false)}>Cars</a></li>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/bookings'? "text-[#1089ff]" : ""}`}><a href="/bookings" onClick={() => setMenu(false)}>Bookings</a></li>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/blog'? "text-[#1089ff]" : ""}`}><a href="/blog" onClick={() => setMenu(false)}>Blog</a></li>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/contact'? "text-[#1089ff]" : ""}`}><a href="/contact" onClick={() => setMenu(false)}>Contact</a></li>
-              </>
-            )}
-            {isDriver && (
-              <li className={`mx-4 my-2 cursor-pointer ${getpath=='/rides'? "text-[#1089ff]" : ""}`}><a href="/rides" onClick={() => setMenu(false)}>Rides</a></li>
-            )}
-            {isAdmin && (
-              <>
-                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/dashboard'? "text-[#1089ff]" : ""}`} data-submenu-start>
-                  <button className='w-full text-left px-2 py-2 rounded-md bg-gray-100 ring-1 ring-gray-200' onClick={() => setAdminSubOpen(o=>!o)} aria-expanded={adminSubOpen}>Dashboard {adminSubOpen ? '▾' : '▸'}</button>
-                </li>
-                {adminSubOpen && (
-                  <>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Overview</a>
-                    </li>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard?section=addcar' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
-                    </li>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard?section=cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
-                    </li>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard?section=bookings' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Booking Records</a>
-                    </li>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard?section=users' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>User Records</a>
-                    </li>
-                    <li className='w-full pl-6 pr-4'>
-                      <a href='/dashboard?section=drivers' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Driver Status</a>
-                    </li>
-                  </>
-                )}
-              </>
-            )}
+              {/* Regular users: show full site nav */}
+              {!(isAdmin || isDriver) && (
+                <>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/cars'? "text-[#1089ff]" : ""}`}><a href="/cars" onClick={() => setMenu(false)}>Cars</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/bookings'? "text-[#1089ff]" : ""}`}><a href="/bookings" onClick={() => setMenu(false)}>Bookings</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/blog'? "text-[#1089ff]" : ""}`}><a href="/blog" onClick={() => setMenu(false)}>Blog</a></li>
+                  <li className={`mx-4 my-2 cursor-pointer ${getpath=='/contact'? "text-[#1089ff]" : ""}`}><a href="/contact" onClick={() => setMenu(false)}>Contact</a></li>
+                </>
+              )}
+
+              {/* Admin: show only dashboard sidebar options */}
+              {isAdmin && (
+                <>
+                  <li className='mx-4 my-2 font-semibold'>Dashboard</li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Overview</a>
+                  </li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard?section=addcar' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
+                  </li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard?section=cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
+                  </li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard?section=bookings' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Booking Records</a>
+                  </li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard?section=users' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>User Records</a>
+                  </li>
+                  <li className='w-full pl-6 pr-4'>
+                    <a href='/dashboard?section=drivers' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Driver Status</a>
+                  </li>
+                </>
+              )}
+
+              {/* Driver: no navigation links in mobile menu */}
+              {isDriver && (
+                <></>
+              )}
             {currentUser && (
               <li className='w-full px-4 py-2'>
                 <button className='w-full px-2 py-2 rounded-md bg-gray-100 ring-1 ring-gray-200' onClick={() => { setMenu(false); onLogout() }}>Logout</button>

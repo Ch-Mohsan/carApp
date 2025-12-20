@@ -47,7 +47,13 @@ export default function Login() {
 
     dispatch(loginThunk({ username: form.username.trim(), password: form.password }))
       .unwrap()
-      .then(() => { toast.success('Logged in successfully'); setForm({ username: '', phone: '', password: '' }); navigate('/home') })
+      .then((res) => {
+        toast.success('Logged in successfully');
+        setForm({ username: '', phone: '', password: '' });
+        const user = res?.userData || res?.user;
+        const target = user?.isAdmin ? '/dashboard' : (user?.isDriver ? '/rides' : '/home');
+        navigate(target, { replace: true })
+      })
       .catch((err) => {
         if (err && Array.isArray(err.issues)) {
           err.issues.forEach((i) => toast.error(i.message))
