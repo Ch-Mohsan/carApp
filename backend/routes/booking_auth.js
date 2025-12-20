@@ -10,8 +10,12 @@ router.post('/add', isAurthenticated, zodValidator(bookingSchema), bookingContro
 router.get('/getall', isAurthenticated, isAdmin, bookingController.getAllBookings);
 // Authenticated user: get only own bookings
 router.get('/mine', isAurthenticated, bookingController.getMyBookings);
+// Authenticated driver: get bookings assigned to them
+router.get('/assigned/me', isAurthenticated, bookingController.getAssignedToDriver);
 router.get('/getById/:id', isAurthenticated, bookingController.getBookingById);
 router.put('/updateById/:id', isAurthenticated, isAdmin, bookingController.updateBookingStatus);
+// Driver reject without admin
+router.put('/reject/:id', isAurthenticated, bookingController.driverRejectBooking);
 router.delete('/deleteById/:id', isAurthenticated,  bookingController.deleteBookingById);
 
 module.exports=router;  

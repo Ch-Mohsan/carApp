@@ -99,6 +99,22 @@ const getBookingById = async (req, res, next) => {
         return next(error);
     }
 };
+// Get bookings assigned to the authenticated driver
+const getAssignedToDriver = async (req, res, next) => {
+    try {
+        const uid = req.user && req.user.id
+        if (!uid) {
+            const err = new Error('Unauthorized');
+            err.status = 401;
+            return next(err);
+        }
+        // Show both pending and confirmed assignments
+        const bookings = await Booking.find({ driverId: uid, status: { $in: ['pending','confirmed'] } });
+        return res.status(200).json(bookings);
+    } catch (error) {
+        return next(error);
+    }
+};
 const updateBookingStatus = async (req, res, next) => {
     const { id: bookingId } = req.params;
     const { status, driverId } = req.body;
@@ -194,8 +210,44 @@ const deleteBookingById = async (req, res, next) => {
     }
 };
 
+// Driver self-reject: only the assigned driver can revert to pending
+const driverRejectBooking = async (req, res, next) => {
+    const { id: bookingId } = req.params;
+    try {
+        const uid = req.user && req.user.id
+        if (!uid) {
+            const err = new Error('Unauthorized');
+            err.status = 401;
+            return next(err);
+        }
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+            const err = new Error('Booking not found');
+            err.status = 404;
+            return next(err);
+        }
+        if (!booking.driverId || String(booking.driverId) !== String(uid)) {
+            const err = new Error('Forbidden: not assigned to this booking');
+            err.status = 403;
+            return next(err);
+        }
+        // Revert to pending and release driver
+        booking.status = 'pending';
+        const d = await User.findById(booking.driverId);
+        if (d && d.isDriver) {
+            d.isAvailable = true;
+            await d.save();
+        }
+        booking.driverId = undefined;
+        await booking.save();
+        return res.status(200).json(booking);
+    } catch (error) {
+        return next(error);
+    }
+};
 
 
 
 
-module.exports = { createBooking, getAllBookings, getMyBookings, getBookingById, updateBookingStatus, deleteBookingById };
+
+module.exports = { createBooking, getAllBookings, getMyBookings, getBookingById, getAssignedToDriver, updateBookingStatus, deleteBookingById, driverRejectBooking };

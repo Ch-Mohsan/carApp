@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { addBookingApi, cancelBookingApi, getAllBookingsApi, getMyBookingsApi, updateBookingByIdApi, deleteBookingByIdApi } from '../data/api'
+import { addBookingApi, cancelBookingApi, getAllBookingsApi, getMyBookingsApi, getAssignedBookingsApi, updateBookingByIdApi, deleteBookingByIdApi, driverRejectBookingApi } from '../data/api'
 import { fetchCarsThunk } from './carsSlices'
 
 function normalizeBooking(raw) {
@@ -43,10 +43,21 @@ export const fetchAllBookingsThunk = createAsyncThunk('bookings/fetchAll', async
   try {
     const state = getState()
     const isAdmin = !!state?.users?.currentUser?.isAdmin
-    const data = isAdmin ? await getAllBookingsApi() : await getMyBookingsApi()
+    const isDriver = !!state?.users?.currentUser?.isDriver
+    const data = isAdmin ? await getAllBookingsApi() : (isDriver ? await getAssignedBookingsApi() : await getMyBookingsApi())
     return Array.isArray(data) ? data.map(normalizeBooking) : []
   } catch (err) {
     return rejectWithValue(err?.response?.data || err?.message || 'Failed to fetch bookings')
+  }
+})
+
+// Explicit driver-only fetch (can be used by Rides page)
+export const fetchAssignedForDriverThunk = createAsyncThunk('bookings/fetchAssigned', async (_, { rejectWithValue }) => {
+  try {
+    const data = await getAssignedBookingsApi()
+    return Array.isArray(data) ? data.map(normalizeBooking) : []
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to fetch assigned bookings')
   }
 })
 
@@ -77,7 +88,7 @@ export const updateBookingThunk = createAsyncThunk('bookings/update', async ({ i
 // Driver rejects an assigned booking -> revert to pending and clear driverId
 export const driverRejectBookingThunk = createAsyncThunk('bookings/driverReject', async (id, { rejectWithValue, dispatch }) => {
   try {
-    const data = await updateBookingByIdApi(id, { status: 'pending', driverId: null })
+    const data = await driverRejectBookingApi(id)
     // Refresh cars just in case backend updates availability
     dispatch(fetchCarsThunk())
     return normalizeBooking(data)
@@ -170,6 +181,17 @@ const bookingSlice = createSlice({
     builder.addCase(fetchAllBookingsThunk.rejected, (state, action) => {
       state.loading = false
       state.error = action.payload || 'Error fetching bookings'
+    })
+
+    // fetch assigned for driver
+    builder.addCase(fetchAssignedForDriverThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(fetchAssignedForDriverThunk.fulfilled, (state, action) => {
+      state.loading = false
+      state.bookings = action.payload
+    })
+    builder.addCase(fetchAssignedForDriverThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error fetching assigned bookings'
     })
 
     // confirm booking

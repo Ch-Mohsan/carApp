@@ -29,7 +29,7 @@ export default function Rides() {
   const myAssigned = useMemo(() => {
     const uid = currentUser?.id || currentUser?._id
     return (bookings||[])
-      .filter(b => String(b.driverId||'') === String(uid||'') && b.status === 'confirmed')
+      .filter(b => String(b.driverId||'') === String(uid||'') && ['pending','confirmed'].includes(String(b.status)))
       .map(b => ({ ...b, id: b.id || b._id }))
   }, [bookings, currentUser])
 

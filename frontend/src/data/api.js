@@ -98,9 +98,21 @@ export const getMyBookingsApi = async () => {
     return data; // array of bookings for current user
 }
 
+// Driver: get bookings assigned to the authenticated driver
+export const getAssignedBookingsApi = async () => {
+    const { data } = await api.get('/bookings/assigned/me');
+    return data; // array of bookings assigned to driver
+}
+
 export const updateBookingByIdApi = async (id, updates) => {
     const { data } = await api.put(`/bookings/updateById/${id}`, updates);
     return data; // updated booking document
+}
+
+// Driver: reject assigned booking
+export const driverRejectBookingApi = async (id) => {
+    const { data } = await api.put(`/bookings/reject/${id}`);
+    return data; // updated booking document (pending, driver released)
 }
 
 export const deleteBookingByIdApi = async (id) => {
