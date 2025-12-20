@@ -11,7 +11,10 @@ const bookingRoute = require('./routes/booking_auth');
 const port = 3000;
 const cors = require('cors');
 
-app.use(cors());
+origin: [
+    "http://localhost:5173",
+    "https://your-frontend-vercel-url.vercel.app"
+  ],
 
 app.use(express.json());
 // Ensure uploads directory exists and serve it statically

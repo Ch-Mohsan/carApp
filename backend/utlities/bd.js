@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri= 'mongodb://localhost:27017/carBook';
+const uri= process.env.Db_uri;
 
 const connectDB = async () => { 
     try {
