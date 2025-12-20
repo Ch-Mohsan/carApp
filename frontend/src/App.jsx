@@ -14,6 +14,7 @@ import Login from './pages/Login'
 import Landing from './pages/Landing'
 import AddBoocking from './pages/AddBoocking'
 import Bookings from './pages/Bookings'
+import Rides from './pages/Rides'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 
@@ -61,6 +62,7 @@ function App() {
           <Route path="/cars" element={<Cars />} />
           <Route path="/add-booking" element={<AddBoocking />} />
           <Route path="/bookings" element={<Bookings />} />
+          <Route path="/rides" element={<Rides />} />
         </Route>
       </Route>
 
@@ -68,6 +70,7 @@ function App() {
       <Route element={<ProtectedRoute />}> 
         <Route path="/add-booking" element={<AddBoocking />} />
         <Route path="/bookings" element={<Bookings />} />
+        <Route path="/rides" element={<Rides />} />
         <Route path="/home" element={<Home />} />
         <Route path="/cars" element={<Cars />} />
       </Route>

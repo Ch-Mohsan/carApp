@@ -134,6 +134,15 @@ const updateBookingStatus = async (req, res, next) => {
                 await driver.save();
             }
         }
+        // If reverting to pending, release any assigned driver
+        if (status === 'pending' && booking.driverId) {
+            const d = await User.findById(booking.driverId);
+            if (d && d.isDriver) {
+                d.isAvailable = true;
+                await d.save();
+            }
+            booking.driverId = undefined;
+        }
         // If cancelling a booking that had a driver, free them
         if (status === 'cancelled' && booking.driverId) {
             const d = await User.findById(booking.driverId);

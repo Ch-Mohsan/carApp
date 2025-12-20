@@ -74,6 +74,18 @@ export const updateBookingThunk = createAsyncThunk('bookings/update', async ({ i
   }
 })
 
+// Driver rejects an assigned booking -> revert to pending and clear driverId
+export const driverRejectBookingThunk = createAsyncThunk('bookings/driverReject', async (id, { rejectWithValue, dispatch }) => {
+  try {
+    const data = await updateBookingByIdApi(id, { status: 'pending', driverId: null })
+    // Refresh cars just in case backend updates availability
+    dispatch(fetchCarsThunk())
+    return normalizeBooking(data)
+  } catch (err) {
+    return rejectWithValue(err?.response?.data || err?.message || 'Failed to reject booking')
+  }
+})
+
 // Delete booking
 export const deleteBookingThunk = createAsyncThunk('bookings/delete', async (id, { rejectWithValue, dispatch }) => {
   try {
@@ -184,6 +196,19 @@ const bookingSlice = createSlice({
     builder.addCase(updateBookingThunk.rejected, (state, action) => {
       state.loading = false
       state.error = action.payload || 'Error updating booking'
+    })
+
+    // driver reject booking
+    builder.addCase(driverRejectBookingThunk.pending, (state) => { state.loading = true; state.error = null })
+    builder.addCase(driverRejectBookingThunk.fulfilled, (state, action) => {
+      state.loading = false
+      const updated = action.payload
+      const i = state.bookings.findIndex(b => b.id === updated.id)
+      if (i !== -1) state.bookings[i] = { ...state.bookings[i], ...updated }
+    })
+    builder.addCase(driverRejectBookingThunk.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload || 'Error rejecting booking'
     })
 
     // delete booking
