@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUserWithRoles } from '../feetures/UserSlices.js'
 import { FaBars } from "react-icons/fa"
+import { logoutUser } from '../feetures/UserSlices.js'
 
 function Navbar() {
   const [Menu, setMenu] = useState(false);
@@ -11,6 +12,7 @@ function Navbar() {
   const getpath = window.location.pathname;
   const menuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUserWithRoles)
   const isAdmin = !!(currentUser && currentUser.isAdmin)
   const isDriver = !!(currentUser && currentUser.isDriver)
@@ -100,6 +102,11 @@ function Navbar() {
     return `transition-colors duration-200 ${active ? 'text-[#01d28e]' : 'text-white hover:text-[#01d28e]'} no-underline`;
   };
 
+  const onLogout = () => {
+    try { dispatch(logoutUser()) } catch {}
+    try { window.location.href = '/login' } catch {}
+  }
+
   return (
     <>
       <motion.div
@@ -118,27 +125,36 @@ function Navbar() {
           </div>
 
           <ul className='hidden md:flex items-center justify-center flex-1 text-[16px]'>
-            <li className='mx-6'><a href='/home' className={linkClass('/home')}>Home</a></li>
-            <li className='mx-6'><a href='/about' className={linkClass('/about')}>About</a></li>
-            <li className='mx-6'><a href='/services' className={linkClass('/services')}>Services</a></li>
-            <li className='mx-6'><a href='/price' className={linkClass('/price')}>Price</a></li>
-            <li className='mx-6'><a href='/cars' className={linkClass('/cars')}>Cars</a></li>
-            {!isDriver && (
-              <li className='mx-6'><a href='/bookings' className={linkClass('/bookings')}>Bookings</a></li>
+            {/* Hide these pages for Admin or Driver */}
+            {!(isAdmin || isDriver) && (
+              <>
+              <li className='mx-6'><a href='/home' className={linkClass('/home')}>Home</a></li>
+              <li className='mx-6'><a href='/about' className={linkClass('/about')}>About</a></li>
+              <li className='mx-6'><a href='/services' className={linkClass('/services')}>Services</a></li>
+                <li className='mx-6'><a href='/price' className={linkClass('/price')}>Price</a></li>
+                <li className='mx-6'><a href='/cars' className={linkClass('/cars')}>Cars</a></li>
+                <li className='mx-6'><a href='/bookings' className={linkClass('/bookings')}>Bookings</a></li>
+                <li className='mx-6'><a href='/blog' className={linkClass('/blog')}>Blog</a></li>
+                <li className='mx-6'><a href='/contact' className={linkClass('/contact')}>Contact</a></li>
+              </>
             )}
-            {isDriver && (
+            {/* {isDriver && (
               <li className='mx-6'><a href='/rides' className={linkClass('/rides')}>Rides</a></li>
             )}
-            <li className='mx-6'><a href='/blog' className={linkClass('/blog')}>Blog</a></li>
-            <li className='mx-6'><a href='/contact' className={linkClass('/contact')}>Contact</a></li>
             {isAdmin && (
               <li className='mx-6'>
                 <a href='/dashboard' className={linkClass('/dashboard')}>Dashboard</a>
               </li>
-            )}
+            )} */}
           </ul>
-
-          <div className={`md:hidden flex ml-auto`}>
+          <div className={`flex ml-auto items-center gap-3`}>
+            {currentUser && (
+              <button
+                className={`hidden md:inline px-3 py-1.5 rounded-md ${ (forceLight || navLight) ? 'bg-gray-100 text-black' : 'bg-white/85 text-black'} shadow`}
+                onClick={onLogout}
+              >Logout</button>
+            )}
+            <div className={`md:hidden flex`}>
             <button
               aria-expanded={Menu}
               aria-label="Toggle menu"
@@ -147,6 +163,7 @@ function Navbar() {
             >
               <FaBars size={20} />
             </button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -159,16 +176,18 @@ function Navbar() {
             <li className={`mx-4 my-2 cursor-pointer ${getpath=='/home'? "text-[#1089ff]" : ""} `} ><a href="/home" onClick={() => setMenu(false)}>Home </a></li>
             <li className={`mx-4 my-2 cursor-pointer ${getpath=='/about'? "text-[#1089ff]" : ""}`}><a href="/about" onClick={() => setMenu(false)}>About</a></li>
             <li className={`mx-4 my-2 cursor-pointer ${getpath=='/services'? "text-[#1089ff]" : ""}`}><a href="/services" onClick={() => setMenu(false)}>Services</a></li>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/cars'? "text-[#1089ff]" : ""}`}><a href="/cars" onClick={() => setMenu(false)}>Cars</a></li>
-            {!isDriver && (
-              <li className={`mx-4 my-2 cursor-pointer ${getpath=='/bookings'? "text-[#1089ff]" : ""}`}><a href="/bookings" onClick={() => setMenu(false)}>Bookings</a></li>
+            {!(isAdmin || isDriver) && (
+              <>
+                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/price'? "text-[#1089ff]" : ""}`}><a href="/price" onClick={() => setMenu(false)}>Price</a></li>
+                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/cars'? "text-[#1089ff]" : ""}`}><a href="/cars" onClick={() => setMenu(false)}>Cars</a></li>
+                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/bookings'? "text-[#1089ff]" : ""}`}><a href="/bookings" onClick={() => setMenu(false)}>Bookings</a></li>
+                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/blog'? "text-[#1089ff]" : ""}`}><a href="/blog" onClick={() => setMenu(false)}>Blog</a></li>
+                <li className={`mx-4 my-2 cursor-pointer ${getpath=='/contact'? "text-[#1089ff]" : ""}`}><a href="/contact" onClick={() => setMenu(false)}>Contact</a></li>
+              </>
             )}
             {isDriver && (
               <li className={`mx-4 my-2 cursor-pointer ${getpath=='/rides'? "text-[#1089ff]" : ""}`}><a href="/rides" onClick={() => setMenu(false)}>Rides</a></li>
             )}
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/blog'? "text-[#1089ff]" : ""}`}><a href="/blog" onClick={() => setMenu(false)}>Blog</a></li>
-            <li className={`mx-4 my-2 cursor-pointer ${getpath=='/contact'? "text-[#1089ff]" : ""}`}><a href="/contact" onClick={() => setMenu(false)}>Contact</a></li>
             {isAdmin && (
               <>
                 <li className={`mx-4 my-2 cursor-pointer ${getpath=='/dashboard'? "text-[#1089ff]" : ""}`} data-submenu-start>
@@ -197,6 +216,11 @@ function Navbar() {
                   </>
                 )}
               </>
+            )}
+            {currentUser && (
+              <li className='w-full px-4 py-2'>
+                <button className='w-full px-2 py-2 rounded-md bg-gray-100 ring-1 ring-gray-200' onClick={() => { setMenu(false); onLogout() }}>Logout</button>
+              </li>
             )}
           </ul>
         </div>

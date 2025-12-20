@@ -2,6 +2,8 @@
 import React, { useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from './feetures/UserSlices'
 import Home from './pages/Home'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -22,6 +24,7 @@ import Dashboard from './pages/Dashboard'
 function App() {
   const location = useLocation()
   const navigate = useNavigate()
+  const currentUser = useSelector(selectCurrentUser)
 
   // On app load, if a valid JWT exists, redirect root to /home
   useEffect(() => {
@@ -35,10 +38,11 @@ function App() {
       const nowSec = Math.floor(Date.now() / 1000)
       const isValid = typeof expSec === 'number' && expSec > nowSec
       if (isValid && location.pathname === '/') {
-        navigate('/home', { replace: true })
+        const want = (currentUser && currentUser.isAdmin) ? '/dashboard' : '/home'
+        navigate(want, { replace: true })
       }
     } catch {}
-  }, [location.pathname, navigate])
+  }, [location.pathname, navigate, currentUser])
   return (
     <AnimatePresence mode="wait">
     <Routes location={location} key={location.pathname}>
