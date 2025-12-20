@@ -173,7 +173,7 @@ function Navbar() {
       {Menu && (
         <div className='fixed inset-0 z-40' onClick={() => setMenu(false)}>
           <div className='absolute inset-0 bg-white/60 backdrop-blur-sm' />
-          <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-start items-start gap-1 ${Menu ? 'open' : ''} bg-white text-black relative z-50`} style={{ maxHeight: '80vh', overflowY: 'auto' }} onClick={(e)=>e.stopPropagation()}>
+          <ul ref={menuRef} className={`mobile-menu h-auto w-full md:hidden flex flex-col justify-start items-start gap-1 ${Menu ? 'open' : ''} bg-white text-black relative z-50 pt-3 pb-3`} style={{ maxHeight: '80vh', overflowY: 'auto' }} onClick={(e)=>e.stopPropagation()}>
               {/* Regular users: show full site nav */}
               {!(isAdmin || isDriver) && (
                 <>
@@ -191,24 +191,24 @@ function Navbar() {
               {/* Admin: show only dashboard sidebar options */}
               {isAdmin && (
                 <>
-                  <li className='mx-4 my-2 font-semibold'>Dashboard</li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Overview</a>
+                  <li className='mx-4 mt-2 mb-1 font-semibold text-gray-900'>Dashboard</li>
+                  <li className='w-full pl-4 pr-4'>
+                    <a href='/dashboard' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>Overview</a>
                   </li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard?section=addcar' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Add New Car</a>
+                  <li className='w-full pl-4 pr-4'>
+                    <a href='/dashboard?section=addcar' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>Add New Car</a>
                   </li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard?section=cars' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Cars Listing</a>
+                  <li className='w-full pl-4 pr-4'>
+                    <a href='/dashboard?section=cars' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>Cars Listing</a>
                   </li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard?section=bookings' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Booking Records</a>
+                  <li className='w-full pl-4 pr-4'>
+                    <a href='/dashboard?section=bookings' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>Booking Records</a>
                   </li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard?section=users' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>User Records</a>
+                  <li className='w-full pl-4 pr-4'>
+                    <a href='/dashboard?section=users' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>User Records</a>
                   </li>
-                  <li className='w-full pl-6 pr-4'>
-                    <a href='/dashboard?section=drivers' className='block px-2 py-2 rounded hover:bg-gray-50 ring-1 ring-transparent' onClick={() => setMenu(false)}>Driver Status</a>
+                  <li className='w-full pl-4 pr-4 mb-2'>
+                    <a href='/dashboard?section=drivers' className='block px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 text-[15px] touch-manipulation' onClick={() => setMenu(false)}>Driver Status</a>
                   </li>
                 </>
               )}
