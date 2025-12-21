@@ -11,12 +11,31 @@ const bookingRoute = require('./routes/booking_auth');
 const port = 3000;
 const cors = require('cors');
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    'https://car-app-three-delta.vercel.app/'
-  ],
-}));
+// CORS configuration: allow known frontend origins and handle preflight
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean)
+    : [
+        'http://localhost:5173',
+        'https://car-app-three-delta.vercel.app', // note: no trailing slash
+      ]
+);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (no Origin)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+// Explicitly enable preflight across routes
+app.options('*', cors(corsOptions));
 app.use(express.json());
 // Ensure uploads directory exists and serve it statically
 try {
