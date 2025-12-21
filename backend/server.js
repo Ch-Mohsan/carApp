@@ -14,7 +14,7 @@ const cors = require('cors');
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://your-frontend-vercel-url.vercel.app"
+    'https://car-app-three-delta.vercel.app/'
   ],
 }));
 app.use(express.json());
