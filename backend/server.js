@@ -11,44 +11,12 @@ const bookingRoute = require('./routes/booking_auth');
 const port = 3000;
 const cors = require('cors');
 
-// CORS configuration: allow known frontend origins and handle preflight
-const allowedOrigins = (
-  process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean)
-    : [
-        'http://localhost:5173',
-        'https://car-app-three-delta.vercel.app', // note: no trailing slash
-      ]
-);
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow non-browser requests (no Origin)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
+app.use(cors(
+origin='*'
+));
+// Middleware
 
-app.use(cors(corsOptions));
-// Handle CORS preflight safely on Express v5 without wildcard routes
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Vary', 'Origin');
-  }
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    return res.sendStatus(204);
-  }
-  next();
-});
 app.use(express.json());
 // Ensure uploads directory exists and serve it statically
 try {
