@@ -22,7 +22,7 @@ origin=["http://localhost:5173",
 app.use(express.json());
 // Ensure uploads directory exists and serve it statically
 try {
-  const uploadsDir = path.join(__dirname, 'uploads');
+  const uploadsDir = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
   fs.mkdirSync(uploadsDir, { recursive: true });
   app.use('/uploads', express.static(uploadsDir));
 } catch (e) {
