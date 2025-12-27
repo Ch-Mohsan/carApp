@@ -13,7 +13,9 @@ const cors = require('cors');
 
 
 app.use(cors(
-origin=["http://localhost:5173"]
+origin=["http://localhost:5173",
+  'https://car-app-frontend-rho.vercel.app/'
+]
 ));
 // Middleware
 
