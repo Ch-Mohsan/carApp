@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.jwt_key;
 const signup = async (req, res, next) => {
     try {
-        const { username, password, phone, isAdmin, isDriver } = req.body;
+        let { username, password, phone, isAdmin, isDriver } = req.body;
         
         if (!username || !password) {
             const err = new Error('Username and password are required');
